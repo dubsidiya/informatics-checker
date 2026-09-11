@@ -241,6 +241,25 @@ def analyze_source(source: str, problem: Problem) -> list[Hint]:
             )
         )
 
+    missing = missing_statement_divisors(source, problem, tree)
+    if missing and ("closed_range" in problem.tags or "ege17" in problem.tags):
+        shown = ", ".join(str(item) for item in missing)
+        title = f"В коде нет проверки на {missing[0]}" if len(missing) == 1 else "В коде не все делители из условия"
+        if len(missing) == 1:
+            detail = (
+                f"В условии есть делитель {missing[0]}, а в программе нет `% {missing[0]}`. "
+                "Без этой проверки в множество попадают лишние числа, и счётчик обычно становится больше."
+            )
+        else:
+            detail = (
+                f"В условии есть делители {shown}, а в коде этих проверок нет. "
+                "Без них отбирается другой набор чисел."
+            )
+        hints.append(Hint(kind="logic", title=title, detail=detail))
+
+    if "closed_range" in problem.tags:
+        hints.extend(_closed_range_bound_hints(tree, problem.statement))
+
     if "file_input" in problem.tags and not any(_called(node, "open") for node in calls):
         hints.append(
             Hint(
@@ -436,6 +455,103 @@ def _while_true_without_break(tree: ast.AST) -> bool:
 def _has_yes_no_problem(problem: Problem) -> bool:
     blob = f"{problem.output_format} {problem.statement}"
     return "YES" in blob or "EVEN" in blob
+
+
+DIVISOR_PHRASE = re.compile(
+    r"(?:дел(?:ится|ятся|ящихся|иться)\s+на|кратн[а-яё]*\s+)([\d,\sи]+)",
+    re.IGNORECASE,
+)
+CLOSED_RANGE = re.compile(r"\[(\d+)\s*[;,]\s*(\d+)\]")
+
+
+def statement_divisors(text: str) -> list[int]:
+    found: list[int] = []
+    seen: set[int] = set()
+    for match in DIVISOR_PHRASE.finditer(text):
+        for raw in re.findall(r"\d+", match.group(1)):
+            value = int(raw)
+            if value >= 2 and value not in seen:
+                seen.add(value)
+                found.append(value)
+    return found
+
+
+def source_moduli(source: str, tree: ast.AST | None = None) -> set[int]:
+    used: set[int] = set()
+    if tree is None:
+        try:
+            tree = ast.parse(source)
+        except SyntaxError:
+            tree = None
+    if tree is not None:
+        for node in ast.walk(tree):
+            if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Mod):
+                if isinstance(node.right, ast.Constant) and isinstance(node.right.value, int):
+                    used.add(node.right.value)
+            if isinstance(node, (ast.List, ast.Tuple, ast.Set)):
+                values = []
+                for elt in node.elts:
+                    if isinstance(elt, ast.Constant) and isinstance(elt.value, int):
+                        values.append(elt.value)
+                    else:
+                        values = []
+                        break
+                if values and all(2 <= item <= 200 for item in values):
+                    used.update(values)
+    for raw in re.findall(r"%\s*(\d+)", source):
+        used.add(int(raw))
+    return used
+
+
+def missing_statement_divisors(source: str, problem: Problem, tree: ast.AST | None = None) -> list[int]:
+    used = source_moduli(source, tree)
+    missing: list[int] = []
+    for needed in statement_divisors(problem.statement):
+        if needed in used:
+            continue
+        if any(item % needed == 0 for item in used):
+            continue
+        missing.append(needed)
+    return missing
+
+
+def closed_range_bounds(statement: str) -> tuple[int, int] | None:
+    match = CLOSED_RANGE.search(statement)
+    if not match:
+        return None
+    return int(match.group(1)), int(match.group(2))
+
+
+def _closed_range_bound_hints(tree: ast.AST, statement: str) -> list[Hint]:
+    bounds = closed_range_bounds(statement)
+    if not bounds:
+        return []
+    start, end = bounds
+    hints: list[Hint] = []
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.Call) and _called(node, "range") and len(node.args) >= 2):
+            continue
+        left, right = node.args[0], node.args[1]
+        if not (
+            isinstance(left, ast.Constant)
+            and isinstance(right, ast.Constant)
+            and isinstance(left.value, int)
+            and isinstance(right.value, int)
+        ):
+            continue
+        if left.value == start and right.value == end:
+            hints.append(
+                Hint(
+                    kind="logic",
+                    title="range не включает конец отрезка",
+                    detail=(
+                        f"Для отрезка [{start}; {end}] нужен range({start}, {end} + 1). "
+                        f"Сейчас range({start}, {end}) останавливается на {end - 1}."
+                    ),
+                    line=getattr(node, "lineno", None),
+                )
+            )
+    return hints
 
 
 def _unique(hints: list[Hint]) -> list[Hint]:

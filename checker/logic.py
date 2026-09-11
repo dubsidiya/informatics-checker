@@ -322,14 +322,15 @@ def _two_number_hints(got: str, expected: str, problem: Problem) -> list[Hint]:
     got_t = _tokens(got)
     if len(exp) != 2:
         return []
+    tags = set(problem.tags)
     if len(got_t) == 1:
-        return [
-            Hint(
-                kind="format",
-                title="В ответе должно быть два числа",
-                detail="В №17 обычно печатают количество и затем min/max суммы: print(count, value). Сейчас программа вывела только одно число.",
-            )
-        ]
+        if "closed_range" in tags:
+            detail = "Нужны два числа через пробел: количество подходящих чисел и затем максимум (или минимум) из них."
+        elif "pairs" in tags or "triples" in tags:
+            detail = "Нужны два числа: сколько пар (троек) подошло и затем min/max суммы. Сейчас программа вывела только одно число."
+        else:
+            detail = "В ответе должно быть два числа через пробел, как в условии."
+        return [Hint(kind="format", title="В ответе должно быть два числа", detail=detail)]
     if len(got_t) != 2:
         return []
     if got_t == exp and not same_answer(got, expected):
@@ -345,7 +346,7 @@ def _two_number_hints(got: str, expected: str, problem: Problem) -> list[Hint]:
             Hint(
                 kind="logic",
                 title="Количество совпало, второе число нет",
-                detail="Счётчик пар верный, а min/max суммы — нет. Часто берут сумму модулей вместо суммы, путают min и max или забывают отфильтровать пары для второго числа.",
+                detail=_count_ok_value_wrong(tags),
             )
         ]
     if got_t[1] == exp[1] and got_t[0] != exp[0]:
@@ -353,18 +354,94 @@ def _two_number_hints(got: str, expected: str, problem: Problem) -> list[Hint]:
             Hint(
                 kind="logic",
                 title="Второе число совпало, счётчик нет",
-                detail="Проверь, что пары идут подряд (i и i+1), а не все сочетания. И не перепутаны ли «хотя бы одно», «оба», «ровно одно».",
+                detail=_count_wrong_value_ok(got_t[0], exp[0], tags),
             )
         ]
-    if "ege17" in problem.tags or "pairs" in problem.tags:
+    if "ege17" in tags or "pairs" in tags or "closed_range" in tags:
         return [
             Hint(
                 kind="logic",
                 title="Оба числа ответа другие",
-                detail="Пройди условие на бумаге: подряд ли элементы, какое сравнение со средним/эталоном, нужен ли abs для последней цифры. Ниже сравни свой вывод с эталоном.",
+                detail=_both_wrong(tags),
             )
         ]
     return []
+
+
+def _count_ok_value_wrong(tags: set[str]) -> str:
+    if "closed_range" in tags:
+        return (
+            "Чисел отобрали столько, сколько нужно, а максимум/минимум другой. "
+            "Экстремум обновляй внутри того же if, и не путай min с max."
+        )
+    if "pairs" in tags or "triples" in tags:
+        return (
+            "Счётчик верный, а min/max суммы нет. Часто берут сумму модулей вместо суммы, "
+            "путают min и max или считают второе число по другому набору пар."
+        )
+    return "Первое число ответа верное, второе нет. Перечитай, что именно просят вывести вторым."
+
+
+def _count_wrong_value_ok(got_count: str, exp_count: str, tags: set[str]) -> str:
+    extra = _int_or_none(got_count)
+    need = _int_or_none(exp_count)
+    more = extra is not None and need is not None and extra > need
+
+    if "closed_range" in tags:
+        if more:
+            return (
+                f"Максимум тот же, а чисел больше ({got_count} вместо {exp_count}). "
+                "Фильтр слабее условия: в if не хватает какого-то «не делится на …»."
+            )
+        return (
+            f"Максимум тот же, а чисел меньше ({got_count} вместо {exp_count}). "
+            "Фильтр строже условия или range не включает конец отрезка: для [A; B] пиши range(A, B + 1)."
+        )
+
+    if "pairs" in tags or "triples" in tags:
+        who = "пар" if "pairs" in tags else "троек"
+        how = ""
+        if "at_least_one" in tags:
+            how = " «Хотя бы одно» — это or, не and."
+        elif "both" in tags:
+            how = " «Оба» — это and, не or."
+        elif "exactly_one" in tags:
+            how = " «Ровно одно» — два условия через != / xor, не оба сразу."
+        if more:
+            return (
+                f"Второе число верное, а {who} больше ({got_count} вместо {exp_count}). "
+                f"Условие отбора шире, чем в задаче.{how}"
+            )
+        return (
+            f"Второе число верное, а {who} меньше ({got_count} вместо {exp_count}). "
+            f"Условие отбора уже, чем в задаче.{how}"
+        )
+
+    direction = "больше" if more else "меньше"
+    return (
+        f"Второе число совпало, первое нет ({got_count} вместо {exp_count}, {direction} эталона). "
+        "Отобран другой набор элементов — перечитай фильтр в условии."
+    )
+
+
+def _both_wrong(tags: set[str]) -> str:
+    if "closed_range" in tags:
+        return (
+            "И количество, и максимум другие. Сверь range(A, B + 1) и полный список делителей из условия."
+        )
+    if "pairs" in tags:
+        return (
+            "Оба числа другие. Пара в №17 — это соседние элементы data[i] и data[i+1], "
+            "а не все сочетания. Дальше сверь сравнение со средним или эталоном."
+        )
+    return "Оба числа другие. Пройди условие на этом наборе вручную и сравни с эталоном."
+
+
+def _int_or_none(text: str) -> int | None:
+    try:
+        return int(text)
+    except ValueError:
+        return None
 
 
 def _looks_like_missing_last(got: float, expected: float, stdin: str) -> bool:

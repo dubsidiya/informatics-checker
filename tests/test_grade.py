@@ -246,6 +246,24 @@ class GradeTests(unittest.TestCase):
         text = " ".join(hint.title + hint.detail for hint in result.hints)
         self.assertTrue("два" in text)
 
+    def test_ege17_range_missing_divisor_not_pairs(self):
+        result = grade_solution(
+            get_problem("ege17-1"),
+            "kol = mx = 0\n"
+            "for x in range(1012, 9639):\n"
+            "    if x % 3 == 0 and all(x % y != 0 for y in [11, 13, 17]):\n"
+            "        kol += 1\n"
+            "        mx = max(mx, x)\n"
+            "print(kol, mx)\n",
+        )
+        self.assertEqual(result.status, "fail")
+        text = " ".join(hint.title + hint.detail for hint in result.hints)
+        self.assertIn("19", text)
+        self.assertTrue("больше" in text or "лишн" in text)
+        self.assertNotIn("сочетания", text)
+        self.assertNotIn("хотя бы одно", text)
+        self.assertNotIn("подряд", text)
+
     def test_ege17_combinations_hint(self):
         result = grade_solution(
             get_problem("ege17-243"),
