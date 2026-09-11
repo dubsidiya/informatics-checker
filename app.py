@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent
 WEB = ROOT / "web"
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
-TEACHER_PIN = os.environ.get("TEACHER_PIN", "lashin")
+TEACHER_PIN = os.environ.get("TEACHER_PIN", "159753pupil")
 TEACHER_TOKEN = hashlib.sha256(f"checker::{TEACHER_PIN}".encode("utf-8")).hexdigest()
 
 _RATE_LOCK = threading.Lock()
