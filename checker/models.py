@@ -31,6 +31,7 @@ class Problem:
     output_format: str
     examples: list[Example]
     tests: list[TestCase]
+    topic: str = "общее"
     tags: list[str] = field(default_factory=list)
 
     def public_dict(self) -> dict[str, Any]:
@@ -38,6 +39,7 @@ class Problem:
             "id": self.id,
             "title": self.title,
             "level": self.level,
+            "topic": self.topic,
             "statement": self.statement,
             "input_format": self.input_format,
             "output_format": self.output_format,

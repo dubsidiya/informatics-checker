@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Кабинет учителя</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Проверяльщик</p>
+        <h1>Кабинет учителя</h1>
+      </div>
+      <div class="top-tools">
+        <a class="ghost-link" href="/">К задачам</a>
+        <button id="logout" class="ghost-link hidden" type="button">Выйти</button>
+      </div>
+    </header>
+
+    <section id="login-panel" class="panel login-panel">
+      <h2>Вход</h2>
+      <p class="lead-inline">Введи пин учителя. На сервере его задаёт переменная <code>TEACHER_PIN</code>.</p>
+      <form id="login-form" class="login-form">
+        <input id="pin" type="password" autocomplete="current-password" placeholder="Пин учителя">
+        <button type="submit">Войти</button>
+      </form>
+      <p id="login-error" class="banner bad hidden"></p>
+    </section>
+
+    <section id="board" class="hidden">
+      <div id="stats" class="stats"></div>
+      <div class="panel">
+        <div class="board-bar">
+          <h2>Кто что сдал</h2>
+          <p class="muted">Нажми ячейку, чтобы открыть последнюю попытку и код.</p>
+        </div>
+        <div id="grid" class="table-wrap"></div>
+      </div>
+      <section id="attempt" class="panel result hidden"></section>
+    </section>
+  </div>
+  <script src="/static/teacher.js"></script>
+</body>
+</html>

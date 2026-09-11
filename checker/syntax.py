@@ -17,6 +17,8 @@ RULES: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"Maybe you forgot a comma", re.I), "Похоже, между значениями пропущена запятая."),
     (re.compile(r"cannot assign to", re.I), "Слева от = должно быть имя переменной, а не выражение."),
     (re.compile(r"invalid syntax", re.I), "Синтаксическая ошибка. Смотри строку выше: чаще всего скобки, запятая или двоеточие."),
+    (re.compile(r"leading zeros", re.I), "В Python 3 нельзя писать числа с ведущим нулём вроде 07. Это должна быть строка '07' или число 7."),
+    (re.compile(r"invalid decimal", re.I), "Число записано неверно. Проверь точку, запятую и лишние символы."),
 ]
 
 

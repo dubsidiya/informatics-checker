@@ -14,6 +14,7 @@ def _load_problem(raw: dict) -> Problem:
         id=raw["id"],
         title=raw["title"],
         level=raw["level"],
+        topic=raw.get("topic", "общее"),
         statement=raw["statement"],
         input_format=raw["input_format"],
         output_format=raw["output_format"],
@@ -31,9 +32,22 @@ def all_problems() -> list[Problem]:
 
 def list_summaries() -> list[dict]:
     return [
-        {"id": problem.id, "title": problem.title, "level": problem.level}
+        {
+            "id": problem.id,
+            "title": problem.title,
+            "level": problem.level,
+            "topic": problem.topic,
+        }
         for problem in all_problems()
     ]
+
+
+def list_topics() -> list[str]:
+    seen: list[str] = []
+    for problem in all_problems():
+        if problem.topic not in seen:
+            seen.append(problem.topic)
+    return seen
 
 
 def get_problem(problem_id: str) -> Problem:

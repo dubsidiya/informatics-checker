@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Проверяльщик решений</title>
   <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
 </head>
 <body>
   <div class="page">
@@ -13,12 +15,32 @@
         <p class="eyebrow">Информатика · Python</p>
         <h1>Проверяльщик решений</h1>
       </div>
-      <p class="lead">Сначала тесты. Если ответ неверный — разбор: синтаксис, логика, ход программы.</p>
+      <div class="top-tools">
+        <label class="name-field">
+          <span>Имя ученика</span>
+          <input id="student" type="text" maxlength="80" placeholder="Как подписать работу" autocomplete="name">
+        </label>
+        <a class="ghost-link" href="/teacher">Кабинет учителя</a>
+      </div>
     </header>
+
+    <div class="filters">
+      <div>
+        <p class="filter-label">Тема</p>
+        <div id="topic-filters" class="chips"></div>
+      </div>
+      <div>
+        <p class="filter-label">Уровень</p>
+        <div id="level-filters" class="chips"></div>
+      </div>
+    </div>
 
     <div class="layout">
       <aside class="panel tasks">
-        <h2>Задачи</h2>
+        <div class="tasks-head">
+          <h2>Задачи</h2>
+          <p id="task-count" class="task-count"></p>
+        </div>
         <nav id="task-list" class="task-list"></nav>
       </aside>
 
@@ -46,12 +68,14 @@
           <button id="run" type="button">Проверить</button>
         </div>
         <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
-        <p class="hint-key">Ctrl+Enter тоже запускает проверку.</p>
+        <p class="hint-key">Tab — отступ, Ctrl+Enter или ⌘+Enter — проверить.</p>
       </section>
     </div>
 
     <section id="result" class="panel result hidden"></section>
   </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
   <script src="/static/app.js"></script>
 </body>
 </html>

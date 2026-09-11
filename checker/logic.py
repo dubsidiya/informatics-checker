@@ -82,6 +82,7 @@ def build_hints(
                 line=first.error_line,
             )
         )
+        hints.extend(_runtime_specific_hints(first))
     elif first.verdict == "WA":
         hints.extend(_wrong_answer_hints(first, problem))
 
@@ -177,7 +178,27 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
             )
         return hints
 
-    if compact(got).upper() in {"YES", "NO"} and compact(expected).upper() in {"YES", "NO"}:
+    if compact(got) in {"1", "0", "True", "False", "true", "false"} and compact(expected).upper() in {
+        "YES",
+        "NO",
+        "EVEN",
+        "ODD",
+    }:
+        hints.append(
+            Hint(
+                kind="format",
+                title="Напечатано 1/0 вместо слова",
+                detail=f"Ожидалось `{_preview(expected)}`, а программа напечатала `{_preview(got)}`. Нужны слова из условия, не True/False и не 1/0.",
+            )
+        )
+        return hints
+
+    if compact(got).upper() in {"YES", "NO", "EVEN", "ODD"} and compact(expected).upper() in {
+        "YES",
+        "NO",
+        "EVEN",
+        "ODD",
+    }:
         if compact(got).upper() != compact(expected).upper():
             hints.append(
                 Hint(
@@ -186,6 +207,16 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
                     detail="Программа отвечает YES, когда нужно NO, или наоборот. Проверь if: не перепутаны ли == и !=, not, in.",
                 )
             )
+        return hints
+
+    if got.strip().startswith(("[", "(")) and not expected.strip().startswith(("[", "(")):
+        hints.append(
+            Hint(
+                kind="format",
+                title="Напечатан список или кортеж",
+                detail="print(список) даёт [1, 2, 3]. Если нужны числа в строку — print(*список). Если нужен один ответ — печатай его, а не весь список.",
+            )
+        )
         return hints
 
     if compact(expected) in compact(got) and compact(got) != compact(expected):
@@ -205,6 +236,57 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
             detail=f"Ожидалось `{_preview(expected)}`, получилось `{_preview(got)}`. Пройди алгоритм на этом вводе вручную и сравни с трассировкой ниже.",
         )
     )
+    return hints
+
+
+def _runtime_specific_hints(test: TestResult) -> list[Hint]:
+    error = test.error or ""
+    hints: list[Hint] = []
+    if test.error_type == "ValueError" and "invalid literal" in error:
+        hints.append(
+            Hint(
+                kind="runtime",
+                title="int() получил не одно число",
+                detail="Частая ошибка: int(input()) на строке «2 3». Сначала split(), потом map(int, ...).",
+                line=test.error_line,
+            )
+        )
+    if test.error_type == "TypeError" and "concatenate" in error:
+        hints.append(
+            Hint(
+                kind="runtime",
+                title="Складываются разные типы",
+                detail="Нельзя сложить строку и число. Приведи оба значения к int или оба к str — в этой задаче почти наверняка к int.",
+                line=test.error_line,
+            )
+        )
+    if test.error_type == "TypeError" and "not iterable" in error:
+        hints.append(
+            Hint(
+                kind="runtime",
+                title="Цикл идёт по числу",
+                detail="for x in n не работает, если n — int. Нужно for x in range(n) или сначала прочитать список.",
+                line=test.error_line,
+            )
+        )
+    if test.error_type == "TypeError" and "not subscriptable" in error:
+        hints.append(
+            Hint(
+                kind="runtime",
+                title="Индекс берут у числа",
+                detail="n[0] нельзя, если n уже int. Либо работай с числом через % и //, либо сначала оставь строку.",
+                line=test.error_line,
+            )
+        )
+    if test.error_type == "AttributeError" and "split" in error:
+        hints.append(
+            Hint(
+                kind="runtime",
+                title="split вызывают не у строки",
+                detail="Сначала input(), и уже у этой строки .split(). У int метода split нет.",
+                line=test.error_line,
+            )
+        )
     return hints
 
 

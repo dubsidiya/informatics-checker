@@ -11,3 +11,5 @@ services:
         value: 0.0.0.0
       - key: PYTHONUNBUFFERED
         value: "1"
+      - key: TEACHER_PIN
+        value: lashin

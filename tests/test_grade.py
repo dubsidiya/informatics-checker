@@ -1,16 +1,71 @@
 # -*- coding: utf-8 -*-
+import os
+import tempfile
 import unittest
+from pathlib import Path
 
 from checker.grade import grade_solution
-from checker.problems import get_problem
+from checker.problems import all_problems, get_problem, list_summaries
+from checker.store import clean_student_name, record_attempt, reset_ready, summarize
+
+
+SOLUTIONS = {
+    "sum-two": "a, b = map(int, input().split())\nprint(a + b)\n",
+    "sum-1-n": "n = int(input())\nprint(n * (n + 1) // 2)\n",
+    "max-three": "print(max(map(int, input().split())))\n",
+    "even-odd": "n = int(input())\nprint('EVEN' if n % 2 == 0 else 'ODD')\n",
+    "last-digit": "print(int(input()) % 10)\n",
+    "abs-diff": "a, b = map(int, input().split())\nprint(abs(a - b))\n",
+    "school-grade": (
+        "n = int(input())\n"
+        "if n < 50:\n    print(2)\n"
+        "elif n < 70:\n    print(3)\n"
+        "elif n < 90:\n    print(4)\n"
+        "else:\n    print(5)\n"
+    ),
+    "repeat-string": "s = input()\nk = int(input())\nprint(s * k)\n",
+    "min-of-n": "input()\nprint(min(map(int, input().split())))\n",
+    "power-of-two": "n = int(input())\nprint('YES' if n > 0 and n & (n - 1) == 0 else 'NO')\n",
+    "count-even": "input()\nprint(sum(x % 2 == 0 for x in map(int, input().split())))\n",
+    "digit-sum": "print(sum(map(int, input().strip())))\n",
+    "linear-search": (
+        "n, x = map(int, input().split())\n"
+        "a = list(map(int, input().split()))\n"
+        "print('YES' if x in a else 'NO')\n"
+    ),
+    "factorial": "n = int(input())\np = 1\nfor i in range(2, n + 1):\n    p *= i\nprint(p)\n",
+    "reverse-digits": "print(int(input().strip()[::-1] or '0'))\n",
+    "count-vowels": "v = set('аеёиоуыэюяАЕЁИОУЫЭЮЯ')\nprint(sum(ch in v for ch in input()))\n",
+    "palindrome": "s = input().strip().lower()\nprint('YES' if s == s[::-1] else 'NO')\n",
+    "fizz-count": "n = int(input())\nprint(sum(1 for i in range(1, n + 1) if i % 3 == 0 or i % 5 == 0))\n",
+    "gcd-two": "a, b = map(int, input().split())\nwhile b:\n    a, b = b, a % b\nprint(a)\n",
+    "to-binary": "print(bin(int(input()))[2:])\n",
+    "unique-count": "input()\nprint(len(set(map(int, input().split()))))\n",
+    "prefix-sum": (
+        "input()\ns = 0\nout = []\n"
+        "for x in map(int, input().split()):\n"
+        "    s += x\n    out.append(s)\n"
+        "print(*out)\n"
+    ),
+    "second-max": "input()\na = sorted(set(map(int, input().split())))\nprint(a[-2])\n",
+    "pair-sum": (
+        "n, s = map(int, input().split())\n"
+        "a = list(map(int, input().split()))\n"
+        "seen = set()\n"
+        "ok = False\n"
+        "for x in a:\n"
+        "    if s - x in seen:\n"
+        "        ok = True\n"
+        "        break\n"
+        "    seen.add(x)\n"
+        "print('YES' if ok else 'NO')\n"
+    ),
+}
 
 
 class GradeTests(unittest.TestCase):
     def test_correct_sum_two(self):
-        result = grade_solution(
-            get_problem("sum-two"),
-            "a, b = map(int, input().split())\nprint(a + b)\n",
-        )
+        result = grade_solution(get_problem("sum-two"), SOLUTIONS["sum-two"])
         self.assertEqual(result.status, "ok")
         self.assertEqual(result.passed, result.total)
 
@@ -42,13 +97,75 @@ class GradeTests(unittest.TestCase):
         self.assertTrue("range" in text or "1" in text)
 
     def test_runtime_name_error(self):
-        result = grade_solution(
-            get_problem("sum-two"),
-            "print(a + b)\n",
-        )
+        result = grade_solution(get_problem("sum-two"), "print(a + b)\n")
         self.assertEqual(result.status, "fail")
         self.assertTrue(any(test.verdict == "RE" for test in result.tests))
         self.assertTrue(any(hint.kind == "runtime" for hint in result.hints))
+
+    def test_catalog_has_topics_and_levels(self):
+        items = list_summaries()
+        self.assertGreaterEqual(len(items), 20)
+        self.assertTrue(all(item.get("topic") and item.get("level") for item in items))
+        for problem in all_problems():
+            self.assertGreaterEqual(len(problem.tests), 4)
+            self.assertTrue(problem.examples)
+
+    def test_all_reference_solutions(self):
+        missing = [item.id for item in all_problems() if item.id not in SOLUTIONS]
+        self.assertEqual(missing, [])
+        for problem in all_problems():
+            result = grade_solution(problem, SOLUTIONS[problem.id])
+            self.assertEqual(result.status, "ok", problem.id)
+
+    def test_yes_no_printed_as_one_zero(self):
+        result = grade_solution(
+            get_problem("linear-search"),
+            "n, x = map(int, input().split())\na = list(map(int, input().split()))\nprint(1 if x in a else 0)\n",
+        )
+        self.assertEqual(result.status, "fail")
+        text = " ".join(hint.title + hint.detail for hint in result.hints)
+        self.assertTrue("1/0" in text or "YES" in text or "слов" in text)
+
+    def test_factorial_range_hint(self):
+        result = grade_solution(
+            get_problem("factorial"),
+            "n = int(input())\np = 1\nfor i in range(n):\n    p *= i\nprint(p)\n",
+        )
+        self.assertEqual(result.status, "fail")
+        text = " ".join(hint.title + hint.detail for hint in result.hints)
+        self.assertTrue("range" in text or "n!" in text or "120" in text)
+
+    def test_int_on_two_numbers_hint(self):
+        result = grade_solution(get_problem("sum-two"), "print(int(input()))\n")
+        self.assertEqual(result.status, "fail")
+        text = " ".join(hint.title + hint.detail for hint in result.hints)
+        self.assertTrue("split" in text or "ValueError" in text or "int" in text)
+
+
+class StoreTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.NamedTemporaryFile(suffix=".db", delete=False)
+        self.tmp.close()
+        os.environ["CHECKER_DB"] = self.tmp.name
+        reset_ready()
+
+    def tearDown(self):
+        reset_ready()
+        os.environ.pop("CHECKER_DB", None)
+        Path(self.tmp.name).unlink(missing_ok=True)
+
+    def test_empty_name(self):
+        self.assertEqual(clean_student_name("   "), "без имени")
+
+    def test_summary_tracks_best(self):
+        record_attempt("Анна", "sum-two", "fail", 1, 5, "нет", "print(1)")
+        record_attempt("Анна", "sum-two", "ok", 5, 5, "да", "print(2)")
+        record_attempt("Борис", "sum-two", "fail", 0, 5, "нет", "print(3)")
+        data = summarize()
+        self.assertEqual(data["total_students"], 2)
+        anna = next(item for item in data["students"] if item["name"] == "Анна")
+        self.assertEqual(anna["solved"], 1)
+        self.assertEqual(anna["problems"]["sum-two"]["best_status"], "ok")
 
 
 if __name__ == "__main__":

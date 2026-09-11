@@ -1,5 +1,8 @@
 const els = {
   list: document.getElementById("task-list"),
+  count: document.getElementById("task-count"),
+  topics: document.getElementById("topic-filters"),
+  levels: document.getElementById("level-filters"),
   level: document.getElementById("level"),
   title: document.getElementById("title"),
   statement: document.getElementById("statement"),
@@ -9,33 +12,148 @@ const els = {
   code: document.getElementById("code"),
   run: document.getElementById("run"),
   result: document.getElementById("result"),
+  student: document.getElementById("student"),
 };
 
+const LEVELS = ["все", "старт", "средне", "сложно"];
+let problems = [];
 let currentId = null;
+let topicFilter = "все";
+let levelFilter = "все";
+let editor = null;
 
-async function boot() {
-  const problems = await (await fetch("/api/problems")).json();
-  els.list.innerHTML = "";
-  for (const item of problems) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.dataset.id = item.id;
-    button.innerHTML = `${escapeHtml(item.title)}<small>${escapeHtml(item.level)}</small>`;
-    button.addEventListener("click", () => openProblem(item.id));
-    els.list.appendChild(button);
-  }
-  if (problems[0]) {
-    await openProblem(problems[0].id);
+function studentName() {
+  return (els.student.value || "").trim();
+}
+
+function solvedSet() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem("solved") || "[]"));
+  } catch {
+    return new Set();
   }
 }
 
-async function openProblem(id) {
-  currentId = id;
-  for (const button of els.list.querySelectorAll("button")) {
-    button.classList.toggle("active", button.dataset.id === id);
+function markSolved(id) {
+  const set = solvedSet();
+  set.add(id);
+  localStorage.setItem("solved", JSON.stringify([...set]));
+}
+
+function codeKey(id) {
+  return `code:${studentName() || "_"}:${id}`;
+}
+
+function getCode() {
+  return editor ? editor.getValue() : els.code.value;
+}
+
+function setCode(value) {
+  if (editor) {
+    editor.setValue(value);
+    editor.refresh();
+  } else {
+    els.code.value = value;
   }
+}
+
+function persistCode() {
+  if (!currentId) return;
+  localStorage.setItem(codeKey(currentId), getCode());
+}
+
+function starterFor(problem) {
+  return `# ${problem.title}\n# прочитай ввод и выведи только ответ\n\n`;
+}
+
+function filteredProblems() {
+  return problems.filter((item) => {
+    const topicOk = topicFilter === "все" || item.topic === topicFilter;
+    const levelOk = levelFilter === "все" || item.level === levelFilter;
+    return topicOk && levelOk;
+  });
+}
+
+function renderChips() {
+  const topics = ["все", ...[...new Set(problems.map((item) => item.topic))]];
+  els.topics.innerHTML = topics.map((topic) => `
+    <button type="button" data-topic="${escapeAttr(topic)}" class="${topic === topicFilter ? "active" : ""}">${escapeHtml(topic)}</button>
+  `).join("");
+  els.levels.innerHTML = LEVELS.map((level) => `
+    <button type="button" data-level="${escapeAttr(level)}" class="${level === levelFilter ? "active" : ""}">${escapeHtml(level)}</button>
+  `).join("");
+}
+
+function renderList() {
+  const items = filteredProblems();
+  const solved = solvedSet();
+  els.count.textContent = `${items.length} из ${problems.length}`;
+  els.list.innerHTML = "";
+  for (const item of items) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.id = item.id;
+    button.className = item.id === currentId ? "active" : "";
+    button.innerHTML = `
+      <span class="task-title">${solved.has(item.id) ? "<i>✓</i>" : ""}${escapeHtml(item.title)}</span>
+      <small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}</small>
+    `;
+    button.addEventListener("click", () => openProblem(item.id, true));
+    els.list.appendChild(button);
+  }
+  if (!items.length) {
+    els.list.innerHTML = `<p class="muted">Нет задач в этом фильтре.</p>`;
+  }
+}
+
+async function boot() {
+  els.student.value = localStorage.getItem("student") || "";
+  problems = await (await fetch("/api/problems")).json();
+  renderChips();
+  const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
+  const start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
+  if (start) {
+    await openProblem(start, false);
+  } else {
+    renderList();
+  }
+  setupEditor();
+}
+
+function setupEditor() {
+  if (!window.CodeMirror) {
+    els.code.addEventListener("input", persistCode);
+    return;
+  }
+  editor = window.CodeMirror.fromTextArea(els.code, {
+    mode: "python",
+    theme: "material",
+    lineNumbers: true,
+    indentUnit: 4,
+    tabSize: 4,
+    indentWithTabs: false,
+    lineWrapping: true,
+    extraKeys: {
+      Tab: (cm) => cm.replaceSelection("    "),
+      "Ctrl-Enter": check,
+      "Cmd-Enter": check,
+    },
+  });
+  editor.on("change", persistCode);
+  setTimeout(() => editor.refresh(), 40);
+}
+
+async function openProblem(id, updateHash) {
+  if (currentId && currentId !== id) {
+    persistCode();
+  }
+  currentId = id;
+  if (updateHash) {
+    history.replaceState(null, "", `#${id}`);
+  }
+  renderList();
   const problem = await (await fetch(`/api/problems/${id}`)).json();
-  els.level.textContent = problem.level;
+  els.level.textContent = `${problem.topic} · ${problem.level}`;
   els.title.textContent = problem.title;
   els.statement.textContent = problem.statement;
   els.input.textContent = problem.input_format;
@@ -46,36 +164,42 @@ async function openProblem(id) {
       <div><strong>выход</strong>\n${escapeHtml(example.stdout)}</div>
     </div>
   `).join("");
-  if (!els.code.value.trim() || els.code.dataset.starter === "1") {
-    els.code.value = starterFor(problem);
-    els.code.dataset.starter = "1";
-  }
+  const saved = localStorage.getItem(codeKey(id));
+  setCode(saved && saved.trim() ? saved : starterFor(problem));
   els.result.classList.add("hidden");
-  els.code.classList.remove("syntax-mark");
-}
-
-function starterFor(problem) {
-  return `# ${problem.title}
-# прочитай ввод и выведи только ответ
-
-`;
+  if (editor) {
+    editor.getWrapperElement().classList.remove("syntax-mark");
+  } else {
+    els.code.classList.remove("syntax-mark");
+  }
 }
 
 async function check() {
   if (!currentId) return;
+  persistCode();
   els.run.disabled = true;
-  els.code.classList.remove("syntax-mark");
   try {
     const response = await fetch("/api/check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ problem_id: currentId, code: els.code.value }),
+      body: JSON.stringify({
+        problem_id: currentId,
+        code: getCode(),
+        student: studentName(),
+      }),
     });
     const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.detail || "Ошибка проверки");
+    }
+    if (data.status === "ok") {
+      markSolved(currentId);
+      renderList();
+    }
     renderResult(data);
   } catch (error) {
     els.result.classList.remove("hidden");
-    els.result.innerHTML = `<div class="banner bad">Не удалось связаться с проверяющей системой.</div>`;
+    els.result.innerHTML = `<div class="banner bad">${escapeHtml(error.message || "Не удалось связаться с проверяющей системой.")}</div>`;
   } finally {
     els.run.disabled = false;
   }
@@ -83,6 +207,9 @@ async function check() {
 
 function renderResult(data) {
   els.result.classList.remove("hidden");
+  const wrap = editor ? editor.getWrapperElement() : els.code;
+  wrap.classList.toggle("syntax-mark", data.status === "syntax");
+
   if (data.status === "ok") {
     els.result.innerHTML = `
       <div class="banner ok">${escapeHtml(data.message)}</div>
@@ -93,7 +220,6 @@ function renderResult(data) {
   }
 
   if (data.status === "syntax" && data.syntax) {
-    els.code.classList.add("syntax-mark");
     const line = data.syntax.line ? `, строка ${data.syntax.line}` : "";
     els.result.innerHTML = `
       <div class="banner warn">${escapeHtml(data.message)}</div>
@@ -103,6 +229,10 @@ function renderResult(data) {
       </div>
       ${data.syntax.snippet ? `<pre class="snippet">${escapeHtml(data.syntax.snippet)}</pre>` : ""}
     `;
+    if (editor && data.syntax.line) {
+      editor.setCursor({ line: data.syntax.line - 1, ch: Math.max(0, (data.syntax.column || 1) - 1) });
+      editor.focus();
+    }
     els.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
     return;
   }
@@ -166,8 +296,28 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;");
 }
 
-els.code.addEventListener("input", () => {
-  els.code.dataset.starter = "0";
+function escapeAttr(value) {
+  return escapeHtml(value);
+}
+
+els.topics.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-topic]");
+  if (!button) return;
+  topicFilter = button.dataset.topic;
+  renderChips();
+  renderList();
+});
+
+els.levels.addEventListener("click", (event) => {
+  const button = event.target.closest("button[data-level]");
+  if (!button) return;
+  levelFilter = button.dataset.level;
+  renderChips();
+  renderList();
+});
+
+els.student.addEventListener("change", () => {
+  localStorage.setItem("student", studentName());
 });
 
 els.code.addEventListener("keydown", (event) => {
@@ -181,6 +331,13 @@ els.code.addEventListener("keydown", (event) => {
   if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
     event.preventDefault();
     check();
+  }
+});
+
+window.addEventListener("hashchange", () => {
+  const id = decodeURIComponent((location.hash || "").replace(/^#/, ""));
+  if (id && id !== currentId && problems.some((item) => item.id === id)) {
+    openProblem(id, false);
   }
 });
 
