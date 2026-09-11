@@ -9,6 +9,7 @@ from checker.facts import (
     extract_outcome,
     parse_div_filters,
 )
+from checker.flips import extra_findings
 from checker.models import Hint, Problem, TestResult
 
 
@@ -26,6 +27,8 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
         findings.extend(_ege_range(facts, problem, outcome))
     elif "ege17" in problem.tags:
         findings.extend(_ege_file(facts, problem, outcome))
+
+    findings.extend(extra_findings(facts, problem, outcome))
 
     if outcome.first.verdict == "WA" and not any(weight >= 80 for weight, _ in findings):
         findings.append(

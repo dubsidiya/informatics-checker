@@ -191,6 +191,7 @@ def parse_div_filters(statement: str) -> tuple[list[int], list[int]]:
     rest = re.sub(r"не\s+дел(?:ится|ятся)\s+на\s+[\d,\sи]+", " ", statement)
     must = _numbers_after(r"дел(?:ится|ятся|ящихся|иться)\s+на\s+([\d,\sи]+)", rest)
     must += _numbers_after(r"кратн[а-яё]*\s+(\d+)", statement)
+    must += [int(x) for x in re.findall(r"или\s+на\s+(\d+)", rest)]
     return _unique_keep(must), _unique_keep(must_not)
 
 
