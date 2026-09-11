@@ -27,7 +27,8 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
             syntax=syntax,
         )
 
-    blocked = find_forbidden(source)
+    allow_open = bool(problem.files) or any(case.file for case in problem.tests)
+    blocked = find_forbidden(source, allow_open=allow_open)
     if blocked:
         return GradeResult(
             status="syntax",
@@ -37,7 +38,7 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
             syntax=blocked,
         )
 
-    tests = [_run_test(source, index, case) for index, case in enumerate(problem.tests)]
+    tests = [_run_test(source, index, case, problem) for index, case in enumerate(problem.tests)]
     passed = sum(1 for item in tests if item.verdict == "OK")
     first_fail = next((item for item in tests if item.verdict != "OK"), None)
 
@@ -53,7 +54,10 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
     hints = build_hints(source, problem, tests)
     trace = []
     if first_fail.verdict in {"WA", "RE"}:
-        trace = to_trace_steps(run_trace(source, first_fail.stdin))
+        fail_case = problem.tests[first_fail.index]
+        fail_files = problem.files_for(fail_case)
+        if not fail_files:
+            trace = to_trace_steps(run_trace(source, first_fail.stdin))
 
     if first_fail.verdict == "RE":
         message = f"Программа упала на тесте {first_fail.index + 1}."
@@ -74,14 +78,17 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
     )
 
 
-def _run_test(source: str, index: int, case) -> TestResult:
-    result = run_student(source, case.stdin)
+def _run_test(source: str, index: int, case, problem: Problem) -> TestResult:
+    files = problem.files_for(case)
+    timeout = 4.0 if files else 1.5
+    shown_in = f"[файл {files[0].rsplit('/', 1)[-1]}]" if files else case.stdin
+    result = run_student(source, case.stdin, timeout=timeout, files=files)
     if result.timed_out:
         return TestResult(
             index=index,
             hidden=case.hidden,
             verdict="TLE",
-            stdin=case.stdin,
+            stdin=shown_in,
             expected=case.stdout,
             got=result.stdout,
             error=result.error_message,
@@ -92,7 +99,7 @@ def _run_test(source: str, index: int, case) -> TestResult:
             index=index,
             hidden=case.hidden,
             verdict="RE",
-            stdin=case.stdin,
+            stdin=shown_in,
             expected=case.stdout,
             got=result.stdout,
             error=result.error_message or result.stderr.strip(),
@@ -104,7 +111,7 @@ def _run_test(source: str, index: int, case) -> TestResult:
         index=index,
         hidden=case.hidden,
         verdict=verdict,
-        stdin=case.stdin,
+        stdin=shown_in,
         expected=case.stdout,
         got=result.stdout,
     )

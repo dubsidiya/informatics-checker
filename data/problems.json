@@ -4,20 +4,49 @@
     "title": "Сумма двух чисел",
     "level": "старт",
     "topic": "ввод-вывод",
-    "tags": ["integers_from_input", "single_int_out"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
     "statement": "Напиши программу, которая читает два целых числа и выводит их сумму.",
     "input_format": "В одной строке два целых числа через пробел.",
     "output_format": "Одно целое число — сумма.",
     "examples": [
-      {"stdin": "2 3", "stdout": "5"},
-      {"stdin": "-4 10", "stdout": "6"}
+      {
+        "stdin": "2 3",
+        "stdout": "5"
+      },
+      {
+        "stdin": "-4 10",
+        "stdout": "6"
+      }
     ],
     "tests": [
-      {"stdin": "2 3", "stdout": "5", "hidden": false},
-      {"stdin": "-4 10", "stdout": "6", "hidden": false},
-      {"stdin": "0 0", "stdout": "0", "hidden": true},
-      {"stdin": "100 250", "stdout": "350", "hidden": true},
-      {"stdin": "-7 -8", "stdout": "-15", "hidden": true}
+      {
+        "stdin": "2 3",
+        "stdout": "5",
+        "hidden": false
+      },
+      {
+        "stdin": "-4 10",
+        "stdout": "6",
+        "hidden": false
+      },
+      {
+        "stdin": "0 0",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "100 250",
+        "stdout": "350",
+        "hidden": true
+      },
+      {
+        "stdin": "-7 -8",
+        "stdout": "-15",
+        "hidden": true
+      }
     ]
   },
   {
@@ -25,19 +54,46 @@
     "title": "Сумма чисел от 1 до N",
     "level": "старт",
     "topic": "циклы",
-    "tags": ["integers_from_input", "single_int_out", "inclusive_n", "print_once"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "inclusive_n",
+      "print_once"
+    ],
     "statement": "Дано натуральное число N. Найди сумму всех целых чисел от 1 до N включительно.",
     "input_format": "Одно натуральное число N.",
     "output_format": "Одно целое число — сумма 1 + 2 + … + N.",
     "examples": [
-      {"stdin": "5", "stdout": "15"},
-      {"stdin": "1", "stdout": "1"}
+      {
+        "stdin": "5",
+        "stdout": "15"
+      },
+      {
+        "stdin": "1",
+        "stdout": "1"
+      }
     ],
     "tests": [
-      {"stdin": "5", "stdout": "15", "hidden": false},
-      {"stdin": "1", "stdout": "1", "hidden": false},
-      {"stdin": "10", "stdout": "55", "hidden": true},
-      {"stdin": "100", "stdout": "5050", "hidden": true}
+      {
+        "stdin": "5",
+        "stdout": "15",
+        "hidden": false
+      },
+      {
+        "stdin": "1",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "10",
+        "stdout": "55",
+        "hidden": true
+      },
+      {
+        "stdin": "100",
+        "stdout": "5050",
+        "hidden": true
+      }
     ]
   },
   {
@@ -45,19 +101,44 @@
     "title": "Максимум из трёх",
     "level": "старт",
     "topic": "условия",
-    "tags": ["integers_from_input", "single_int_out"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
     "statement": "Даны три целых числа. Выведи наибольшее из них.",
     "input_format": "Три целых числа в одной строке через пробел.",
     "output_format": "Одно целое число — максимум.",
     "examples": [
-      {"stdin": "3 9 4", "stdout": "9"},
-      {"stdin": "-5 -1 -9", "stdout": "-1"}
+      {
+        "stdin": "3 9 4",
+        "stdout": "9"
+      },
+      {
+        "stdin": "-5 -1 -9",
+        "stdout": "-1"
+      }
     ],
     "tests": [
-      {"stdin": "3 9 4", "stdout": "9", "hidden": false},
-      {"stdin": "-5 -1 -9", "stdout": "-1", "hidden": false},
-      {"stdin": "7 7 7", "stdout": "7", "hidden": true},
-      {"stdin": "0 -3 2", "stdout": "2", "hidden": true}
+      {
+        "stdin": "3 9 4",
+        "stdout": "9",
+        "hidden": false
+      },
+      {
+        "stdin": "-5 -1 -9",
+        "stdout": "-1",
+        "hidden": false
+      },
+      {
+        "stdin": "7 7 7",
+        "stdout": "7",
+        "hidden": true
+      },
+      {
+        "stdin": "0 -3 2",
+        "stdout": "2",
+        "hidden": true
+      }
     ]
   },
   {
@@ -65,19 +146,44 @@
     "title": "Чётное или нечётное",
     "level": "старт",
     "topic": "условия",
-    "tags": ["integers_from_input", "even_odd"],
+    "tags": [
+      "integers_from_input",
+      "even_odd"
+    ],
     "statement": "Дано целое число. Если оно чётное, выведи EVEN, иначе ODD.",
     "input_format": "Одно целое число.",
     "output_format": "Слово EVEN или ODD заглавными буквами.",
     "examples": [
-      {"stdin": "4", "stdout": "EVEN"},
-      {"stdin": "7", "stdout": "ODD"}
+      {
+        "stdin": "4",
+        "stdout": "EVEN"
+      },
+      {
+        "stdin": "7",
+        "stdout": "ODD"
+      }
     ],
     "tests": [
-      {"stdin": "4", "stdout": "EVEN", "hidden": false},
-      {"stdin": "7", "stdout": "ODD", "hidden": false},
-      {"stdin": "0", "stdout": "EVEN", "hidden": true},
-      {"stdin": "-3", "stdout": "ODD", "hidden": true}
+      {
+        "stdin": "4",
+        "stdout": "EVEN",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "ODD",
+        "hidden": false
+      },
+      {
+        "stdin": "0",
+        "stdout": "EVEN",
+        "hidden": true
+      },
+      {
+        "stdin": "-3",
+        "stdout": "ODD",
+        "hidden": true
+      }
     ]
   },
   {
@@ -85,19 +191,46 @@
     "title": "Последняя цифра",
     "level": "старт",
     "topic": "числа",
-    "tags": ["integers_from_input", "single_int_out", "last_digit", "digits"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "last_digit",
+      "digits"
+    ],
     "statement": "Дано неотрицательное целое число. Выведи его последнюю цифру.",
     "input_format": "Одно целое число.",
     "output_format": "Одна цифра от 0 до 9.",
     "examples": [
-      {"stdin": "123", "stdout": "3"},
-      {"stdin": "10", "stdout": "0"}
+      {
+        "stdin": "123",
+        "stdout": "3"
+      },
+      {
+        "stdin": "10",
+        "stdout": "0"
+      }
     ],
     "tests": [
-      {"stdin": "123", "stdout": "3", "hidden": false},
-      {"stdin": "10", "stdout": "0", "hidden": false},
-      {"stdin": "7", "stdout": "7", "hidden": true},
-      {"stdin": "100500", "stdout": "0", "hidden": true}
+      {
+        "stdin": "123",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "10",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "7",
+        "hidden": true
+      },
+      {
+        "stdin": "100500",
+        "stdout": "0",
+        "hidden": true
+      }
     ]
   },
   {
@@ -105,19 +238,44 @@
     "title": "Модуль разности",
     "level": "старт",
     "topic": "условия",
-    "tags": ["integers_from_input", "single_int_out"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
     "statement": "Даны два целых числа. Выведи модуль их разности: |a − b|.",
     "input_format": "Два целых числа в одной строке.",
     "output_format": "Неотрицательное целое число.",
     "examples": [
-      {"stdin": "5 2", "stdout": "3"},
-      {"stdin": "2 5", "stdout": "3"}
+      {
+        "stdin": "5 2",
+        "stdout": "3"
+      },
+      {
+        "stdin": "2 5",
+        "stdout": "3"
+      }
     ],
     "tests": [
-      {"stdin": "5 2", "stdout": "3", "hidden": false},
-      {"stdin": "2 5", "stdout": "3", "hidden": false},
-      {"stdin": "-4 10", "stdout": "14", "hidden": true},
-      {"stdin": "0 0", "stdout": "0", "hidden": true}
+      {
+        "stdin": "5 2",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "2 5",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "-4 10",
+        "stdout": "14",
+        "hidden": true
+      },
+      {
+        "stdin": "0 0",
+        "stdout": "0",
+        "hidden": true
+      }
     ]
   },
   {
@@ -125,21 +283,54 @@
     "title": "Оценка по баллам",
     "level": "старт",
     "topic": "условия",
-    "tags": ["integers_from_input", "single_int_out"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
     "statement": "Дано число баллов от 0 до 100. Выведи оценку: меньше 50 — 2, от 50 до 69 — 3, от 70 до 89 — 4, от 90 до 100 — 5.",
     "input_format": "Одно целое число — баллы.",
     "output_format": "Одно число: 2, 3, 4 или 5.",
     "examples": [
-      {"stdin": "95", "stdout": "5"},
-      {"stdin": "70", "stdout": "4"}
+      {
+        "stdin": "95",
+        "stdout": "5"
+      },
+      {
+        "stdin": "70",
+        "stdout": "4"
+      }
     ],
     "tests": [
-      {"stdin": "95", "stdout": "5", "hidden": false},
-      {"stdin": "70", "stdout": "4", "hidden": false},
-      {"stdin": "49", "stdout": "2", "hidden": true},
-      {"stdin": "50", "stdout": "3", "hidden": true},
-      {"stdin": "89", "stdout": "4", "hidden": true},
-      {"stdin": "100", "stdout": "5", "hidden": true}
+      {
+        "stdin": "95",
+        "stdout": "5",
+        "hidden": false
+      },
+      {
+        "stdin": "70",
+        "stdout": "4",
+        "hidden": false
+      },
+      {
+        "stdin": "49",
+        "stdout": "2",
+        "hidden": true
+      },
+      {
+        "stdin": "50",
+        "stdout": "3",
+        "hidden": true
+      },
+      {
+        "stdin": "89",
+        "stdout": "4",
+        "hidden": true
+      },
+      {
+        "stdin": "100",
+        "stdout": "5",
+        "hidden": true
+      }
     ]
   },
   {
@@ -147,19 +338,43 @@
     "title": "Повтори строку",
     "level": "старт",
     "topic": "строки",
-    "tags": ["two_line_input"],
+    "tags": [
+      "two_line_input"
+    ],
     "statement": "Дана строка S и целое число K. Выведи строку S, повторённую ровно K раз, без пробелов и переносов между копиями.",
     "input_format": "В первой строке S. Во второй строке целое число K (K ≥ 0).",
     "output_format": "Одна строка — S, повторённая K раз. Если K = 0, выведи пустую строку.",
     "examples": [
-      {"stdin": "hi\n3", "stdout": "hihihi"},
-      {"stdin": "a\n1", "stdout": "a"}
+      {
+        "stdin": "hi\n3",
+        "stdout": "hihihi"
+      },
+      {
+        "stdin": "a\n1",
+        "stdout": "a"
+      }
     ],
     "tests": [
-      {"stdin": "hi\n3", "stdout": "hihihi", "hidden": false},
-      {"stdin": "a\n1", "stdout": "a", "hidden": false},
-      {"stdin": "xyz\n0", "stdout": "", "hidden": true},
-      {"stdin": "привет\n2", "stdout": "приветпривет", "hidden": true}
+      {
+        "stdin": "hi\n3",
+        "stdout": "hihihi",
+        "hidden": false
+      },
+      {
+        "stdin": "a\n1",
+        "stdout": "a",
+        "hidden": false
+      },
+      {
+        "stdin": "xyz\n0",
+        "stdout": "",
+        "hidden": true
+      },
+      {
+        "stdin": "привет\n2",
+        "stdout": "приветпривет",
+        "hidden": true
+      }
     ]
   },
   {
@@ -167,19 +382,46 @@
     "title": "Минимум в списке",
     "level": "старт",
     "topic": "списки",
-    "tags": ["integers_from_input", "single_int_out", "sequence", "two_line_input"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "sequence",
+      "two_line_input"
+    ],
     "statement": "Сначала дано число N. Затем N целых чисел. Найди наименьшее из них.",
     "input_format": "В первой строке N. Во второй строке N целых чисел через пробел.",
     "output_format": "Одно целое число — минимум.",
     "examples": [
-      {"stdin": "5\n3 9 1 4 2", "stdout": "1"},
-      {"stdin": "1\n-7", "stdout": "-7"}
+      {
+        "stdin": "5\n3 9 1 4 2",
+        "stdout": "1"
+      },
+      {
+        "stdin": "1\n-7",
+        "stdout": "-7"
+      }
     ],
     "tests": [
-      {"stdin": "5\n3 9 1 4 2", "stdout": "1", "hidden": false},
-      {"stdin": "1\n-7", "stdout": "-7", "hidden": false},
-      {"stdin": "4\n0 0 0 5", "stdout": "0", "hidden": true},
-      {"stdin": "3\n10 -1 10", "stdout": "-1", "hidden": true}
+      {
+        "stdin": "5\n3 9 1 4 2",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1\n-7",
+        "stdout": "-7",
+        "hidden": false
+      },
+      {
+        "stdin": "4\n0 0 0 5",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "3\n10 -1 10",
+        "stdout": "-1",
+        "hidden": true
+      }
     ]
   },
   {
@@ -187,20 +429,49 @@
     "title": "Степень двойки",
     "level": "старт",
     "topic": "числа",
-    "tags": ["integers_from_input", "power_of_two"],
+    "tags": [
+      "integers_from_input",
+      "power_of_two"
+    ],
     "statement": "Дано целое число N. Выведи YES, если N — степень двойки (1, 2, 4, 8, …), иначе NO. Ноль степенью двойки не считается.",
     "input_format": "Одно целое число N.",
     "output_format": "YES или NO заглавными буквами.",
     "examples": [
-      {"stdin": "8", "stdout": "YES"},
-      {"stdin": "7", "stdout": "NO"}
+      {
+        "stdin": "8",
+        "stdout": "YES"
+      },
+      {
+        "stdin": "7",
+        "stdout": "NO"
+      }
     ],
     "tests": [
-      {"stdin": "8", "stdout": "YES", "hidden": false},
-      {"stdin": "7", "stdout": "NO", "hidden": false},
-      {"stdin": "1", "stdout": "YES", "hidden": true},
-      {"stdin": "0", "stdout": "NO", "hidden": true},
-      {"stdin": "16", "stdout": "YES", "hidden": true}
+      {
+        "stdin": "8",
+        "stdout": "YES",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "NO",
+        "hidden": false
+      },
+      {
+        "stdin": "1",
+        "stdout": "YES",
+        "hidden": true
+      },
+      {
+        "stdin": "0",
+        "stdout": "NO",
+        "hidden": true
+      },
+      {
+        "stdin": "16",
+        "stdout": "YES",
+        "hidden": true
+      }
     ]
   },
   {
@@ -208,19 +479,48 @@
     "title": "Сколько чётных",
     "level": "средне",
     "topic": "списки",
-    "tags": ["integers_from_input", "single_int_out", "sequence", "two_line_input", "even_odd", "print_once"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "sequence",
+      "two_line_input",
+      "even_odd",
+      "print_once"
+    ],
     "statement": "Сначала дано число N — сколько чисел дальше. Затем идёт N целых чисел. Посчитай, сколько среди них чётных.",
     "input_format": "В первой строке число N. Во второй строке N целых чисел через пробел.",
     "output_format": "Одно целое число — количество чётных.",
     "examples": [
-      {"stdin": "5\n1 2 3 4 5", "stdout": "2"},
-      {"stdin": "3\n2 4 8", "stdout": "3"}
+      {
+        "stdin": "5\n1 2 3 4 5",
+        "stdout": "2"
+      },
+      {
+        "stdin": "3\n2 4 8",
+        "stdout": "3"
+      }
     ],
     "tests": [
-      {"stdin": "5\n1 2 3 4 5", "stdout": "2", "hidden": false},
-      {"stdin": "3\n2 4 8", "stdout": "3", "hidden": false},
-      {"stdin": "4\n1 3 5 7", "stdout": "0", "hidden": true},
-      {"stdin": "1\n0", "stdout": "1", "hidden": true}
+      {
+        "stdin": "5\n1 2 3 4 5",
+        "stdout": "2",
+        "hidden": false
+      },
+      {
+        "stdin": "3\n2 4 8",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "4\n1 3 5 7",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "1\n0",
+        "stdout": "1",
+        "hidden": true
+      }
     ]
   },
   {
@@ -228,20 +528,50 @@
     "title": "Сумма цифр",
     "level": "средне",
     "topic": "числа",
-    "tags": ["integers_from_input", "single_int_out", "digits"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "digits"
+    ],
     "statement": "Дано неотрицательное целое число. Найди сумму его цифр.",
     "input_format": "Одно целое число (может быть 0).",
     "output_format": "Одно целое число — сумма цифр.",
     "examples": [
-      {"stdin": "123", "stdout": "6"},
-      {"stdin": "10", "stdout": "1"}
+      {
+        "stdin": "123",
+        "stdout": "6"
+      },
+      {
+        "stdin": "10",
+        "stdout": "1"
+      }
     ],
     "tests": [
-      {"stdin": "123", "stdout": "6", "hidden": false},
-      {"stdin": "10", "stdout": "1", "hidden": false},
-      {"stdin": "0", "stdout": "0", "hidden": true},
-      {"stdin": "100500", "stdout": "6", "hidden": true},
-      {"stdin": "999", "stdout": "27", "hidden": true}
+      {
+        "stdin": "123",
+        "stdout": "6",
+        "hidden": false
+      },
+      {
+        "stdin": "10",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "100500",
+        "stdout": "6",
+        "hidden": true
+      },
+      {
+        "stdin": "999",
+        "stdout": "27",
+        "hidden": true
+      }
     ]
   },
   {
@@ -249,19 +579,45 @@
     "title": "Есть ли число",
     "level": "средне",
     "topic": "поиск",
-    "tags": ["integers_from_input", "sequence", "two_line_input"],
+    "tags": [
+      "integers_from_input",
+      "sequence",
+      "two_line_input"
+    ],
     "statement": "В первой строке число N и число X. Во второй строке N целых чисел. Если X есть в списке — выведи YES, иначе NO.",
     "input_format": "Первая строка: N и X. Вторая строка: N чисел через пробел.",
     "output_format": "Слово YES или NO заглавными буквами.",
     "examples": [
-      {"stdin": "5 3\n1 2 3 4 5", "stdout": "YES"},
-      {"stdin": "4 7\n1 2 3 4", "stdout": "NO"}
+      {
+        "stdin": "5 3\n1 2 3 4 5",
+        "stdout": "YES"
+      },
+      {
+        "stdin": "4 7\n1 2 3 4",
+        "stdout": "NO"
+      }
     ],
     "tests": [
-      {"stdin": "5 3\n1 2 3 4 5", "stdout": "YES", "hidden": false},
-      {"stdin": "4 7\n1 2 3 4", "stdout": "NO", "hidden": false},
-      {"stdin": "1 9\n9", "stdout": "YES", "hidden": true},
-      {"stdin": "3 0\n1 2 3", "stdout": "NO", "hidden": true}
+      {
+        "stdin": "5 3\n1 2 3 4 5",
+        "stdout": "YES",
+        "hidden": false
+      },
+      {
+        "stdin": "4 7\n1 2 3 4",
+        "stdout": "NO",
+        "hidden": false
+      },
+      {
+        "stdin": "1 9\n9",
+        "stdout": "YES",
+        "hidden": true
+      },
+      {
+        "stdin": "3 0\n1 2 3",
+        "stdout": "NO",
+        "hidden": true
+      }
     ]
   },
   {
@@ -269,20 +625,51 @@
     "title": "Факториал",
     "level": "средне",
     "topic": "циклы",
-    "tags": ["integers_from_input", "single_int_out", "factorial", "print_once"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "factorial",
+      "print_once"
+    ],
     "statement": "Дано целое число N (0 ≤ N ≤ 12). Выведи N! — произведение всех чисел от 1 до N. Считай, что 0! = 1.",
     "input_format": "Одно целое число N.",
     "output_format": "Одно целое число — факториал.",
     "examples": [
-      {"stdin": "5", "stdout": "120"},
-      {"stdin": "0", "stdout": "1"}
+      {
+        "stdin": "5",
+        "stdout": "120"
+      },
+      {
+        "stdin": "0",
+        "stdout": "1"
+      }
     ],
     "tests": [
-      {"stdin": "5", "stdout": "120", "hidden": false},
-      {"stdin": "0", "stdout": "1", "hidden": false},
-      {"stdin": "1", "stdout": "1", "hidden": true},
-      {"stdin": "7", "stdout": "5040", "hidden": true},
-      {"stdin": "10", "stdout": "3628800", "hidden": true}
+      {
+        "stdin": "5",
+        "stdout": "120",
+        "hidden": false
+      },
+      {
+        "stdin": "0",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "7",
+        "stdout": "5040",
+        "hidden": true
+      },
+      {
+        "stdin": "10",
+        "stdout": "3628800",
+        "hidden": true
+      }
     ]
   },
   {
@@ -290,20 +677,50 @@
     "title": "Переверни число",
     "level": "средне",
     "topic": "числа",
-    "tags": ["integers_from_input", "single_int_out", "digits"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "digits"
+    ],
     "statement": "Дано неотрицательное целое число. Переверни порядок его цифр и выведи получившееся число. Ведущие нули отбрасываются: 120 → 21.",
     "input_format": "Одно целое число.",
     "output_format": "Одно целое число.",
     "examples": [
-      {"stdin": "123", "stdout": "321"},
-      {"stdin": "120", "stdout": "21"}
+      {
+        "stdin": "123",
+        "stdout": "321"
+      },
+      {
+        "stdin": "120",
+        "stdout": "21"
+      }
     ],
     "tests": [
-      {"stdin": "123", "stdout": "321", "hidden": false},
-      {"stdin": "120", "stdout": "21", "hidden": false},
-      {"stdin": "7", "stdout": "7", "hidden": true},
-      {"stdin": "1000", "stdout": "1", "hidden": true},
-      {"stdin": "4050", "stdout": "504", "hidden": true}
+      {
+        "stdin": "123",
+        "stdout": "321",
+        "hidden": false
+      },
+      {
+        "stdin": "120",
+        "stdout": "21",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "7",
+        "hidden": true
+      },
+      {
+        "stdin": "1000",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "4050",
+        "stdout": "504",
+        "hidden": true
+      }
     ]
   },
   {
@@ -311,20 +728,49 @@
     "title": "Сколько гласных",
     "level": "средне",
     "topic": "строки",
-    "tags": ["vowels", "print_once"],
+    "tags": [
+      "vowels",
+      "print_once"
+    ],
     "statement": "Дана строка. Посчитай, сколько в ней русских гласных: а, е, ё, и, о, у, ы, э, ю, я. Заглавные тоже считай. Латинские буквы и остальные символы не считаются.",
     "input_format": "Одна строка.",
     "output_format": "Одно целое число.",
     "examples": [
-      {"stdin": "привет", "stdout": "2"},
-      {"stdin": "ааа", "stdout": "3"}
+      {
+        "stdin": "привет",
+        "stdout": "2"
+      },
+      {
+        "stdin": "ааа",
+        "stdout": "3"
+      }
     ],
     "tests": [
-      {"stdin": "привет", "stdout": "2", "hidden": false},
-      {"stdin": "ааа", "stdout": "3", "hidden": false},
-      {"stdin": "ббб", "stdout": "0", "hidden": true},
-      {"stdin": "Ёлка", "stdout": "2", "hidden": true},
-      {"stdin": "ритм", "stdout": "1", "hidden": true}
+      {
+        "stdin": "привет",
+        "stdout": "2",
+        "hidden": false
+      },
+      {
+        "stdin": "ааа",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "ббб",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "Ёлка",
+        "stdout": "2",
+        "hidden": true
+      },
+      {
+        "stdin": "ритм",
+        "stdout": "1",
+        "hidden": true
+      }
     ]
   },
   {
@@ -332,20 +778,48 @@
     "title": "Палиндром",
     "level": "средне",
     "topic": "строки",
-    "tags": ["palindrome"],
+    "tags": [
+      "palindrome"
+    ],
     "statement": "Дана строка без пробелов. Выведи YES, если она читается одинаково слева направо и справа налево, иначе NO. Регистр не важен: Abba — это палиндром.",
     "input_format": "Одна строка без пробелов.",
     "output_format": "YES или NO заглавными буквами.",
     "examples": [
-      {"stdin": "aba", "stdout": "YES"},
-      {"stdin": "hello", "stdout": "NO"}
+      {
+        "stdin": "aba",
+        "stdout": "YES"
+      },
+      {
+        "stdin": "hello",
+        "stdout": "NO"
+      }
     ],
     "tests": [
-      {"stdin": "aba", "stdout": "YES", "hidden": false},
-      {"stdin": "hello", "stdout": "NO", "hidden": false},
-      {"stdin": "Abba", "stdout": "YES", "hidden": true},
-      {"stdin": "аа", "stdout": "YES", "hidden": true},
-      {"stdin": "аб", "stdout": "NO", "hidden": true}
+      {
+        "stdin": "aba",
+        "stdout": "YES",
+        "hidden": false
+      },
+      {
+        "stdin": "hello",
+        "stdout": "NO",
+        "hidden": false
+      },
+      {
+        "stdin": "Abba",
+        "stdout": "YES",
+        "hidden": true
+      },
+      {
+        "stdin": "аа",
+        "stdout": "YES",
+        "hidden": true
+      },
+      {
+        "stdin": "аб",
+        "stdout": "NO",
+        "hidden": true
+      }
     ]
   },
   {
@@ -353,19 +827,46 @@
     "title": "Сколько кратных 3 или 5",
     "level": "средне",
     "topic": "циклы",
-    "tags": ["integers_from_input", "single_int_out", "inclusive_n", "print_once"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "inclusive_n",
+      "print_once"
+    ],
     "statement": "Дано натуральное число N. Сколько чисел от 1 до N включительно делятся на 3 или на 5?",
     "input_format": "Одно натуральное число N.",
     "output_format": "Одно целое число — количество.",
     "examples": [
-      {"stdin": "10", "stdout": "5"},
-      {"stdin": "1", "stdout": "0"}
+      {
+        "stdin": "10",
+        "stdout": "5"
+      },
+      {
+        "stdin": "1",
+        "stdout": "0"
+      }
     ],
     "tests": [
-      {"stdin": "10", "stdout": "5", "hidden": false},
-      {"stdin": "1", "stdout": "0", "hidden": false},
-      {"stdin": "15", "stdout": "7", "hidden": true},
-      {"stdin": "3", "stdout": "1", "hidden": true}
+      {
+        "stdin": "10",
+        "stdout": "5",
+        "hidden": false
+      },
+      {
+        "stdin": "1",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "15",
+        "stdout": "7",
+        "hidden": true
+      },
+      {
+        "stdin": "3",
+        "stdout": "1",
+        "hidden": true
+      }
     ]
   },
   {
@@ -373,19 +874,45 @@
     "title": "НОД двух чисел",
     "level": "средне",
     "topic": "числа",
-    "tags": ["integers_from_input", "single_int_out", "gcd"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "gcd"
+    ],
     "statement": "Даны два неотрицательных целых числа. Найди их наибольший общий делитель. НОД(0, a) = a, если a > 0.",
     "input_format": "Два целых числа в одной строке.",
     "output_format": "Одно целое число — НОД.",
     "examples": [
-      {"stdin": "12 18", "stdout": "6"},
-      {"stdin": "7 13", "stdout": "1"}
+      {
+        "stdin": "12 18",
+        "stdout": "6"
+      },
+      {
+        "stdin": "7 13",
+        "stdout": "1"
+      }
     ],
     "tests": [
-      {"stdin": "12 18", "stdout": "6", "hidden": false},
-      {"stdin": "7 13", "stdout": "1", "hidden": false},
-      {"stdin": "0 5", "stdout": "5", "hidden": true},
-      {"stdin": "100 25", "stdout": "25", "hidden": true}
+      {
+        "stdin": "12 18",
+        "stdout": "6",
+        "hidden": false
+      },
+      {
+        "stdin": "7 13",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "0 5",
+        "stdout": "5",
+        "hidden": true
+      },
+      {
+        "stdin": "100 25",
+        "stdout": "25",
+        "hidden": true
+      }
     ]
   },
   {
@@ -393,20 +920,49 @@
     "title": "В двоичную систему",
     "level": "средне",
     "topic": "числа",
-    "tags": ["integers_from_input", "binary"],
+    "tags": [
+      "integers_from_input",
+      "binary"
+    ],
     "statement": "Дано неотрицательное целое число N. Выведи его запись в двоичной системе без префикса 0b. Для нуля выведи 0.",
     "input_format": "Одно целое число N.",
     "output_format": "Строка из цифр 0 и 1.",
     "examples": [
-      {"stdin": "5", "stdout": "101"},
-      {"stdin": "8", "stdout": "1000"}
+      {
+        "stdin": "5",
+        "stdout": "101"
+      },
+      {
+        "stdin": "8",
+        "stdout": "1000"
+      }
     ],
     "tests": [
-      {"stdin": "5", "stdout": "101", "hidden": false},
-      {"stdin": "8", "stdout": "1000", "hidden": false},
-      {"stdin": "1", "stdout": "1", "hidden": true},
-      {"stdin": "0", "stdout": "0", "hidden": true},
-      {"stdin": "13", "stdout": "1101", "hidden": true}
+      {
+        "stdin": "5",
+        "stdout": "101",
+        "hidden": false
+      },
+      {
+        "stdin": "8",
+        "stdout": "1000",
+        "hidden": false
+      },
+      {
+        "stdin": "1",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "13",
+        "stdout": "1101",
+        "hidden": true
+      }
     ]
   },
   {
@@ -414,19 +970,46 @@
     "title": "Сколько различных",
     "level": "средне",
     "topic": "списки",
-    "tags": ["integers_from_input", "single_int_out", "sequence", "two_line_input"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "sequence",
+      "two_line_input"
+    ],
     "statement": "Сначала дано N, затем N целых чисел. Сколько среди них различных значений?",
     "input_format": "В первой строке N. Во второй строке N целых чисел.",
     "output_format": "Одно целое число.",
     "examples": [
-      {"stdin": "5\n1 2 2 3 1", "stdout": "3"},
-      {"stdin": "4\n7 7 7 7", "stdout": "1"}
+      {
+        "stdin": "5\n1 2 2 3 1",
+        "stdout": "3"
+      },
+      {
+        "stdin": "4\n7 7 7 7",
+        "stdout": "1"
+      }
     ],
     "tests": [
-      {"stdin": "5\n1 2 2 3 1", "stdout": "3", "hidden": false},
-      {"stdin": "4\n7 7 7 7", "stdout": "1", "hidden": false},
-      {"stdin": "1\n9", "stdout": "1", "hidden": true},
-      {"stdin": "6\n1 2 3 4 5 6", "stdout": "6", "hidden": true}
+      {
+        "stdin": "5\n1 2 2 3 1",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "4\n7 7 7 7",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1\n9",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "6\n1 2 3 4 5 6",
+        "stdout": "6",
+        "hidden": true
+      }
     ]
   },
   {
@@ -434,19 +1017,45 @@
     "title": "Префиксные суммы",
     "level": "средне",
     "topic": "списки",
-    "tags": ["integers_from_input", "sequence", "two_line_input"],
+    "tags": [
+      "integers_from_input",
+      "sequence",
+      "two_line_input"
+    ],
     "statement": "Дано N и затем N целых чисел a1, a2, …, aN. Для каждого k от 1 до N выведи сумму первых k чисел.",
     "input_format": "В первой строке N. Во второй строке N целых чисел.",
     "output_format": "N чисел в одной строке через пробел.",
     "examples": [
-      {"stdin": "4\n1 2 3 4", "stdout": "1 3 6 10"},
-      {"stdin": "1\n5", "stdout": "5"}
+      {
+        "stdin": "4\n1 2 3 4",
+        "stdout": "1 3 6 10"
+      },
+      {
+        "stdin": "1\n5",
+        "stdout": "5"
+      }
     ],
     "tests": [
-      {"stdin": "4\n1 2 3 4", "stdout": "1 3 6 10", "hidden": false},
-      {"stdin": "1\n5", "stdout": "5", "hidden": false},
-      {"stdin": "3\n-1 1 0", "stdout": "-1 0 0", "hidden": true},
-      {"stdin": "2\n10 20", "stdout": "10 30", "hidden": true}
+      {
+        "stdin": "4\n1 2 3 4",
+        "stdout": "1 3 6 10",
+        "hidden": false
+      },
+      {
+        "stdin": "1\n5",
+        "stdout": "5",
+        "hidden": false
+      },
+      {
+        "stdin": "3\n-1 1 0",
+        "stdout": "-1 0 0",
+        "hidden": true
+      },
+      {
+        "stdin": "2\n10 20",
+        "stdout": "10 30",
+        "hidden": true
+      }
     ]
   },
   {
@@ -454,19 +1063,46 @@
     "title": "Второй максимум",
     "level": "сложно",
     "topic": "списки",
-    "tags": ["integers_from_input", "single_int_out", "sequence", "two_line_input"],
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "sequence",
+      "two_line_input"
+    ],
     "statement": "Дано N и N целых чисел. Среди различных значений найди второе по величине. В тестах всегда есть хотя бы два разных числа.",
     "input_format": "В первой строке N (N ≥ 2). Во второй строке N целых чисел.",
     "output_format": "Одно целое число — второй максимум.",
     "examples": [
-      {"stdin": "5\n1 5 3 5 2", "stdout": "3"},
-      {"stdin": "4\n7 7 7 1", "stdout": "1"}
+      {
+        "stdin": "5\n1 5 3 5 2",
+        "stdout": "3"
+      },
+      {
+        "stdin": "4\n7 7 7 1",
+        "stdout": "1"
+      }
     ],
     "tests": [
-      {"stdin": "5\n1 5 3 5 2", "stdout": "3", "hidden": false},
-      {"stdin": "4\n7 7 7 1", "stdout": "1", "hidden": false},
-      {"stdin": "3\n-1 -5 -1", "stdout": "-5", "hidden": true},
-      {"stdin": "2\n10 9", "stdout": "9", "hidden": true}
+      {
+        "stdin": "5\n1 5 3 5 2",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "4\n7 7 7 1",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "3\n-1 -5 -1",
+        "stdout": "-5",
+        "hidden": true
+      },
+      {
+        "stdin": "2\n10 9",
+        "stdout": "9",
+        "hidden": true
+      }
     ]
   },
   {
@@ -474,19 +1110,315 @@
     "title": "Есть ли пара с суммой S",
     "level": "сложно",
     "topic": "поиск",
-    "tags": ["integers_from_input", "sequence", "two_line_input"],
+    "tags": [
+      "integers_from_input",
+      "sequence",
+      "two_line_input"
+    ],
     "statement": "В первой строке числа N и S. Во второй — N целых чисел. Есть ли в списке два элемента (на разных позициях), сумма которых равна S? Если да — YES, иначе NO.",
     "input_format": "Первая строка: N и S. Вторая строка: N чисел.",
     "output_format": "YES или NO заглавными буквами.",
     "examples": [
-      {"stdin": "5 9\n1 2 3 4 5", "stdout": "YES"},
-      {"stdin": "4 20\n1 2 3 4", "stdout": "NO"}
+      {
+        "stdin": "5 9\n1 2 3 4 5",
+        "stdout": "YES"
+      },
+      {
+        "stdin": "4 20\n1 2 3 4",
+        "stdout": "NO"
+      }
     ],
     "tests": [
-      {"stdin": "5 9\n1 2 3 4 5", "stdout": "YES", "hidden": false},
-      {"stdin": "4 20\n1 2 3 4", "stdout": "NO", "hidden": false},
-      {"stdin": "3 6\n3 3 1", "stdout": "YES", "hidden": true},
-      {"stdin": "2 3\n1 2", "stdout": "YES", "hidden": true}
+      {
+        "stdin": "5 9\n1 2 3 4 5",
+        "stdout": "YES",
+        "hidden": false
+      },
+      {
+        "stdin": "4 20\n1 2 3 4",
+        "stdout": "NO",
+        "hidden": false
+      },
+      {
+        "stdin": "3 6\n3 3 1",
+        "stdout": "YES",
+        "hidden": true
+      },
+      {
+        "stdin": "2 3\n1 2",
+        "stdout": "YES",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege17-1",
+    "title": "ЕГЭ 17.1 — отрезок",
+    "level": "старт",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "two_int_out",
+      "ege17",
+      "closed_range"
+    ],
+    "statement": "Рассматривается множество целых чисел, принадлежащих отрезку [1012; 9638], которые делятся на 3 и не делятся на 11, 13, 17 и 19. Найди количество таких чисел и максимальное из них.",
+    "input_format": "Ввода нет. Границы отрезка даны в условии.",
+    "output_format": "Два числа через пробел: количество, затем максимум.",
+    "examples": [
+      {
+        "stdin": "",
+        "stdout": "2151 9630"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "2151 9630",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "id": "ege17-2",
+    "title": "ЕГЭ 17.2 — отрезок",
+    "level": "старт",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "two_int_out",
+      "ege17",
+      "closed_range"
+    ],
+    "statement": "Рассматривается множество целых чисел, принадлежащих отрезку [3201; 12876], которые делятся на 4 и не делятся на 7, 11, 13 и 19. Найди количество таких чисел и максимальное из них.",
+    "input_format": "Ввода нет. Границы отрезка даны в условии.",
+    "output_format": "Два числа через пробел: количество, затем максимум.",
+    "examples": [
+      {
+        "stdin": "",
+        "stdout": "1649 12876"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "1649 12876",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "id": "ege17-243",
+    "title": "ЕГЭ 17.243 — пары и эталон",
+    "level": "средне",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "file_input",
+      "ege17",
+      "pairs",
+      "at_least_one",
+      "two_int_out"
+    ],
+    "files": [
+      "ege17/17-243.txt"
+    ],
+    "statement": "В файле 17-243.txt последовательность целых чисел от 0 до 10000. Определи количество пар, в которых хотя бы один элемент больше, чем наибольшее из всех чисел файла, делящихся на 19. В ответе два числа: количество таких пар и минимальная сумма элементов таких пар. Пара — два идущих подряд элемента.",
+    "input_format": "Файл 17-243.txt уже подключён. Открой его через open('17-243.txt') или open('17.txt').",
+    "output_format": "Два числа через пробел: количество пар, минимальная сумма.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "34 11169",
+        "file": "ege17/17-243.txt",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "id": "ege17-271",
+    "title": "ЕГЭ 17.271 — последние цифры",
+    "level": "средне",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "file_input",
+      "ege17",
+      "pairs",
+      "two_int_out",
+      "last_digit_abs",
+      "both"
+    ],
+    "files": [
+      "ege17/17-271.txt"
+    ],
+    "statement": "В файле 17-271.txt последовательность целых чисел от -10000 до 10000. Сначала найди количество пар, сумма последних цифр которых равна 7. Затем — максимальную сумму элементов таких из этих пар, в которых оба значения меньше среднего арифметического всех элементов файла. Пара — два подряд идущих элемента. Пример из условия: 12 18 2 -15 11 16 → 2 -13.",
+    "input_format": "Файл 17-271.txt уже подключён. На мини-тесте тот же формат, что в примере.",
+    "output_format": "Два числа через пробел: количество пар, затем нужная сумма.",
+    "examples": [
+      {
+        "stdin": "12 18 2 -15 11 16",
+        "stdout": "2 -13"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "2 -13",
+        "file": "ege17/17-271-sample.txt",
+        "hidden": false
+      },
+      {
+        "stdin": "",
+        "stdout": "792 -587",
+        "file": "ege17/17-271.txt",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege17-272",
+    "title": "ЕГЭ 17.272 — среднее положительных",
+    "level": "сложно",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "file_input",
+      "ege17",
+      "pairs",
+      "at_least_one",
+      "two_int_out"
+    ],
+    "files": [
+      "ege17/17-272.txt"
+    ],
+    "statement": "В файле 17-272.txt числа от -10000 до 10000. Подходящая пара: хотя бы один элемент больше среднего арифметического всех положительных элементов последовательности. Выведи количество подходящих пар и максимальную сумму цифр одного элемента в подходящих парах. Пара — два подряд идущих элемента. Пример: 12 18 3 -15 11 16 → 3 9.",
+    "input_format": "Файл 17-272.txt уже подключён.",
+    "output_format": "Два числа через пробел: количество пар, максимальная сумма цифр.",
+    "examples": [
+      {
+        "stdin": "12 18 3 -15 11 16",
+        "stdout": "3 9"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "3 9",
+        "file": "ege17/17-272-sample.txt",
+        "hidden": false
+      },
+      {
+        "stdin": "",
+        "stdout": "4440 35",
+        "file": "ege17/17-272.txt",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege17-274",
+    "title": "ЕГЭ 17.274 — сумма модулей",
+    "level": "средне",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "file_input",
+      "ege17",
+      "pairs",
+      "two_int_out"
+    ],
+    "files": [
+      "ege17/17-274.txt"
+    ],
+    "statement": "В файле 17-274.txt числа от -10000 до 10000. Найди количество пар, для которых сумма модулей элементов больше 17043 и кратна 3, затем минимальную из сумм элементов таких пар. Пара — два подряд идущих элемента.",
+    "input_format": "Файл 17-274.txt уже подключён.",
+    "output_format": "Два числа через пробел: количество пар, минимальная сумма элементов.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "61 -19308",
+        "file": "ege17/17-274.txt",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "id": "ege17-204",
+    "title": "ЕГЭ 17.204 — уникальные тройки",
+    "level": "средне",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "file_input",
+      "ege17",
+      "triples",
+      "two_int_out",
+      "exactly_one"
+    ],
+    "files": [
+      "ege17/17-204.txt"
+    ],
+    "statement": "В файле 17-204.txt числа от -10000 до 10000. Тройка подряд идущих чисел уникальна, если только второе из них — положительное число, оканчивающееся на 9. Определи количество таких троек и максимальную из их сумм.",
+    "input_format": "Файл 17-204.txt уже подключён.",
+    "output_format": "Два числа через пробел: количество троек, максимальная сумма.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "206 23427",
+        "file": "ege17/17-204.txt",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "id": "ege17-205",
+    "title": "ЕГЭ 17.205 — разность кратна 37",
+    "level": "средне",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "file_input",
+      "ege17",
+      "pairs",
+      "two_int_out",
+      "even_and_mod"
+    ],
+    "files": [
+      "ege17/17-205.txt"
+    ],
+    "statement": "В файле 17-205.txt числа от -10000 до 10000. Найди количество пар подряд идущих элементов, в которых разность элементов чётна и кратна 37, затем максимальную из сумм элементов таких пар.",
+    "input_format": "Файл 17-205.txt уже подключён.",
+    "output_format": "Два числа через пробел: количество пар, максимальная сумма.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "69 17534",
+        "file": "ege17/17-205.txt",
+        "hidden": false
+      }
+    ]
+  },
+  {
+    "id": "ege17-257",
+    "title": "ЕГЭ 17.257 — кратные 7 или 13",
+    "level": "сложно",
+    "topic": "ЕГЭ 17",
+    "tags": [
+      "file_input",
+      "ege17",
+      "two_int_out"
+    ],
+    "files": [
+      "ege17/17-257.txt"
+    ],
+    "statement": "В файле 17-257.txt положительные числа до 10000. Найди минимальный кратный 7 и минимальный кратный 13 элемент. Если минимум кратных 7 больше минимума кратных 13 — выведи количество кратных 7 и максимальный из них. Иначе — количество кратных 13 и максимальный из них.",
+    "input_format": "Файл 17-257.txt уже подключён.",
+    "output_format": "Два числа через пробел: количество и максимум выбранной группы.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "92 9815",
+        "file": "ege17/17-257.txt",
+        "hidden": false
+      }
     ]
   }
 ]

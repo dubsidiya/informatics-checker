@@ -241,6 +241,60 @@ def analyze_source(source: str, problem: Problem) -> list[Hint]:
             )
         )
 
+    if "file_input" in problem.tags and not any(_called(node, "open") for node in calls):
+        hints.append(
+            Hint(
+                kind="logic",
+                title="Файл не открывается",
+                detail="Числа №17 лежат в файле. Обычно так: data = [int(x) for x in open('17.txt')]. input() здесь не подставит файл.",
+            )
+        )
+
+    if "pairs" in problem.tags and ("combinations" in source or "permutations" in source):
+        hints.append(
+            Hint(
+                kind="logic",
+                title="Пары должны быть соседними",
+                detail="В №17 пара — это data[i] и data[i+1], а не combinations всех элементов. Иначе пар станет слишком много.",
+            )
+        )
+
+    if "at_least_one" in problem.tags and re.search(r">\s*\w+\s+and\s+\w+\s*>", source):
+        hints.append(
+            Hint(
+                kind="logic",
+                title="Нужно хотя бы одно, не оба",
+                detail="Условие «хотя бы один элемент» — это or, а не and. and отсекает пары, где подходит только одно число.",
+            )
+        )
+
+    if "both" in problem.tags and re.search(r"or\s+\w+\s*<", source):
+        hints.append(
+            Hint(
+                kind="logic",
+                title="Нужны оба элемента",
+                detail="Если в условии «оба меньше среднего», проверяй and, иначе в счётчик попадут лишние пары.",
+            )
+        )
+
+    if "even_and_mod" in problem.tags and "37" in source and "74" not in source:
+        hints.append(
+            Hint(
+                kind="logic",
+                title="Чётно и кратно 37",
+                detail="Число одновременно чётное и кратное 37 делится на 74. Проверка только % 37 пропускает нечётные кратные 37.",
+            )
+        )
+
+    if "last_digit_abs" in problem.tags and "% 10" in source and "abs(" not in source:
+        hints.append(
+            Hint(
+                kind="logic",
+                title="Последняя цифра у отрицательных",
+                detail="В Python (-15) % 10 == 5, но «оканчивается на 5» для отрицательных надёжнее писать abs(x) % 10.",
+            )
+        )
+
     hints.extend(_russian_keyword_hints(tree, source))
     return _unique(hints)
 

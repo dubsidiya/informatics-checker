@@ -21,6 +21,7 @@ def _load_problem(raw: dict) -> Problem:
         tags=list(raw.get("tags", [])),
         examples=[Example(**item) for item in raw.get("examples", [])],
         tests=[TestCase(**item) for item in raw.get("tests", [])],
+        files=list(raw.get("files", [])),
     )
 
 

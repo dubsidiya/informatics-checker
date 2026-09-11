@@ -19,6 +19,7 @@ class TestCase:
     stdin: str
     stdout: str
     hidden: bool = False
+    file: str | None = None
 
 
 @dataclass
@@ -33,6 +34,7 @@ class Problem:
     tests: list[TestCase]
     topic: str = "общее"
     tags: list[str] = field(default_factory=list)
+    files: list[str] = field(default_factory=list)
 
     def public_dict(self) -> dict[str, Any]:
         return {
@@ -45,7 +47,13 @@ class Problem:
             "output_format": self.output_format,
             "tags": self.tags,
             "examples": [asdict(item) for item in self.examples],
+            "files": [{"name": item.rsplit("/", 1)[-1]} for item in self.files],
         }
+
+    def files_for(self, case: TestCase) -> list[str]:
+        if case.file:
+            return [case.file]
+        return list(self.files)
 
 
 @dataclass

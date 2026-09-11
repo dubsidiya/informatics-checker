@@ -62,7 +62,7 @@ BANNED_ATTRS = {
 }
 
 
-def find_forbidden(source: str) -> SyntaxIssue | None:
+def find_forbidden(source: str, allow_open: bool = False) -> SyntaxIssue | None:
     try:
         tree = ast.parse(source)
     except SyntaxError:
@@ -82,11 +82,11 @@ def find_forbidden(source: str) -> SyntaxIssue | None:
                 if root_name in BANNED_MODULES:
                     return _issue(node, f"Нельзя импортировать {node.module}. В школьной задаче этот модуль не нужен.")
         elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-            if node.func.id in BANNED_FUNCS:
+            if node.func.id in BANNED_FUNCS and not (allow_open and node.func.id == "open"):
                 return _issue(node, f"Функция {node.func.id}() на проверяльщике запрещена.")
         elif isinstance(node, ast.Attribute) and node.attr in BANNED_ATTRS:
             return _issue(node, "Такой приём Python здесь нельзя использовать.")
-        elif isinstance(node, ast.Name) and node.id in BANNED_FUNCS:
+        elif isinstance(node, ast.Name) and node.id in BANNED_FUNCS and not (allow_open and node.id == "open"):
             if isinstance(getattr(node, "ctx", None), ast.Load):
                 # allow mentioning in comments only; this is a real name load
                 return _issue(node, f"Имя {node.id} на проверяльщике запрещено.")

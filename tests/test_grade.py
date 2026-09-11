@@ -60,6 +60,88 @@ SOLUTIONS = {
         "    seen.add(x)\n"
         "print('YES' if ok else 'NO')\n"
     ),
+    "ege17-1": (
+        "xs = [x for x in range(1012, 9639) if x % 3 == 0 and all(x % p != 0 for p in (11, 13, 17, 19))]\n"
+        "print(len(xs), max(xs))\n"
+    ),
+    "ege17-2": (
+        "xs = [x for x in range(3201, 12877) if x % 4 == 0 and all(x % p != 0 for p in (7, 11, 13, 19))]\n"
+        "print(len(xs), max(xs))\n"
+    ),
+    "ege17-243": (
+        "data = [int(x) for x in open('17-243.txt')]\n"
+        "ref = max(x for x in data if x % 19 == 0)\n"
+        "count = mi = 0\n"
+        "mi = 10 ** 10\n"
+        "for i in range(1, len(data)):\n"
+        "    a, b = data[i - 1], data[i]\n"
+        "    if a > ref or b > ref:\n"
+        "        count += 1\n"
+        "        mi = min(mi, a + b)\n"
+        "print(count, mi)\n"
+    ),
+    "ege17-271": (
+        "data = [int(x) for x in open('17-271.txt')]\n"
+        "av = sum(data) / len(data)\n"
+        "count, max_s = 0, -10 ** 9\n"
+        "for i in range(len(data) - 1):\n"
+        "    a, b = data[i], data[i + 1]\n"
+        "    if abs(a) % 10 + abs(b) % 10 == 7:\n"
+        "        count += 1\n"
+        "        if a < av and b < av:\n"
+        "            max_s = max(max_s, a + b)\n"
+        "print(count, max_s)\n"
+    ),
+    "ege17-272": (
+        "data = [int(x) for x in open('17-272.txt')]\n"
+        "pos = [x for x in data if x > 0]\n"
+        "av = sum(pos) / len(pos)\n"
+        "count, max_s = 0, -10 ** 9\n"
+        "for i in range(len(data) - 1):\n"
+        "    a, b = data[i], data[i + 1]\n"
+        "    if a > av or b > av:\n"
+        "        count += 1\n"
+        "        max_s = max(max_s, sum(map(int, str(abs(a)))), sum(map(int, str(abs(b)))))\n"
+        "print(count, max_s)\n"
+    ),
+    "ege17-274": (
+        "data = [int(x) for x in open('17-274.txt')]\n"
+        "count, mi = 0, 10 ** 9\n"
+        "for i in range(len(data) - 1):\n"
+        "    a, b = data[i], data[i + 1]\n"
+        "    if abs(a) + abs(b) > 17043 and (abs(a) + abs(b)) % 3 == 0:\n"
+        "        count += 1\n"
+        "        mi = min(mi, a + b)\n"
+        "print(count, mi)\n"
+    ),
+    "ege17-204": (
+        "data = [int(x) for x in open('17-204.txt')]\n"
+        "def cond(x):\n"
+        "    return x > 0 and x % 10 == 9\n"
+        "count, ma = 0, -10 ** 9\n"
+        "for i in range(2, len(data)):\n"
+        "    if (not cond(data[i - 2])) and cond(data[i - 1]) and (not cond(data[i])):\n"
+        "        count += 1\n"
+        "        ma = max(ma, sum(data[i - 2:i + 1]))\n"
+        "print(count, ma)\n"
+    ),
+    "ege17-205": (
+        "data = [int(x) for x in open('17-205.txt')]\n"
+        "count, ma = 0, -10 ** 9\n"
+        "for i in range(1, len(data)):\n"
+        "    if abs(data[i] - data[i - 1]) % 74 == 0:\n"
+        "        count += 1\n"
+        "        ma = max(ma, data[i] + data[i - 1])\n"
+        "print(count, ma)\n"
+    ),
+    "ege17-257": (
+        "data = [int(x) for x in open('17-257.txt')]\n"
+        "m7 = min(x for x in data if x % 7 == 0)\n"
+        "m13 = min(x for x in data if x % 13 == 0)\n"
+        "k = 7 if m7 > m13 else 13\n"
+        "xs = [x for x in data if x % k == 0]\n"
+        "print(len(xs), max(xs))\n"
+    ),
 }
 
 
@@ -107,8 +189,10 @@ class GradeTests(unittest.TestCase):
         self.assertGreaterEqual(len(items), 20)
         self.assertTrue(all(item.get("topic") and item.get("level") for item in items))
         for problem in all_problems():
-            self.assertGreaterEqual(len(problem.tests), 4)
-            self.assertTrue(problem.examples)
+            self.assertTrue(problem.tests)
+            if not problem.files and "ege17" not in problem.tags:
+                self.assertGreaterEqual(len(problem.tests), 4)
+                self.assertTrue(problem.examples)
 
     def test_all_reference_solutions(self):
         missing = [item.id for item in all_problems() if item.id not in SOLUTIONS]
@@ -141,6 +225,35 @@ class GradeTests(unittest.TestCase):
         text = " ".join(hint.title + hint.detail for hint in result.hints)
         self.assertTrue("split" in text or "ValueError" in text or "int" in text)
 
+
+    def test_ege17_file_and_two_numbers(self):
+        result = grade_solution(get_problem("ege17-271"), SOLUTIONS["ege17-271"])
+        self.assertEqual(result.status, "ok")
+
+    def test_ege17_wrong_filename_still_works(self):
+        result = grade_solution(
+            get_problem("ege17-257"),
+            "data = [int(x) for x in open('desktop/foo.txt')]\nm7 = min(x for x in data if x % 7 == 0)\nm13 = min(x for x in data if x % 13 == 0)\nk = 7 if m7 > m13 else 13\nxs = [x for x in data if x % k == 0]\nprint(len(xs), max(xs))\n",
+        )
+        self.assertEqual(result.status, "ok")
+
+    def test_ege17_one_number_hint(self):
+        result = grade_solution(
+            get_problem("ege17-1"),
+            "print(2151)\n",
+        )
+        self.assertEqual(result.status, "fail")
+        text = " ".join(hint.title + hint.detail for hint in result.hints)
+        self.assertTrue("два" in text)
+
+    def test_ege17_combinations_hint(self):
+        result = grade_solution(
+            get_problem("ege17-243"),
+            "from itertools import combinations\ndata = [int(x) for x in open('17.txt')]\nprint(len(list(combinations(data, 2))), 0)\n",
+        )
+        self.assertEqual(result.status, "fail")
+        text = " ".join(hint.title + hint.detail for hint in result.hints)
+        self.assertTrue("сосед" in text or "подряд" in text or "combinations" in text.lower() or "Пары" in text)
 
 class StoreTests(unittest.TestCase):
     def setUp(self):

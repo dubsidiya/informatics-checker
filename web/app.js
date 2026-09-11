@@ -9,6 +9,7 @@ const els = {
   input: document.getElementById("input-format"),
   output: document.getElementById("output-format"),
   examples: document.getElementById("examples"),
+  fileBox: document.getElementById("file-box"),
   code: document.getElementById("code"),
   run: document.getElementById("run"),
   result: document.getElementById("result"),
@@ -63,6 +64,10 @@ function persistCode() {
 }
 
 function starterFor(problem) {
+  if (problem.files && problem.files[0]) {
+    const name = problem.files[0].name;
+    return `# ${problem.title}\ndata = [int(x) for x in open('${name}')]\n\n`;
+  }
   return `# ${problem.title}\n# прочитай ввод и выведи только ответ\n\n`;
 }
 
@@ -156,6 +161,14 @@ async function openProblem(id, updateHash) {
   els.level.textContent = `${problem.topic} · ${problem.level}`;
   els.title.textContent = problem.title;
   els.statement.textContent = problem.statement;
+  if (problem.files && problem.files[0]) {
+    const name = problem.files[0].name;
+    els.fileBox.classList.remove("hidden");
+    els.fileBox.innerHTML = `К задаче приложен <a href="/api/problems/${encodeURIComponent(problem.id)}/file">${escapeHtml(name)}</a>. <code>open('${escapeHtml(name)}')</code> или <code>open('17.txt')</code> его откроет.`;
+  } else if (els.fileBox) {
+    els.fileBox.classList.add("hidden");
+    els.fileBox.innerHTML = "";
+  }
   els.input.textContent = problem.input_format;
   els.output.textContent = problem.output_format;
   els.examples.innerHTML = problem.examples.map((example) => `

@@ -260,6 +260,17 @@ h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: 
   letter-spacing: 0.06em;
 }
 
+.file-box {
+  background: var(--info-bg);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.file-box a { color: var(--info); font-weight: 600; }
+.file-box code { font-family: var(--mono); font-size: 13px; }
+
 .brief p { line-height: 1.5; margin: 0 0 12px; }
 .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
 .examples { display: flex; flex-direction: column; gap: 8px; }

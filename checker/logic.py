@@ -125,6 +125,10 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
         )
         return hints
 
+    pair_hints = _two_number_hints(got, expected, problem)
+    if pair_hints:
+        return pair_hints
+
     numbers = numeric_pair(got, expected)
     if numbers:
         got_n, exp_n = numbers
@@ -278,6 +282,24 @@ def _runtime_specific_hints(test: TestResult) -> list[Hint]:
                 line=test.error_line,
             )
         )
+    if test.error_type == "FileNotFoundError":
+        hints.append(
+            Hint(
+                kind="runtime",
+                title="Файл не найден",
+                detail="Для задач с файлом пиши open('17.txt') или имя из условия. На проверяльщике файл уже подложен, путь с рабочего стола не нужен.",
+                line=test.error_line,
+            )
+        )
+    if test.error_type == "ValueError" and "empty sequence" in error:
+        hints.append(
+            Hint(
+                kind="runtime",
+                title="max/min от пустого списка",
+                detail="Нет ни одного элемента с нужным свойством: слишком строгий фильтр или не то условие кратности. Сначала собери список, потом проверяй, что он не пустой.",
+                line=test.error_line,
+            )
+        )
     if test.error_type == "AttributeError" and "split" in error:
         hints.append(
             Hint(
@@ -288,6 +310,61 @@ def _runtime_specific_hints(test: TestResult) -> list[Hint]:
             )
         )
     return hints
+
+
+
+def _tokens(text: str) -> list[str]:
+    return compact(text.replace(",", " ").replace(";", " ")).split()
+
+
+def _two_number_hints(got: str, expected: str, problem: Problem) -> list[Hint]:
+    exp = _tokens(expected)
+    got_t = _tokens(got)
+    if len(exp) != 2:
+        return []
+    if len(got_t) == 1:
+        return [
+            Hint(
+                kind="format",
+                title="В ответе должно быть два числа",
+                detail="В №17 обычно печатают количество и затем min/max суммы: print(count, value). Сейчас программа вывела только одно число.",
+            )
+        ]
+    if len(got_t) != 2:
+        return []
+    if got_t == exp and not same_answer(got, expected):
+        return [
+            Hint(
+                kind="format",
+                title="Числа верные, разделитель нет",
+                detail="Нужны два числа через пробел, без запятой и без подписей.",
+            )
+        ]
+    if got_t[0] == exp[0] and got_t[1] != exp[1]:
+        return [
+            Hint(
+                kind="logic",
+                title="Количество совпало, второе число нет",
+                detail="Счётчик пар верный, а min/max суммы — нет. Часто берут сумму модулей вместо суммы, путают min и max или забывают отфильтровать пары для второго числа.",
+            )
+        ]
+    if got_t[1] == exp[1] and got_t[0] != exp[0]:
+        return [
+            Hint(
+                kind="logic",
+                title="Второе число совпало, счётчик нет",
+                detail="Проверь, что пары идут подряд (i и i+1), а не все сочетания. И не перепутаны ли «хотя бы одно», «оба», «ровно одно».",
+            )
+        ]
+    if "ege17" in problem.tags or "pairs" in problem.tags:
+        return [
+            Hint(
+                kind="logic",
+                title="Оба числа ответа другие",
+                detail="Пройди условие на бумаге: подряд ли элементы, какое сравнение со средним/эталоном, нужен ли abs для последней цифры. Ниже сравни свой вывод с эталоном.",
+            )
+        ]
+    return []
 
 
 def _looks_like_missing_last(got: float, expected: float, stdin: str) -> bool:

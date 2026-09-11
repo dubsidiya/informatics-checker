@@ -95,6 +95,29 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/api/problems":
             self._send_json(list_summaries())
             return
+        if path.startswith("/api/problems/") and path.endswith("/file"):
+            problem_id = path.removeprefix("/api/problems/").removesuffix("/file").strip("/")
+            try:
+                problem = get_problem(problem_id)
+            except KeyError:
+                self._send_json({"detail": "Задача не найдена"}, 404)
+                return
+            if not problem.files:
+                self._send_json({"detail": "К задаче нет файла"}, 404)
+                return
+            file_path = (ROOT / "data" / problem.files[0]).resolve()
+            data_root = (ROOT / "data").resolve()
+            if data_root not in file_path.parents or not file_path.is_file():
+                self._send_json({"detail": "Файл не найден"}, 404)
+                return
+            data = file_path.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Disposition", f'attachment; filename="{file_path.name}"')
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
         if path.startswith("/api/problems/"):
             problem_id = path.removeprefix("/api/problems/").strip("/")
             try:
