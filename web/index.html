@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Проверяльщик решений</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Информатика · Python</p>
+        <h1>Проверяльщик решений</h1>
+      </div>
+      <p class="lead">Сначала тесты. Если ответ неверный — разбор: синтаксис, логика, ход программы.</p>
+    </header>
+
+    <div class="layout">
+      <aside class="panel tasks">
+        <h2>Задачи</h2>
+        <nav id="task-list" class="task-list"></nav>
+      </aside>
+
+      <section class="panel brief">
+        <p class="level" id="level"></p>
+        <h2 id="title">Загрузка…</h2>
+        <p id="statement"></p>
+        <div class="meta">
+          <div>
+            <h3>Ввод</h3>
+            <p id="input-format"></p>
+          </div>
+          <div>
+            <h3>Вывод</h3>
+            <p id="output-format"></p>
+          </div>
+        </div>
+        <h3>Примеры</h3>
+        <div id="examples" class="examples"></div>
+      </section>
+
+      <section class="panel editor-wrap">
+        <div class="editor-bar">
+          <h2>Твой код</h2>
+          <button id="run" type="button">Проверить</button>
+        </div>
+        <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+        <p class="hint-key">Ctrl+Enter тоже запускает проверку.</p>
+      </section>
+    </div>
+
+    <section id="result" class="panel result hidden"></section>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

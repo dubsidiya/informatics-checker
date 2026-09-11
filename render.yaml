@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: informatics-checker
+    runtime: python
+    plan: free
+    buildCommand: "true"
+    startCommand: python app.py
+    healthCheckPath: /health
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PYTHONUNBUFFERED
+        value: "1"

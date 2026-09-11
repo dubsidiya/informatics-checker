@@ -1,0 +1,118 @@
+[
+  {
+    "id": "sum-two",
+    "title": "Сумма двух чисел",
+    "level": "старт",
+    "tags": ["integers_from_input", "single_int_out"],
+    "statement": "Напиши программу, которая читает два целых числа и выводит их сумму.",
+    "input_format": "В одной строке два целых числа через пробел.",
+    "output_format": "Одно целое число — сумма.",
+    "examples": [
+      {"stdin": "2 3", "stdout": "5"},
+      {"stdin": "-4 10", "stdout": "6"}
+    ],
+    "tests": [
+      {"stdin": "2 3", "stdout": "5", "hidden": false},
+      {"stdin": "-4 10", "stdout": "6", "hidden": false},
+      {"stdin": "0 0", "stdout": "0", "hidden": true},
+      {"stdin": "100 250", "stdout": "350", "hidden": true},
+      {"stdin": "-7 -8", "stdout": "-15", "hidden": true}
+    ]
+  },
+  {
+    "id": "sum-1-n",
+    "title": "Сумма чисел от 1 до N",
+    "level": "старт",
+    "tags": ["integers_from_input", "single_int_out", "inclusive_n"],
+    "statement": "Дано натуральное число N. Найди сумму всех целых чисел от 1 до N включительно.",
+    "input_format": "Одно натуральное число N.",
+    "output_format": "Одно целое число — сумма 1 + 2 + … + N.",
+    "examples": [
+      {"stdin": "5", "stdout": "15"},
+      {"stdin": "1", "stdout": "1"}
+    ],
+    "tests": [
+      {"stdin": "5", "stdout": "15", "hidden": false},
+      {"stdin": "1", "stdout": "1", "hidden": false},
+      {"stdin": "10", "stdout": "55", "hidden": true},
+      {"stdin": "100", "stdout": "5050", "hidden": true}
+    ]
+  },
+  {
+    "id": "max-three",
+    "title": "Максимум из трёх",
+    "level": "старт",
+    "tags": ["integers_from_input", "single_int_out"],
+    "statement": "Даны три целых числа. Выведи наибольшее из них.",
+    "input_format": "Три целых числа в одной строке через пробел.",
+    "output_format": "Одно целое число — максимум.",
+    "examples": [
+      {"stdin": "3 9 4", "stdout": "9"},
+      {"stdin": "-5 -1 -9", "stdout": "-1"}
+    ],
+    "tests": [
+      {"stdin": "3 9 4", "stdout": "9", "hidden": false},
+      {"stdin": "-5 -1 -9", "stdout": "-1", "hidden": false},
+      {"stdin": "7 7 7", "stdout": "7", "hidden": true},
+      {"stdin": "0 -3 2", "stdout": "2", "hidden": true}
+    ]
+  },
+  {
+    "id": "count-even",
+    "title": "Сколько чётных",
+    "level": "средне",
+    "tags": ["integers_from_input", "single_int_out", "sequence"],
+    "statement": "Сначала дано число N — сколько чисел дальше. Затем идёт N целых чисел. Посчитай, сколько среди них чётных.",
+    "input_format": "В первой строке число N. Во второй строке N целых чисел через пробел.",
+    "output_format": "Одно целое число — количество чётных.",
+    "examples": [
+      {"stdin": "5\n1 2 3 4 5", "stdout": "2"},
+      {"stdin": "3\n2 4 8", "stdout": "3"}
+    ],
+    "tests": [
+      {"stdin": "5\n1 2 3 4 5", "stdout": "2", "hidden": false},
+      {"stdin": "3\n2 4 8", "stdout": "3", "hidden": false},
+      {"stdin": "4\n1 3 5 7", "stdout": "0", "hidden": true},
+      {"stdin": "1\n0", "stdout": "1", "hidden": true}
+    ]
+  },
+  {
+    "id": "digit-sum",
+    "title": "Сумма цифр",
+    "level": "средне",
+    "tags": ["integers_from_input", "single_int_out", "digits"],
+    "statement": "Дано неотрицательное целое число. Найди сумму его цифр.",
+    "input_format": "Одно целое число (может быть 0).",
+    "output_format": "Одно целое число — сумма цифр.",
+    "examples": [
+      {"stdin": "123", "stdout": "6"},
+      {"stdin": "10", "stdout": "1"}
+    ],
+    "tests": [
+      {"stdin": "123", "stdout": "6", "hidden": false},
+      {"stdin": "10", "stdout": "1", "hidden": false},
+      {"stdin": "0", "stdout": "0", "hidden": true},
+      {"stdin": "100500", "stdout": "6", "hidden": true},
+      {"stdin": "999", "stdout": "27", "hidden": true}
+    ]
+  },
+  {
+    "id": "linear-search",
+    "title": "Есть ли число",
+    "level": "средне",
+    "tags": ["integers_from_input", "single_int_out", "sequence"],
+    "statement": "В первой строке число N и число X. Во второй строке N целых чисел. Если X есть в списке — выведи YES, иначе NO.",
+    "input_format": "Первая строка: N и X. Вторая строка: N чисел через пробел.",
+    "output_format": "Слово YES или NO заглавными буквами.",
+    "examples": [
+      {"stdin": "5 3\n1 2 3 4 5", "stdout": "YES"},
+      {"stdin": "4 7\n1 2 3 4", "stdout": "NO"}
+    ],
+    "tests": [
+      {"stdin": "5 3\n1 2 3 4 5", "stdout": "YES", "hidden": false},
+      {"stdin": "4 7\n1 2 3 4", "stdout": "NO", "hidden": false},
+      {"stdin": "1 9\n9", "stdout": "YES", "hidden": true},
+      {"stdin": "3 0\n1 2 3", "stdout": "NO", "hidden": true}
+    ]
+  }
+]
