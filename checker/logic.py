@@ -1,7 +1,7 @@
 from __future__ import annotations
 
+from checker.diagnose import diagnose
 from checker.models import Hint, Problem, TestResult, TraceStep
-from checker.static_analyze import analyze_source
 
 
 RUNTIME_HINTS = {
@@ -51,12 +51,12 @@ def build_hints(
     problem: Problem,
     tests: list[TestResult],
 ) -> list[Hint]:
-    hints = list(analyze_source(source, problem))
     failing = [item for item in tests if item.verdict != "OK"]
     if not failing:
         return []
 
     first = failing[0]
+    hints: list[Hint] = []
 
     if first.verdict == "TLE":
         hints.append(
@@ -83,8 +83,8 @@ def build_hints(
             )
         )
         hints.extend(_runtime_specific_hints(first))
-    elif first.verdict == "WA":
-        hints.extend(_wrong_answer_hints(first, problem))
+    if first.verdict in {"WA", "RE"}:
+        hints.extend(diagnose(source, problem, tests))
 
     visible_ok = [item for item in tests if not item.hidden]
     hidden_fail = [item for item in tests if item.hidden and item.verdict != "OK"]

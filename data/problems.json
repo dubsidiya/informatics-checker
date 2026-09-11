@@ -1148,6 +1148,11 @@
         "stdin": "2 3\n1 2",
         "stdout": "YES",
         "hidden": true
+      },
+      {
+        "stdin": "5 6\n1 8 3 9 3",
+        "stdout": "YES",
+        "hidden": true
       }
     ]
   },
