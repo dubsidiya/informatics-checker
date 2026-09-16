@@ -1,0 +1,580 @@
+[
+  {
+    "id": "ege8-10",
+    "type": 8,
+    "n": 10,
+    "title": "ЕГЭ 8.10 — Слова из А, О, У",
+    "level": "старт",
+    "statement": "10) Все 5-буквенные слова, составленные из букв А, О, У, записаны в алфавитном порядке. Вот начало\nсписка:\n1. ААААА\n2. ААААО\n3. ААААУ\n4. АААОА\n……\nУкажите номер слова ОАОАО.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — номер слова в списке.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "92",
+    "source": "from itertools import product\n\nletters = 'АОУ'\ntarget = 'ОАОАО'\nfor i, word in enumerate(product(letters, repeat=5), 1):\n    if ''.join(word) == target:\n        print(i)\n        break\n"
+  },
+  {
+    "id": "ege8-32",
+    "type": 8,
+    "n": 32,
+    "title": "ЕГЭ 8.32 — Соседи A и D",
+    "level": "старт",
+    "statement": "32) (Е.В. Хламов) Сколько существует различных символьных последовательностей длины 3 в\nчетырёхбуквенном алфавите {A,B,C,D}, если известно, что одним из соседей A обязательно\nявляется D, а буквы B и C никогда не соседствуют друг с другом?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество последовательностей.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "29",
+    "source": "from itertools import product\n\ndef valid(s):\n  s = [' '] + list(s) + [' ']\n  for i in range(1,len(s)-1):\n     if s[i] == 'A' and s[i-1] != 'D' and s[i+1] != 'D':\n        return False\n     if s[i] == 'C' and ((s[i-1] == 'B') or (s[i+1] == 'B')):\n        return False\n  return True\n\ncandidates = product('ABCD', repeat=3)\n\nv = [s for s in candidates if valid(s)]\n\nprint( len(v) )\n\n"
+  },
+  {
+    "id": "ege8-103",
+    "type": 8,
+    "n": 103,
+    "title": "ЕГЭ 8.103 — Коды из КУПЧИХА",
+    "level": "старт",
+    "statement": "103) Вася составляет 7-буквенные коды из букв К, У, П, Ч, И, Х, А. Каждую букву нужно использовать\nровно 1 раз, при этом код не может начинаться с буквы Ч и не может содержать сочетания ИАУ.\nСколько различных кодов может составить Вася?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество кодов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "4224",
+    "source": "from itertools import permutations\n\nA = \"КУПЧИХА\"\n\np = [ ''.join(x) for x in permutations(A) ]\n\ncount = 0\nfor x in p:\n  if x[0] != 'Ч' and 'ИАУ' not in x:\n    count += 1\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-105",
+    "type": 8,
+    "n": 105,
+    "title": "ЕГЭ 8.105 — Коды из НОБЕЛИЙ",
+    "level": "старт",
+    "statement": "105) Вася составляет 7-буквенные коды из букв Н, О, Б, Е, Л, И, Й. Каждую букву нужно использовать\nровно 1 раз, при этом код не может начинаться с буквы Й и не может содержать сочетания ИЙО.\nСколько различных кодов может составить Вася?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество кодов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "4200",
+    "source": "from itertools import permutations\n\nA = \"НОБЕЛИЙ\"\n\np = [ ''.join(x) for x in permutations(A) ]\n\ncount = 0\nfor x in p:\n  if x[0] != 'Й' and 'ИЙО' not in x:\n    count += 1\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-114",
+    "type": 8,
+    "n": 114,
+    "title": "ЕГЭ 8.114 — Перестановки АБАК",
+    "level": "старт",
+    "statement": "114) Петя составляет четырёхбуквенные слова перестановкой букв слова АБАК. При этом он избегает\nслов с двумя подряд одинаковыми буквами. Сколько всего различных слов может составить Петя?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "6",
+    "source": "# Автор: Михлин Б.С.\n'''\n8.114 Петя составляет четырёхбуквенные слова перестановкой букв слова АБАК.\nПри этом он избегает слов с двумя подряд одинаковыми буквами.\nСколько всего различных слов может составить Петя?\n'''\nfrom itertools import *\n# множество автоматически удаляет дубликаты при перестановках букв \"А\"\nP = {p for p in permutations('АБАК') if 'АА'not in ''.join(p)}\nprint(len(P))  # Ответ: 6\n\n# Примечание: Абак - семейство счётных досок, применявшихся для арифметических вычислений в Древней Греции,\n# Древнем Риме и Древнем Китае. Абак - предшественник русских счётов и японского соробана.\n"
+  },
+  {
+    "id": "ege8-119",
+    "type": 8,
+    "n": 119,
+    "title": "ЕГЭ 8.119 — Слова из МАГИСТР",
+    "level": "старт",
+    "statement": "119) (А.М. Кабанов) Алексей составляет 5-буквенные слова из букв М, А, Г, И, С, Т, Р. Каждую букву\nможно использовать не более одного раза, при этом в слове нельзя использовать более одной\nгласной. Сколько различных кодов может составить Алексей?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество кодов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "1320",
+    "source": "# Автор: Михлин Б.С.\n'''\n8.119 (А.М. Кабанов) Алексей составляет 5-буквенные слова из букв М, А, Г, И, С, Т, Р.\nКаждую букву можно использовать не более одного раза, при этом в слове нельзя использовать более одной гласной.\nСколько различных кодов может составить Алексей?\n'''\nfrom itertools import *\nP = {p for p in map(''.join, permutations('магистр', 5)) if (p.count('а') + p.count('и')) <= 1}\nprint(len(P))  # Ответ: 1320\n"
+  },
+  {
+    "id": "ege8-156",
+    "type": 8,
+    "n": 156,
+    "title": "ЕГЭ 8.156 — Пятизначные числа на 5",
+    "level": "средне",
+    "statement": "156) Сколько существует чисел, делящихся на 5, десятичная запись которых содержит 5 цифр, причём\nвсе цифры различны и никакие две чётные и две нечётные цифры не стоят рядом.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "480",
+    "source": "from itertools import permutations\n\nBAD = (\n    '02', '20', '04', '40', '06', '60', '08', '80', '00',\n    '24', '42', '26', '62', '28', '82', '22',\n    '46', '64', '48', '84', '44',\n    '68', '86', '66', '88',\n    '13', '31', '15', '51', '17', '71', '19', '91', '11',\n    '35', '53', '37', '73', '39', '93', '33',\n    '57', '75', '59', '95', '55',\n    '79', '97', '77', '99',\n)\n\ncount = 0\nfor digits in permutations('0123456789', 5):\n    s = ''.join(digits)\n    if s[0] == '0' or s[-1] not in '05':\n        continue\n    if any(pair in s for pair in BAD):\n        continue\n    count += 1\nprint(count)\n"
+  },
+  {
+    "id": "ege8-157",
+    "type": 8,
+    "n": 157,
+    "title": "ЕГЭ 8.157 — Шестизначные числа на 5",
+    "level": "средне",
+    "statement": "157) Сколько существует чисел, делящихся на 5, десятичная запись которых содержит 6 цифр, причём\nвсе цифры различны и никакие две чётные и две нечётные цифры не стоят рядом.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "1296",
+    "source": "# 157) Сколько существует чисел, делящихся на 5, десятичная запись\n# которых содержит 6 цифр, причём все цифры различны и никакие две\n# чётные и две нечётные цифры не стоят рядом.\n\ndef valid(x):\n  x = str(x)\n  even = \"02468\"\n  odd = \"13579\"\n  for i in range(len(x)-1):\n    if x.count(x[i]) > 1:\n      return False\n    if (x[i] in even and x[i+1] in even) or \\\n       (x[i] in odd and x[i+1] in odd):\n      return False\n  return True\n\ncount = 0\nfor x in range(100000, 1000000, 5):\n  if valid(x):\n    count += 1\n\nprint(count)\n"
+  },
+  {
+    "id": "ege8-170",
+    "type": 8,
+    "n": 170,
+    "title": "ЕГЭ 8.170 — Коды из ЖАЛЕЙ",
+    "level": "средне",
+    "statement": "170) Сергей составляет 5-буквенные коды из букв Ж, А, Л, Е, Й. Буква Й может использоваться в коде\nне более одного раза, при этом она не может стоять на первом месте, на последнем месте и\nрядом с буквой Е. Все остальные буквы могут встречаться произвольное количество раз или не\nвстречаться совсем. Сколько различных кодов может составить Сергей?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество кодов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "1456",
+    "source": "A = \"ЖАЛЕЙ\"\nN = 5\nno = [ \".Й\", \"ЕЙ\", \"ЙЕ\", \"Й.\" ]\n\ndef valid( word ):\n  word = '.' + word + '.'\n  if word.count(\"Й\") > 1:\n    return False\n  for ex in no:\n    if ex in word:\n      return False\n  return True\n\ndef rec( word, k, Alpha ):\n  if len(word) == k:\n    if valid(word): return 1\n    return 0\n  count = 0\n  for c in Alpha:\n    count += rec( word+c, k, Alpha )\n  return count\n\nprint( rec( \"\", N, A ) )\n"
+  },
+  {
+    "id": "ege8-184",
+    "type": 8,
+    "n": 184,
+    "title": "ЕГЭ 8.184 — 16-ричные убывающие",
+    "level": "средне",
+    "statement": "184) Сколько шестнадцатеричных кодов чисел длиной 12 можно составить, если известно, что цифры\nидут в порядке убывания, при этом четные и нечетные цифры чередуются?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество кодов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "104",
+    "source": "A = \"0123456789ABCDEF\"\nN = 12\n\nA = list( reversed(A) )\nAeven = [x for x in A if ord(x) % 2 == 0]\nAodd = [x for x in A if ord(x) % 2 != 0]\n\nallWords = []\n\ndef rec( word, k, Alpha ):\n  #print( ' '*len(word), '>'+word+'<', k, Alpha )\n  if len(word) == k:\n    if not word in allWords:\n      allWords.append( word )\n      return 1\n    return 0\n  count = 0\n  for i, c in enumerate(Alpha):\n    if( word == '' or\n        (\n        (Alpha.index(c) % 2 != Alpha.index(word[-1]) % 2) and\n        (Alpha.index(c) > Alpha.index(word[-1]))\n        )\n        ):\n      count += rec( word+c, k, Alpha )\n  return count\n\nprint( rec( \"\", N, A ) )\n"
+  },
+  {
+    "id": "ege8-193",
+    "type": 8,
+    "n": 193,
+    "title": "ЕГЭ 8.193 — Чётные пятеричные длины 6",
+    "level": "средне",
+    "statement": "193) (Е. Джобс) Сколько существует четных пятеричных чисел длиной 6, начинающихся с цифры 3?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "1562",
+    "source": "count = 1\nstart = int('300000',5)\nend = int('400000',5) - 1\nprint( (end - start + 1) // 2 )\n"
+  },
+  {
+    "id": "ege8-200",
+    "type": 8,
+    "n": 200,
+    "title": "ЕГЭ 8.200 — Трёхзначные неубывающие",
+    "level": "старт",
+    "statement": "200) (А. Куканова) Аня составляет трёхзначные числа в десятичной системе счисления, в которых\nцифры расположены в порядке неубывания. Сколько различных чисел может составить Аня?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "165",
+    "source": "count = 0\nfor x in range(100, 1000):\n    a, b, c = str(x)\n    if a <= b <= c:\n        count += 1\nprint(count)\n"
+  },
+  {
+    "id": "ege8-210",
+    "type": 8,
+    "n": 210,
+    "title": "ЕГЭ 8.210 — Перестановки МИМИКРИЯ",
+    "level": "средне",
+    "statement": "210) (А. Куканова) Ксюша составляет слова, меняя местами буквы в слове МИМИКРИЯ. Сколько\nразличных слов, включая исходное, может составить Ксюша?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "3360",
+    "source": "# Автор: А. Куканова\n\nfrom itertools import permutations\n\nwords = set(permutations('МИМИКРИЯ', r=8))\nprint(len(words))\n\n"
+  },
+  {
+    "id": "ege8-225",
+    "type": 8,
+    "n": 225,
+    "title": "ЕГЭ 8.225 — 5-значные в системе 5",
+    "level": "средне",
+    "statement": "225) (А. Куканова) Полина составляет 5-значные числа в 5-ичной системе счисления, которые\nсодержат не более 3 чётных цифр. Сколько различных чисел может составить Полина?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "1744",
+    "source": "# Автор: А. Куканова\n\nfrom itertools import product\neven = '024'\nodd = '13'\n\ncount = 0\nfor w in product(even + odd, repeat=5):\n    w_even = [char for char in w if char in even]\n    if w[0] != '0' and len(w_even) <= 3:\n        count += 1\nprint(count)\n"
+  },
+  {
+    "id": "ege8-240",
+    "type": 8,
+    "n": 240,
+    "title": "ЕГЭ 8.240 — Слова из АКАРИДА",
+    "level": "средне",
+    "statement": "240) Вася составляет слова из букв слова АКАРИДА. Код должен состоять из 7 букв, и каждая буква в\nнём должна встречаться столько же раз, сколько в заданном слове. Кроме того, в коде не должны\nстоять рядом две гласные и две согласные буквы. Сколько различных слов может составить Вася?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "24",
+    "source": "from itertools import permutations\n\ndef valid( s ):\n  sd = \"\"\n  for c in s:\n    if c in \"АЕИОУЫЭЮЯ\":\n      sd += \"g\"\n    else:\n      sd += \"s\"\n  return \"gg\" not in sd and \"ss\" not in sd\n\nbase = \"АКАРИДА\"\nwords = [ \"\".join(w) for w in permutations(base) ]\nwords = [ w for w in words if valid(w) ]\n\nprint( len(set(words)) )\n"
+  },
+  {
+    "id": "ege8-256",
+    "type": 8,
+    "n": 256,
+    "title": "ЕГЭ 8.256 — 16-ричные на AB",
+    "level": "средне",
+    "statement": "256) (П. Волгин) Сколько существует натуральных чисел, шестнадцатеричная запись которых\nсодержит 6 знаков, не начинается с единицы и заканчивается на AB?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "57344",
+    "source": "count = 0\nfor i in range(int('1000AB',16), int('1000000',16), 256):\n  s = f\"{i:X}\"  \n  if s[0] != '1' and s.endswith('AB'):\n    count += 1\n\nprint( count )\n\n"
+  },
+  {
+    "id": "ege8-266",
+    "type": 8,
+    "n": 266,
+    "title": "ЕГЭ 8.266 — Последнее без гласных",
+    "level": "средне",
+    "statement": "266) (Е. Джобс) Все четырехбуквенные слова, в составе которых могут быть только буквы П, Я, Т, Ь, Д,\nН, Е, Й, записаны в алфавитном порядке и пронумерованы начиная с 1. Вот начало списка:\n1. ДДДД\n2. ДДДЕ\n3. ДДДЙ\n4. ДДДН\n5. ДДДП\n6. ДДДТ\n7. ДДДЬ\n8. ДДДЯ\n9. ДДЕД\n...\nПод каким номером в списке стоит последнее слово, которое не содержит ни одной гласной и\nвсе буквы в нем различны?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — номер слова в списке.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "3428",
+    "source": "from itertools import product\n\nA = sorted(\"ПЯТЬДНЕЙ\")\nallWords = [ \"\".join(w) for w in product(A, repeat=4) ]\nind = [ i+1 for i, w in enumerate(allWords)\n                if w.count('Е') == 0 and w.count('Я') == 0 and\n                  len(set(w)) == len(w) ]\n\nprint( max(ind) )\n\n"
+  },
+  {
+    "id": "ege8-280",
+    "type": 8,
+    "n": 280,
+    "title": "ЕГЭ 8.280 — Латинские с гласной",
+    "level": "средне",
+    "statement": "280) (Д. Статный) Алексей составляет пятибуквенные слова из букв латинского алфавита. Его\nинтересуют слова, в которых не менее одной гласной. Сколько таких слов может составить\nАлексей?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "8681376",
+    "source": "from itertools import product\nfrom string import ascii_uppercase\n\ncount=0\nfor x in product(ascii_uppercase, repeat=5):\n  k = sum( 1 for c in x if c in 'AEOIUY' )\n  if k > 0:\n    count += 1\n\nprint(count)\n\n\n"
+  },
+  {
+    "id": "ege8-292",
+    "type": 8,
+    "n": 292,
+    "title": "ЕГЭ 8.292 — Слова из ТИМАШЕВСК",
+    "level": "средне",
+    "statement": "292) (П. Финкель) Маша составляет шестибуквенные слова из букв Т, И, М, А, Ш, Е, В, С, К. Она\nвыбирает только те слова, в которых количество гласных и согласных одинаково, и гласная буква\nне стоит рядом с Ш. Сколько таких слов может составить Маша?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "75870",
+    "source": "from itertools import product\n\ncount = 0\nglas = 'АЕИ'\nfor w in product( \"ТИМАШЕВСК\", repeat=6 ):\n  w = ''.join(w)\n  if sum( (c in glas) for c in w ) == 3 and \\\n     sum( a+'Ш' in w for a in glas ) == 0 and \\\n     sum( 'Ш'+a in w for a in glas ) == 0:\n     # print( w )\n     count += 1\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-300",
+    "type": 8,
+    "n": 300,
+    "title": "ЕГЭ 8.300 — Слова из букв ДЕРЕВО",
+    "level": "средне",
+    "statement": "300) (М. Байрамгулов) Вася составляет 6-буквенные слова из букв слова ДЕРЕВО так, что буквы на\nпозициях одинаковой чётности расположены в алфавитном порядке. Сколько различных слов\nможет составить Вася?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "1225",
+    "source": "from itertools import product\n\ncount = 0\nfor word in set(product('ДЕРЕВО', repeat=6)):\n    even = list(word[0::2])\n    odd = list(word[1::2])\n    if even == sorted(even) and odd == sorted(odd):\n        count += 1\nprint(count)\n"
+  },
+  {
+    "id": "ege8-313",
+    "type": 8,
+    "n": 313,
+    "title": "ЕГЭ 8.313 — Перестановки АМФИБРАХИЙ",
+    "level": "средне",
+    "statement": "313) (C. Якунин) Дмитрий составляет слова, переставляя буквы в слове АМФИБРАХИЙ. Сколько\nразличных слов, в которых есть, хотя бы, 2 подряд идущие гласные может составить Дмитрий?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "756000",
+    "source": "from itertools import permutations\n\ncount = 0\nfor w in set(permutations('АМФИБРАХИЙ')):\n   w = ''.join(w)\n   if any( ai in w for ai in ['АА', 'АИ', 'ИА', 'ИИ'] ):\n      count += 1\nprint( count )\n\n\n"
+  },
+  {
+    "id": "ege8-330",
+    "type": 8,
+    "n": 330,
+    "title": "ЕГЭ 8.330 — Коды из ВОДОПАД",
+    "level": "средне",
+    "statement": "330) Ваня составляет коды перестановкой букв слова ВОДОПАД. Код должен состоять из 7 букв,\nкаждая буква должна встречаться в нем встречаться столько же раз, сколько и в исходном слове.\nКроме того, в коде две гласные не должны стоять рядом. Сколько различных слов может\nсоставить Ваня?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "360",
+    "source": "from itertools import permutations\n\nA = 'ВОДОПАД'\nprohibited = 'ООАО'\n\ncount = 0\nfor w in set(permutations(A)):\n  if all( ''.join(pair) not in prohibited\n          for pair in zip(w,w[1:])  ) :\n    count += 1\n\nprint( count )\n\n\n\n"
+  },
+  {
+    "id": "ege8-350",
+    "type": 8,
+    "n": 350,
+    "title": "ЕГЭ 8.350 — Коды из ГАЛАКТИКА",
+    "level": "средне",
+    "statement": "350) (М. Шагитов) Марат составляет 8-буквенные коды из букв, входящих в слово ГАЛАКТИКА. Первая\nбуква кода должна быть согласной, а последняя — гласной. Код НЕ должен содержать ни одной\nпары соседних букв, которые следуют друг за другом в русском алфавите в таком же порядке\n(например, \"АБ\" или \"ЮЯ\"). Сколько различных кодов может составить Марат?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество кодов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "309268",
+    "source": "from itertools import product\n\nA = 'ГАЛАКТИКА'\ngl = 'АИ'\ncount = 0\nfor w in set(product(A, repeat=8)):\n  w = ''.join(w)\n  if w[0] not in gl and w[-1] in gl and 'КЛ' not in w:\n    count += 1\nprint( count )\n"
+  },
+  {
+    "id": "ege8-368",
+    "type": 8,
+    "n": 368,
+    "title": "ЕГЭ 8.368 — 15-ричные чередование",
+    "level": "средне",
+    "statement": "368) (Е. Джобс) Сколько существует чисел, пятнадцатеричная запись которых содержит 5 разрядов,\nпричём разряды, кратные 2 и кратные 3, чередуются? Например, число 40068 подходит под\nописание, число 40086 - нет.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "17438",
+    "source": "from itertools import product\n\ndef valid( s ):\n  if s[0] == 0: return False\n  res = False\n  for k in [2,3]:\n    if s[0] % k == 0:\n      res, d = True, k\n      for i in range(1,5):\n        d = 5 - d\n        res = res and s[i] % d == 0\n    if res: break\n  return res\n\ncount = 0\nfor s in product(range(15), repeat=5):\n   if valid(s):\n      count += 1\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-385",
+    "type": 8,
+    "n": 385,
+    "title": "ЕГЭ 8.385 — Четверичные с повтором",
+    "level": "средне",
+    "statement": "385) (Е. Джобс) Сколько существует натуральных чисел, четверичная запись которых содержит 4\nразряда, причём хотя бы одна цифра в такой записи встречается не менее двух раз?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "174",
+    "source": "def base4( n ):\n  s = ''\n  while n:\n    s = str(n%4) + s\n    n //= 4\n  return s\n\ncount = 0\nfor i in range(4**3, 4**4):\n  s = base4(i)\n  if any( s.count(c) >= 2 for c in '0123' ) :\n     count += 1\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-400",
+    "type": 8,
+    "n": 400,
+    "title": "ЕГЭ 8.400 — Пятеричные с цифрой 1",
+    "level": "сложно",
+    "statement": "400) (М. Ишимов) Сколько существует пятеричных четырёхзначных чисел, содержащих в своей\nзаписи цифру 1, в которых никакие две чётные или две нечётные цифры не стоят рядом?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "45",
+    "source": "# Автор: М. Ишимов\n\nfrom itertools import *\nk = 0\nfor s in product('01234', repeat = 4):\n    s = ''.join(s)\n    if s[0] != '0' and '1' in s:\n        for el in '024':\n            s = s.replace(el, 'Ч')\n        for el in '13':\n            s = s.replace(el, 'Н')\n        if 'НН' not in s and 'ЧЧ' not in s:\n            k += 1\nprint(k)\n"
+  },
+  {
+    "id": "ege8-412",
+    "type": 8,
+    "n": 412,
+    "title": "ЕГЭ 8.412 — Шестизначные с одной 4",
+    "level": "сложно",
+    "statement": "412) (М. Ишимов) Сколько существует десятичных шестизначных чисел, содержащих в своей записи\nне более одной цифры 4, в которых никакие две чётные или две нечётные цифры не стоят рядом?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "25000",
+    "source": "# Автор: М. Ишимов\n\nfrom itertools import *\nk = 0\nfor s in product('0123456789', repeat = 6):\n    s = ''.join(s)\n    if s[0] != '0' and s.count('4') <= 1:\n        for el in '02468':\n            s = s.replace(el, 'Ч')\n        for el in '13579':\n            s = s.replace(el, 'Н')\n        if 'НН' not in s and 'ЧЧ' not in s:\n            k += 1\nprint(k)\n"
+  },
+  {
+    "id": "ege8-430",
+    "type": 8,
+    "n": 430,
+    "title": "ЕГЭ 8.430 — Слова из ЧЕБЮ",
+    "level": "сложно",
+    "statement": "430) (М. Ишимов) Все 5-буквенные слова, составленные из букв Ч, Е, Б, Ю, записаны в алфавитном\nпорядке и пронумерованы. Вот начало списка:\n1. БББББ\n2. ББББЕ\n3. ББББЧ\n4. ББББЮ\n5. БББЕБ\n6. БББЕЕ\n...\nСколько существует слов в списке с чётными номерами, которые не начинаются с буквы Ю, и не\nсодержат букв Е, стоящих рядом?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "285",
+    "source": "# Автор: М. Ишимов\n\nfrom itertools import *\nn = ans = 0\nfor s in product('БЕЧЮ', repeat = 5):\n   n += 1\n   s = ''.join(s)\n   if n % 2 == 0 and s[0] != 'Ю' and 'ЕЕ' not in s:\n       ans += 1\nprint(ans)\n"
+  },
+  {
+    "id": "ege8-450",
+    "type": 8,
+    "n": 450,
+    "title": "ЕГЭ 8.450 — Слова ГЛУБИНА с двумя А",
+    "level": "сложно",
+    "statement": "450) (А. Минак) Все шестибуквенные слова, составленные из букв Г, Л, У, Б, И, Н, А записаны в\nобратном алфавитном порядке и пронумерованы. Вот начало списка:\n1. УУУУУУ\n2. УУУУУН\n3. УУУУУЛ\n4. УУУУУИ\n5. УУУУУГ\n6. УУУУУБ\n7. УУУУУА\n...\nОпределите в этом списке количество слов с нечётными номерами, которые содержат две буквы\nА между которыми имеются две другие буквы (например, АГНА или АННА, но не ААНА и не АААА)\nи при этом содержат в своей записи более одной буквы H.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "318",
+    "source": "from itertools import product\n\nA = sorted(\"ГЛУБИНА\", reverse=True)\n\ncount = 0\ni = 1\nfor w in sorted(product(A, repeat=6)):\n  s = ''.join(w)\n  for c in \"ГЛУБИН\":\n    s = s.replace(c, '.')\n  if i % 2 == 1 and 'А..А' in s and w.count('Н') > 1:\n    count += 1\n  i += 1\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-466",
+    "type": 8,
+    "n": 466,
+    "title": "ЕГЭ 8.466 — 20-ричные сумма крайних 26",
+    "level": "сложно",
+    "statement": "466) (О. Лысенков) Определите количество чисел, 20-ричная запись которых содержит пять цифр,\nпричём в этой записи чётные и нечётные цифры чередуются и сумма числовых значений крайних\nцифр равна 26.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "13000",
+    "source": "\"\"\"\nАвтор: О. Лысенков\n\n(О. Лысенков) Определите количество чисел, 20-ричная запись которых содержит пять\nцифр, причём в этой записи чётные и нечётные цифры чередуются и сумма числовых\nзначений крайних цифр равна 26.\n\nОтвет: 13000\n\"\"\"\nfrom itertools import  product\nk = 0\nfor i in product([i for i in range(20)],repeat = 5):\n    if i[0] != 0 and all(i[j] % 2 != i[j+1] % 2 for j in range(4)) and (i[0]+i[-1]) == 26:\n        k += 1\nprint(k)\n"
+  },
+  {
+    "id": "ege8-480",
+    "type": 8,
+    "n": 480,
+    "title": "ЕГЭ 8.480 — Код под номером 777332",
+    "level": "средне",
+    "statement": "480) (О. Лысенков) Петя составляет список всех возможных кодов, составленных из заглавных\nлатинских букв. Сначала он выписывает в алфавитном порядке все коды, состоящие из одного\nсимвола (A, B, …, Z), затем – тоже в алфавитном порядке – коды из двух символов (AA, AB, …, AZ,\nBA, BB, … ZZ), далее идут трёхсимвольные коды (AAA, AAB, …, ZZZ) и так далее. Какое слово в этом\nсписке стоит под номером 777332? Нумерация начинается с единицы.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одна строка из заглавных латинских букв.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "AREWJ",
+    "source": "from itertools import product\nfrom string import ascii_uppercase\n\nk = 777332\nlength = 1\nwhile k > 26 ** length:\n    k -= 26 ** length\n    length += 1\nfor word in product(ascii_uppercase, repeat=length):\n    k -= 1\n    if k == 0:\n        print(''.join(word))\n        break\n"
+  },
+  {
+    "id": "ege8-488",
+    "type": 8,
+    "n": 488,
+    "title": "ЕГЭ 8.488 — Коды из ДГИАШЭ",
+    "level": "сложно",
+    "statement": "488) (Досрочный ЕГЭ-2025) Виктор составляет таблицу кодовых слов для передачи сообщений,\nкаждому сообщению соответствует своё кодовое слово. В качестве кодовых слов Виктор\nиспользует 5-буквенные слова, в которых могут быть только буквы Д, Г, И, А, Ш, Э, причём слово\nне должно начинаться с гласной и не должно заканчиваться согласной. Сколько различных\nкодовых слов может использовать Виктор?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество кодовых слов.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "1944",
+    "source": "from itertools import product\n\nA = \"ДГИАШЭ\"\nG = \"ИАЭ\"\ncount = 0\nfor w in product(A, repeat=5):\n   count += (w[0] not in G and w[-1] in G)\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-498",
+    "type": 8,
+    "n": 498,
+    "title": "ЕГЭ 8.498 — Троичные до 12 разрядов",
+    "level": "сложно",
+    "statement": "498) (О. Лысенков) Сколько существует чисел, троичная запись которых состоит не более чем из 12\nразрядов, в которых больше трёх раз нечетные и четные цифры чередуются, и, кроме того, число\nкратно сумме цифр троичной записи этого числа.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество чисел.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "55292",
+    "source": "from itertools import *\n\ndef valid( s ):\n  if not s: return False\n  n = int(s,3)\n  sumDigits = sum( map(int, s) )\n  for c in '02':\n    s = s.replace( c, '*' )\n  nPairs = sum( ( s[i] == '*' and s[i+1] == '1' or \\\n                  s[i] == '1' and s[i+1] == '*' )\n                  for i in range(len(s)-1) )\n  return nPairs > 3 and n % sumDigits == 0\n\ncount = 0\nfor w in product('012', repeat=12):\n  w = ''.join( w ).lstrip('0')\n  if valid( w ):\n    count += 1\n\nprint( count )\n"
+  },
+  {
+    "id": "ege8-499",
+    "type": 8,
+    "n": 499,
+    "title": "ЕГЭ 8.499 — Последнее нечётное КОТЕНОК",
+    "level": "сложно",
+    "statement": "499) (В. Лашин) Все семибуквенные слова, составленные из букв К, О, Т, Е, Н, А записаны в\nалфавитном порядке и пронумерованы. Ниже приведено начало списка.\n1. ААААААА\n2. ААААААЕ\n3. ААААААК\n4. ААААААН\n5. ААААААО\n6. ААААААТ\n...\nОпределите, под каким номером в этом списке стоит последнее слово с нечётным номером,\nкоторое может быть получено перестановкой букв в слове КОТЕНОК.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — номер слова.",
+    "tags": [
+      "ege8",
+      "combinatorics"
+    ],
+    "files": [],
+    "stdout": "270297",
+    "source": "from itertools import product\n\nn = 0\nanswer = 0\nfor word in product(sorted('КОТЕНА'), repeat=7):\n    n += 1\n    if n % 2 == 1 and sorted(word) == sorted('КОТЕНОК'):\n        answer = n\nprint(answer)\n"
+  }
+]

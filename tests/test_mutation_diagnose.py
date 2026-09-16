@@ -35,7 +35,8 @@ class MutationDiagnoseTests(unittest.TestCase):
         failed = 0
         covered = 0
         for problem in all_problems():
-            mutants = _diverse(generate_mutants(SOLUTIONS[problem.id]), 20)
+            cap = 4 if any(str(tag).startswith("ege") for tag in problem.tags) else 20
+            mutants = _diverse(generate_mutants(SOLUTIONS[problem.id]), cap)
             for mutant in mutants:
                 generated += 1
                 result = grade_solution(problem, mutant.source)

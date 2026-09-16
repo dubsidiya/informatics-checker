@@ -12,7 +12,17 @@ from checker.store import clean_student_name, record_attempt, reset_ready, summa
 def _harvest_solutions():
     root = Path(__file__).resolve().parent.parent / "data"
     out = {}
-    for name in ("harvest_8_14_16.json", "harvest_9_23_25.json", "harvest_13.json"):
+    names = (
+        "harvest_8.json",
+        "harvest_9.json",
+        "harvest_13.json",
+        "harvest_14.json",
+        "harvest_16.json",
+        "harvest_17.json",
+        "harvest_23.json",
+        "harvest_25.json",
+    )
+    for name in names:
         for item in json.loads((root / name).read_text(encoding="utf-8")):
             out[item["id"]] = item["source"]
     return out
