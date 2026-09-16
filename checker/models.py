@@ -162,6 +162,8 @@ class GradeResult:
         if not raw:
             return []
         pieces: list[str] = []
+        if raw:
+            pieces.append(f"`{raw}`")
         if len(raw) >= 2:
             pieces.append(raw)
         compact = " ".join(raw.split())

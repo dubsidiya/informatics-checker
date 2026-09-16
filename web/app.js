@@ -19,6 +19,7 @@ const els = {
   sig: document.getElementById("editor-sig"),
   keys: document.getElementById("editor-keys"),
   search: document.getElementById("task-search"),
+  hideSolved: document.getElementById("hide-solved"),
 };
 
 const LEVELS = ["все", "старт", "средне", "сложно"];
@@ -28,6 +29,7 @@ let currentProblem = null;
 let topicFilter = "все";
 let levelFilter = "все";
 let searchQuery = "";
+let hideSolved = false;
 let editor = null;
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "");
@@ -123,8 +125,14 @@ function markSolved(id) {
   localStorage.setItem("solved", JSON.stringify([...set]));
 }
 
-function codeKey(id) {
-  return `code:${studentName() || "_"}:${id}`;
+function codeKey(id, name) {
+  return `code:${name ?? (studentName() || "_")}:${id}`;
+}
+
+function loadSavedCode(id) {
+  return localStorage.getItem(codeKey(id))
+    || localStorage.getItem(codeKey(id, "_"))
+    || "";
 }
 
 function getCode() {
@@ -171,6 +179,7 @@ function starterFor(problem) {
 
 function filteredProblems() {
   const q = searchQuery.trim().toLowerCase();
+  const solved = solvedSet();
   return problems.filter((item) => {
     const topicOk = topicFilter === "все" || item.topic === topicFilter;
     const levelOk = levelFilter === "все" || item.level === levelFilter;
@@ -178,7 +187,8 @@ function filteredProblems() {
       || item.title.toLowerCase().includes(q)
       || item.id.toLowerCase().includes(q)
       || (item.topic || "").toLowerCase().includes(q);
-    return topicOk && levelOk && searchOk;
+    const solvedOk = !hideSolved || !solved.has(item.id);
+    return topicOk && levelOk && searchOk && solvedOk;
   });
 }
 
@@ -692,7 +702,7 @@ async function openProblem(id, updateHash) {
       <div><strong>выход</strong>\n${escapeHtml(example.stdout)}</div>
     </div>
   `).join("");
-  const saved = localStorage.getItem(codeKey(id));
+  const saved = loadSavedCode(id);
   setCode(saved && saved.trim() ? saved : starterFor(problem));
   els.result.classList.add("hidden");
   if (editor) {
@@ -858,7 +868,16 @@ els.levels.addEventListener("click", (event) => {
 });
 
 els.student.addEventListener("input", () => {
-  localStorage.setItem("student", studentName());
+  const prev = localStorage.getItem("student") || "";
+  const now = studentName();
+  if (currentId) {
+    const oldKey = codeKey(currentId, prev || "_");
+    const newKey = codeKey(currentId, now || "_");
+    if (oldKey !== newKey) {
+      localStorage.setItem(newKey, getCode() || localStorage.getItem(oldKey) || "");
+    }
+  }
+  localStorage.setItem("student", now);
   markNameState();
 });
 els.student.addEventListener("change", () => {
@@ -869,6 +888,13 @@ els.student.addEventListener("change", () => {
 if (els.search) {
   els.search.addEventListener("input", () => {
     searchQuery = els.search.value || "";
+    renderList();
+  });
+}
+
+if (els.hideSolved) {
+  els.hideSolved.addEventListener("change", () => {
+    hideSolved = els.hideSolved.checked;
     renderList();
   });
 }

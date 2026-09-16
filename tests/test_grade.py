@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from checker.grade import grade_solution
+from checker.models import GradeResult, Hint, TestResult
 from checker.problems import all_problems, get_problem, list_summaries
 from checker.store import clean_student_name, record_attempt, reset_ready, summarize
 
@@ -361,6 +362,22 @@ class HiddenPayloadTests(unittest.TestCase):
         result = grade_solution(problem, "print(2, -13)\n")
         revealed = json.dumps(result.to_dict(reveal_hidden=True), ensure_ascii=False)
         self.assertIn(hidden, revealed)
+
+    def test_short_hidden_answer_only_leaves_backticks(self):
+        result = GradeResult(
+            status="fail",
+            message="нет",
+            passed=0,
+            total=1,
+            tests=[
+                TestResult(index=0, hidden=True, verdict="WA", stdin="", expected="8", got="7"),
+            ],
+            hints=[Hint(kind="logic", title="t", detail="Ожидалось `8`, получилось `7`.")],
+            first_fail_index=0,
+        )
+        blob = json.dumps(result.to_dict(), ensure_ascii=False)
+        self.assertNotIn("`8`", blob)
+        self.assertIn("скрытый ответ", blob)
 
 
 if __name__ == "__main__":

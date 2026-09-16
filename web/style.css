@@ -106,6 +106,17 @@ h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: 
   margin: 0 0 10px;
 }
 
+.quiet-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--muted);
+  user-select: none;
+}
+.quiet-check input { accent-color: var(--ink); }
+
 .ghost-link {
   color: var(--ink);
   text-decoration: none;
