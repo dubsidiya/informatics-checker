@@ -31,17 +31,20 @@ TEACHER_TOKEN = hashlib.sha256(f"checker::{TEACHER_PIN}".encode("utf-8")).hexdig
 
 _RATE_LOCK = threading.Lock()
 _HITS: dict[str, deque[float]] = defaultdict(deque)
-RATE_LIMIT = 30
+RATE_LIMIT = 90
 RATE_WINDOW = 60.0
+LOGIN_LIMIT = 8
+NAME_LIMIT = 25
+_GRADE_GATE = threading.Semaphore(4)
 
 
-def _allow(ip: str) -> bool:
+def _allow(key: str, limit: int = RATE_LIMIT) -> bool:
     now = time.time()
     with _RATE_LOCK:
-        bucket = _HITS[ip]
+        bucket = _HITS[key]
         while bucket and now - bucket[0] > RATE_WINDOW:
             bucket.popleft()
-        if len(bucket) >= RATE_LIMIT:
+        if len(bucket) >= limit:
             return False
         bucket.append(now)
         return True
@@ -196,6 +199,9 @@ class Handler(SimpleHTTPRequestHandler):
         raw = self.rfile.read(length)
 
         if path == "/api/teacher/login":
+            if not _allow(f"login:{self._client_ip()}", LOGIN_LIMIT):
+                self._send_json({"detail": "Слишком много попыток входа. Подожди минуту."}, 429)
+                return
             try:
                 payload = json.loads(raw.decode("utf-8"))
                 pin = payload.get("pin", "")
@@ -222,10 +228,18 @@ class Handler(SimpleHTTPRequestHandler):
             payload = json.loads(raw.decode("utf-8"))
             problem_id = payload["problem_id"]
             code = payload.get("code", "")
-            student = clean_student_name(payload.get("student", ""))
+            raw_name = payload.get("student", "")
+            if not isinstance(raw_name, str) or not raw_name.strip():
+                self._send_json({"detail": "Напиши своё имя сверху, чтобы учитель увидел работу."}, 400)
+                return
+            student = clean_student_name(raw_name)
+            if not _allow(f"name:{student.casefold()}", NAME_LIMIT):
+                self._send_json({"detail": "Слишком много попыток с этим именем. Подожди минуту."}, 429)
+                return
             if not isinstance(code, str) or len(code) > 80_000:
                 raise ValueError("bad code")
-            result = grade_solution(get_problem(problem_id), code)
+            with _GRADE_GATE:
+                result = grade_solution(get_problem(problem_id), code)
         except KeyError:
             self._send_json({"detail": "Задача не найдена"}, 404)
             return

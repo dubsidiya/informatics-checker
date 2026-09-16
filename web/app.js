@@ -18,6 +18,7 @@ const els = {
   cursor: document.getElementById("editor-cursor"),
   sig: document.getElementById("editor-sig"),
   keys: document.getElementById("editor-keys"),
+  search: document.getElementById("task-search"),
 };
 
 const LEVELS = ["все", "старт", "средне", "сложно"];
@@ -26,6 +27,7 @@ let currentId = null;
 let currentProblem = null;
 let topicFilter = "все";
 let levelFilter = "все";
+let searchQuery = "";
 let editor = null;
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "");
@@ -168,10 +170,15 @@ function starterFor(problem) {
 }
 
 function filteredProblems() {
+  const q = searchQuery.trim().toLowerCase();
   return problems.filter((item) => {
     const topicOk = topicFilter === "все" || item.topic === topicFilter;
     const levelOk = levelFilter === "все" || item.level === levelFilter;
-    return topicOk && levelOk;
+    const searchOk = !q
+      || item.title.toLowerCase().includes(q)
+      || item.id.toLowerCase().includes(q)
+      || (item.topic || "").toLowerCase().includes(q);
+    return topicOk && levelOk && searchOk;
   });
 }
 
@@ -209,8 +216,17 @@ function renderList() {
 
 async function boot() {
   els.student.value = localStorage.getItem("student") || "";
+  markNameState();
   setupEditor();
-  problems = await (await fetch("/api/problems")).json();
+  try {
+    const response = await fetch("/api/problems");
+    if (!response.ok) throw new Error("bad");
+    problems = await response.json();
+  } catch {
+    els.title.textContent = "Не удалось загрузить задачи";
+    els.statement.textContent = "Обнови страницу. Если снова ошибка — сервер проверяльщика недоступен.";
+    return;
+  }
   renderChips();
   const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   const start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
@@ -245,7 +261,8 @@ function hintItem(text, className, extra) {
   return Object.assign({ text, displayText: text, className }, extra || {});
 }
 
-function pythonHint(cm) {
+function pythonHint(cm, options) {
+  const auto = !!(options && options.pythonAuto);
   const cursor = cm.getCursor();
   const token = cm.getTokenAt(cursor);
   const line = cm.getLine(cursor.line).slice(0, cursor.ch);
@@ -307,7 +324,11 @@ function pythonHint(cm) {
   } else if (/^\s*import\s+[\w.]*$/.test(line)) {
     for (const name of ["itertools", "functools", "ipaddress", "collections", "string", "math"]) add(name);
   } else if (token.type !== "string" && token.type !== "comment") {
-    if (!prefix || prefix.length < 4) {
+    if (auto && prefix.length < 3) {
+      if (!list.length) return;
+      return { list, from, to: cursor };
+    }
+    if (!auto) {
       for (const item of SNIPPETS) {
         if (lower && !item.label.toLowerCase().startsWith(lower) && !item.snippet.toLowerCase().startsWith(lower)) continue;
         list.push({
@@ -619,8 +640,8 @@ function setupEditor() {
     if (typed !== "." && !/[A-Za-z_]/.test(typed)) return;
     const token = cm.getTokenAt(cm.getCursor());
     if (token.type === "comment") return;
-    if (typed !== "." && (token.string || "").length < 2 && token.type !== "string") return;
-    cm.showHint({ completeSingle: false });
+    if (typed !== "." && (token.string || "").length < 3 && token.type !== "string") return;
+    cm.showHint({ completeSingle: false, pythonAuto: true, hint: pythonHint });
   });
   if (els.full) els.full.addEventListener("click", toggleEditorFull);
   window.addEventListener("keydown", (event) => {
@@ -684,7 +705,15 @@ async function openProblem(id, updateHash) {
 async function check() {
   if (!currentId) return;
   persistCode();
+  if (!studentName()) {
+    markNameState();
+    els.student.focus();
+    els.result.classList.remove("hidden");
+    els.result.innerHTML = `<div class="banner warn">Напиши своё имя сверху, чтобы учитель увидел работу.</div>`;
+    return;
+  }
   els.run.disabled = true;
+  els.run.textContent = "Проверяю…";
   try {
     const response = await fetch("/api/check", {
       method: "POST",
@@ -709,6 +738,7 @@ async function check() {
     els.result.innerHTML = `<div class="banner bad">${escapeHtml(error.message || "Не удалось связаться с проверяющей системой.")}</div>`;
   } finally {
     els.run.disabled = false;
+    els.run.textContent = "Проверить";
   }
 }
 
@@ -748,9 +778,9 @@ function renderResult(data) {
     <tr>
       <td>${test.index + 1}${test.hidden ? " · скрытый" : ""}</td>
       <td><span class="pill ${test.verdict}">${test.verdict}</span></td>
-      <td><code>${escapeHtml(preview(test.stdin))}</code></td>
-      <td><code>${escapeHtml(preview(test.expected))}</code></td>
-      <td><code>${escapeHtml(test.verdict === "OK" ? test.got.trim() : (test.got || test.error || "—"))}</code></td>
+      <td><code>${test.hidden ? "скрыт" : escapeHtml(preview(test.stdin))}</code></td>
+      <td><code>${test.hidden ? "скрыт" : escapeHtml(preview(test.expected))}</code></td>
+      <td><code>${test.hidden ? (test.verdict === "OK" ? "совпало" : escapeHtml(test.error || "не совпало")) : escapeHtml(test.verdict === "OK" ? test.got.trim() : (test.got || test.error || "—"))}</code></td>
     </tr>
   `).join("");
 
@@ -807,6 +837,10 @@ function escapeAttr(value) {
   return escapeHtml(value);
 }
 
+function markNameState() {
+  els.student.classList.toggle("missing", !studentName());
+}
+
 els.topics.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-topic]");
   if (!button) return;
@@ -823,9 +857,21 @@ els.levels.addEventListener("click", (event) => {
   renderList();
 });
 
+els.student.addEventListener("input", () => {
+  localStorage.setItem("student", studentName());
+  markNameState();
+});
 els.student.addEventListener("change", () => {
   localStorage.setItem("student", studentName());
+  markNameState();
 });
+
+if (els.search) {
+  els.search.addEventListener("input", () => {
+    searchQuery = els.search.value || "";
+    renderList();
+  });
+}
 
 els.code.addEventListener("keydown", (event) => {
   if (event.key === "Tab") {

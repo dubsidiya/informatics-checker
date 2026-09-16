@@ -33,14 +33,23 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
     findings.extend(extra_findings(facts, problem, outcome))
 
     if outcome.first.verdict == "WA" and not any(weight >= 80 for weight, _ in findings):
-        findings.append(
-            hint(
-                "Вывод не совпал с эталоном",
-                f"Ожидалось `{_preview(outcome.expected)}`, получилось `{_preview(outcome.got)}`. "
-                "Пройди условие на этом вводе вручную — автоматический разбор не нашёл точечной причины.",
-                weight=60,
+        if outcome.first.hidden:
+            findings.append(
+                hint(
+                    "Скрытый тест не пройден",
+                    "Примеры из условия могли пройти, а полный набор — нет. Сверь границы, знаки, что считается парой, и что именно просят вывести.",
+                    weight=60,
+                )
             )
-        )
+        else:
+            findings.append(
+                hint(
+                    "Вывод не совпал с эталоном",
+                    f"Ожидалось `{_preview(outcome.expected)}`, получилось `{_preview(outcome.got)}`. "
+                    "Пройди условие на этом вводе вручную — автоматический разбор не нашёл точечной причины.",
+                    weight=60,
+                )
+            )
     return _dedupe(_sorted(findings))[:3]
 
 
@@ -380,9 +389,9 @@ def _ege_range(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tup
                     weight=88,
                 ))
 
-    if outcome.value_ok and outcome.count_more and not missing_not:
+    if outcome.value_ok and outcome.count_more and not missing_not and not outcome.first.hidden:
         found.append(hint("Максимум верный, чисел больше", f"Получилось {outcome.got_tokens[0]} вместо {outcome.exp_tokens[0]}. Фильтр слабее: в if не хватает «не делится на ...».", weight=84))
-    if outcome.value_ok and outcome.count_less:
+    if outcome.value_ok and outcome.count_less and not outcome.first.hidden:
         found.append(hint("Максимум верный, чисел меньше", f"Получилось {outcome.got_tokens[0]} вместо {outcome.exp_tokens[0]}. Фильтр строже условия или range не включает конец отрезка.", weight=84))
     if outcome.count_ok and outcome.value_ok is False:
         verb = "минимум" if facts.uses_min and not facts.uses_max else "максимум"
@@ -440,10 +449,10 @@ def _ege_file(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tupl
     if problem.id == "ege17-271" and _count_uses_average(facts):
         found.append(hint("Среднее отсекает пары из счётчика", "Количество — все пары с суммой последних цифр 7. Сравнение со средним нужно только для второго числа, не для счётчика.", weight=95))
 
-    if outcome.value_ok and outcome.count_more and "pairs" in tags:
+    if outcome.value_ok and outcome.count_more and "pairs" in tags and not outcome.first.hidden:
         extra = " Часто вместо «хотя бы одно» стоит and." if "at_least_one" in tags else ""
         found.append(hint("Пар больше, чем нужно", f"Второе число совпало, счётчик {outcome.got_tokens[0]} вместо {outcome.exp_tokens[0]}. В отбор попадают лишние пары.{extra}", weight=78))
-    if outcome.value_ok and outcome.count_less and "pairs" in tags:
+    if outcome.value_ok and outcome.count_less and "pairs" in tags and not outcome.first.hidden:
         extra = " «Хотя бы одно» — это or." if "at_least_one" in tags else ""
         found.append(hint("Пар меньше, чем нужно", f"Второе число совпало, счётчик {outcome.got_tokens[0]} вместо {outcome.exp_tokens[0]}. Условие отбора слишком узкое.{extra}", weight=78))
     if outcome.count_ok and outcome.value_ok is False:

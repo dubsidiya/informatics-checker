@@ -200,6 +200,7 @@ def summarize() -> dict[str, Any]:
                 "total": row["total"],
                 "ts": row["ts"],
                 "attempt_id": row["id"],
+                "best_attempt_id": row["id"],
                 "best_status": row["status"],
             },
         )
@@ -211,8 +212,10 @@ def summarize() -> dict[str, Any]:
         cell["attempt_id"] = row["id"]
         if row["status"] == "ok":
             cell["best_status"] = "ok"
+            cell["best_attempt_id"] = row["id"]
         elif cell.get("best_status") != "ok":
             cell["best_status"] = row["status"]
+            cell["best_attempt_id"] = row["id"]
 
     roster = []
     for bucket in students.values():

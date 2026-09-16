@@ -311,13 +311,56 @@ class StoreTests(unittest.TestCase):
 
     def test_summary_tracks_best(self):
         record_attempt("Анна", "sum-two", "fail", 1, 5, "нет", "print(1)")
-        record_attempt("Анна", "sum-two", "ok", 5, 5, "да", "print(2)")
-        record_attempt("Борис", "sum-two", "fail", 0, 5, "нет", "print(3)")
+        ok_id = record_attempt("Анна", "sum-two", "ok", 5, 5, "да", "print(2)")
+        last_id = record_attempt("Борис", "sum-two", "fail", 0, 5, "нет", "print(3)")
         data = summarize()
         self.assertEqual(data["total_students"], 2)
         anna = next(item for item in data["students"] if item["name"] == "Анна")
+        boris = next(item for item in data["students"] if item["name"] == "Борис")
         self.assertEqual(anna["solved"], 1)
         self.assertEqual(anna["problems"]["sum-two"]["best_status"], "ok")
+        self.assertEqual(anna["problems"]["sum-two"]["best_attempt_id"], ok_id)
+        self.assertEqual(boris["problems"]["sum-two"]["attempt_id"], last_id)
+
+    def test_best_survives_later_fail(self):
+        record_attempt("Анна", "sum-two", "fail", 1, 5, "нет", "print(1)")
+        ok_id = record_attempt("Анна", "sum-two", "ok", 5, 5, "да", "print(2)")
+        record_attempt("Анна", "sum-two", "fail", 0, 5, "нет", "print(3)")
+        data = summarize()
+        anna = next(item for item in data["students"] if item["name"] == "Анна")
+        cell = anna["problems"]["sum-two"]
+        self.assertEqual(cell["best_status"], "ok")
+        self.assertEqual(cell["best_attempt_id"], ok_id)
+        self.assertEqual(cell["status"], "fail")
+
+
+class HiddenPayloadTests(unittest.TestCase):
+    def test_ege17_hidden_answer_not_in_student_json(self):
+        problem = get_problem("ege17-271")
+        hidden = next(case.stdout for case in problem.tests if case.hidden)
+        self.assertTrue(hidden.strip())
+        result = grade_solution(problem, "print(2, -13)\n")
+        self.assertEqual(result.status, "fail")
+        payload = result.to_dict()
+        blob = json.dumps(payload, ensure_ascii=False)
+        self.assertNotIn(hidden, blob)
+        for token in hidden.split():
+            if token.lstrip("-").isdigit() and len(token.lstrip("-")) >= 3:
+                self.assertNotIn(token, blob)
+        hidden_rows = [item for item in payload["tests"] if item["hidden"]]
+        self.assertTrue(hidden_rows)
+        for row in hidden_rows:
+            self.assertEqual(row["expected"], "")
+            self.assertEqual(row["got"], "")
+            self.assertEqual(row["stdin"], "")
+        self.assertFalse(payload["trace"])
+
+    def test_teacher_can_still_see_hidden_in_internal_result(self):
+        problem = get_problem("ege17-271")
+        hidden = next(case.stdout for case in problem.tests if case.hidden)
+        result = grade_solution(problem, "print(2, -13)\n")
+        revealed = json.dumps(result.to_dict(reveal_hidden=True), ensure_ascii=False)
+        self.assertIn(hidden, revealed)
 
 
 if __name__ == "__main__":
