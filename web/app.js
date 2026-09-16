@@ -18,15 +18,22 @@ const els = {
   cursor: document.getElementById("editor-cursor"),
   sig: document.getElementById("editor-sig"),
   keys: document.getElementById("editor-keys"),
+  search: document.getElementById("task-search"),
+  unsolved: document.getElementById("only-unsolved"),
+  copyLink: document.getElementById("copy-link"),
+  nameHint: document.getElementById("name-hint"),
 };
 
 const LEVELS = ["все", "старт", "средне", "сложно"];
 let problems = [];
 let currentId = null;
 let currentProblem = null;
-let topicFilter = "все";
-let levelFilter = "все";
+let topicFilter = localStorage.getItem("topicFilter") || "все";
+let levelFilter = localStorage.getItem("levelFilter") || "все";
+let searchQuery = "";
+let onlyUnsolved = localStorage.getItem("onlyUnsolved") === "1";
 let editor = null;
+let lastStoredName = "";
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "");
 const PYTHON_WORDS = [
@@ -167,11 +174,21 @@ function starterFor(problem) {
   return `# ${problem.title}\n# прочитай ввод и выведи только ответ\n\n`;
 }
 
+function updateNameHint() {
+  if (!els.nameHint) return;
+  els.nameHint.classList.toggle("visible", !studentName());
+}
+
 function filteredProblems() {
+  const query = searchQuery.trim().toLowerCase();
+  const solved = solvedSet();
   return problems.filter((item) => {
     const topicOk = topicFilter === "все" || item.topic === topicFilter;
     const levelOk = levelFilter === "все" || item.level === levelFilter;
-    return topicOk && levelOk;
+    const haystack = `${item.title} ${item.topic} ${item.id}`.toLowerCase();
+    const searchOk = !query || haystack.includes(query);
+    const unsolvedOk = !onlyUnsolved || !solved.has(item.id);
+    return topicOk && levelOk && searchOk && unsolvedOk;
   });
 }
 
@@ -188,7 +205,9 @@ function renderChips() {
 function renderList() {
   const items = filteredProblems();
   const solved = solvedSet();
-  els.count.textContent = `${items.length} из ${problems.length}`;
+  const scope = problems.filter((item) => topicFilter === "все" || item.topic === topicFilter);
+  const solvedInScope = scope.filter((item) => solved.has(item.id)).length;
+  els.count.textContent = `${items.length} показано · решено ${solvedInScope} из ${scope.length}`;
   els.list.innerHTML = "";
   for (const item of items) {
     const button = document.createElement("button");
@@ -209,8 +228,14 @@ function renderList() {
 
 async function boot() {
   els.student.value = localStorage.getItem("student") || "";
+  lastStoredName = studentName();
+  updateNameHint();
+  if (els.unsolved) els.unsolved.checked = onlyUnsolved;
   setupEditor();
   problems = await (await fetch("/api/problems")).json();
+  if (topicFilter !== "все" && !problems.some((item) => item.topic === topicFilter)) {
+    topicFilter = "все";
+  }
   renderChips();
   const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   const start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
@@ -684,7 +709,17 @@ async function openProblem(id, updateHash) {
 async function check() {
   if (!currentId) return;
   persistCode();
+  localStorage.setItem("student", studentName());
+  if (!studentName()) {
+    updateNameHint();
+    const go = window.confirm("Имя не указано. Учитель увидит работу как «без имени». Проверить всё равно?");
+    if (!go) {
+      els.student.focus();
+      return;
+    }
+  }
   els.run.disabled = true;
+  els.run.textContent = "Проверяю…";
   try {
     const response = await fetch("/api/check", {
       method: "POST",
@@ -709,6 +744,7 @@ async function check() {
     els.result.innerHTML = `<div class="banner bad">${escapeHtml(error.message || "Не удалось связаться с проверяющей системой.")}</div>`;
   } finally {
     els.run.disabled = false;
+    els.run.textContent = "Проверить";
   }
 }
 
@@ -744,15 +780,23 @@ function renderResult(data) {
     return;
   }
 
-  const tests = (data.tests || []).map((test) => `
+  const tests = (data.tests || []).map((test) => {
+    const hidden = test.hidden;
+    const stdin = hidden ? "скрытый" : preview(test.stdin);
+    const expected = hidden ? "скрытый" : preview(test.expected);
+    const got = hidden
+      ? (test.verdict === "OK" ? "ок" : (test.error || test.verdict))
+      : (test.verdict === "OK" ? test.got.trim() : (test.got || test.error || "—"));
+    return `
     <tr>
-      <td>${test.index + 1}${test.hidden ? " · скрытый" : ""}</td>
+      <td>${test.index + 1}${hidden ? " · скрытый" : ""}</td>
       <td><span class="pill ${test.verdict}">${test.verdict}</span></td>
-      <td><code>${escapeHtml(preview(test.stdin))}</code></td>
-      <td><code>${escapeHtml(preview(test.expected))}</code></td>
-      <td><code>${escapeHtml(test.verdict === "OK" ? test.got.trim() : (test.got || test.error || "—"))}</code></td>
+      <td><code>${escapeHtml(stdin)}</code></td>
+      <td><code>${escapeHtml(expected)}</code></td>
+      <td><code>${escapeHtml(got)}</code></td>
     </tr>
-  `).join("");
+  `;
+  }).join("");
 
   const hints = (data.hints || []).map((hint) => `
     <article class="hint-card ${hint.kind}">
@@ -811,6 +855,7 @@ els.topics.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-topic]");
   if (!button) return;
   topicFilter = button.dataset.topic;
+  localStorage.setItem("topicFilter", topicFilter);
   renderChips();
   renderList();
 });
@@ -819,12 +864,54 @@ els.levels.addEventListener("click", (event) => {
   const button = event.target.closest("button[data-level]");
   if (!button) return;
   levelFilter = button.dataset.level;
+  localStorage.setItem("levelFilter", levelFilter);
   renderChips();
   renderList();
 });
 
+if (els.search) {
+  els.search.addEventListener("input", () => {
+    searchQuery = els.search.value || "";
+    renderList();
+  });
+}
+
+if (els.unsolved) {
+  els.unsolved.addEventListener("change", () => {
+    onlyUnsolved = els.unsolved.checked;
+    localStorage.setItem("onlyUnsolved", onlyUnsolved ? "1" : "0");
+    renderList();
+  });
+}
+
+if (els.copyLink) {
+  els.copyLink.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      els.copyLink.textContent = "Скопировано";
+      els.copyLink.classList.add("copied");
+      setTimeout(() => {
+        els.copyLink.textContent = "Ссылка";
+        els.copyLink.classList.remove("copied");
+      }, 1400);
+    } catch {
+      els.copyLink.textContent = "Не вышло";
+    }
+  });
+}
+
+els.student.addEventListener("input", () => {
+  updateNameHint();
+});
 els.student.addEventListener("change", () => {
-  localStorage.setItem("student", studentName());
+  const next = studentName();
+  if (currentId) {
+    persistCode();
+    localStorage.setItem(`code:${next || "_"}:${currentId}`, getCode());
+  }
+  lastStoredName = next;
+  localStorage.setItem("student", next);
+  updateNameHint();
 });
 
 els.code.addEventListener("keydown", (event) => {

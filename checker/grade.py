@@ -56,7 +56,7 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
     if first_fail.verdict in {"WA", "RE"}:
         fail_case = problem.tests[first_fail.index]
         fail_files = problem.files_for(fail_case)
-        if not fail_files:
+        if not fail_files and not fail_case.hidden:
             trace = to_trace_steps(run_trace(source, first_fail.stdin))
 
     if first_fail.verdict == "RE":
@@ -81,12 +81,16 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
 def _run_test(source: str, index: int, case, problem: Problem) -> TestResult:
     files = problem.files_for(case)
     timeout = 4.0 if files else 1.5
+    memory_mb = 256
     if any(tag in problem.tags for tag in ("ege8", "ege16", "ege23", "ege25")):
-        timeout = max(timeout, 3.0)
+        timeout = max(timeout, 12.0)
+        memory_mb = 384
+    if "ege16" in problem.tags:
+        memory_mb = 768
     if "ege9" in problem.tags:
         timeout = max(timeout, 4.0)
     shown_in = f"[файл {files[0].rsplit('/', 1)[-1]}]" if files else case.stdin
-    result = run_student(source, case.stdin, timeout=timeout, files=files)
+    result = run_student(source, case.stdin, timeout=timeout, files=files, memory_mb=memory_mb)
     if result.timed_out:
         return TestResult(
             index=index,

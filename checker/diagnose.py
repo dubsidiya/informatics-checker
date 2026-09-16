@@ -33,14 +33,23 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
     findings.extend(extra_findings(facts, problem, outcome))
 
     if outcome.first.verdict == "WA" and not any(weight >= 80 for weight, _ in findings):
-        findings.append(
-            hint(
-                "Вывод не совпал с эталоном",
-                f"Ожидалось `{_preview(outcome.expected)}`, получилось `{_preview(outcome.got)}`. "
-                "Пройди условие на этом вводе вручную — автоматический разбор не нашёл точечной причины.",
-                weight=60,
+        if outcome.first.hidden:
+            findings.append(
+                hint(
+                    "Скрытый тест не пройден",
+                    "Примеры сходятся, но есть случай из условия, который программа не покрывает. Проверь границы и особые значения.",
+                    weight=60,
+                )
             )
-        )
+        else:
+            findings.append(
+                hint(
+                    "Вывод не совпал с эталоном",
+                    f"Ожидалось `{_preview(outcome.expected)}`, получилось `{_preview(outcome.got)}`. "
+                    "Пройди условие на этом вводе вручную — автоматический разбор не нашёл точечной причины.",
+                    weight=60,
+                )
+            )
     return _dedupe(_sorted(findings))[:3]
 
 

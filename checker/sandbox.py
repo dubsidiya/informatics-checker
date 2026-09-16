@@ -51,7 +51,7 @@ class RunResult:
     error_message: str = ""
 
 
-def _apply_limits(cpu_seconds: int = 2) -> None:
+def _apply_limits(cpu_seconds: int = 2, memory_mb: int = 256) -> None:
     try:
         import resource
 
@@ -60,7 +60,8 @@ def _apply_limits(cpu_seconds: int = 2) -> None:
         resource.setrlimit(resource.RLIMIT_FSIZE, (2_000_000, 2_000_000))
         resource.setrlimit(resource.RLIMIT_NPROC, (64, 64))
         try:
-            resource.setrlimit(resource.RLIMIT_AS, (256 * 1024 * 1024, 256 * 1024 * 1024))
+            memory = max(256, int(memory_mb)) * 1024 * 1024
+            resource.setrlimit(resource.RLIMIT_AS, (memory, memory))
         except (ValueError, OSError):
             pass
     except Exception:
@@ -100,11 +101,11 @@ def _prepare_files(work: Path, files: list[str]) -> str | None:
     return canonical
 
 
-def _limits_fn(timeout: float):
+def _limits_fn(timeout: float, memory_mb: int = 256):
     cpu = max(2, int(timeout) + 1)
 
     def inner() -> None:
-        _apply_limits(cpu)
+        _apply_limits(cpu, memory_mb)
 
     return inner if os.name == "posix" else None
 
@@ -114,6 +115,7 @@ def run_student(
     stdin: str,
     timeout: float = 1.5,
     files: list[str] | None = None,
+    memory_mb: int = 256,
 ) -> RunResult:
     work = Path(tempfile.mkdtemp(prefix="chk_"))
     try:
@@ -136,7 +138,7 @@ def run_student(
             timeout=timeout,
             env=LIMITED_ENV,
             cwd=str(work),
-            preexec_fn=_limits_fn(timeout),
+            preexec_fn=_limits_fn(timeout, memory_mb),
         )
         error_type, error_line, error_message = parse_traceback(completed.stderr)
         return RunResult(

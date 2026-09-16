@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Cache-Control" content="no-store">
   <title>Проверяльщик решений</title>
-  <link rel="stylesheet" href="/static/style.css?v=20260916b">
+  <link rel="stylesheet" href="/static/style.css?v=20260916c">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
@@ -23,6 +23,7 @@
         <label class="name-field">
           <span>Имя ученика</span>
           <input id="student" type="text" maxlength="80" placeholder="Как подписать работу" autocomplete="name">
+          <small id="name-hint" class="name-hint">Без имени учитель увидит работу как «без имени».</small>
         </label>
         <a class="ghost-link" href="/teacher">Кабинет учителя</a>
       </div>
@@ -37,6 +38,13 @@
         <p class="filter-label">Уровень</p>
         <div id="level-filters" class="chips"></div>
       </div>
+      <div class="filter-extra">
+        <p class="filter-label">Поиск</p>
+        <div class="search-row">
+          <input id="task-search" type="search" placeholder="Название или номер, например 13.83" autocomplete="off">
+          <label class="check-filter"><input id="only-unsolved" type="checkbox"> только нерешённые</label>
+        </div>
+      </div>
     </div>
 
     <div class="layout">
@@ -50,7 +58,10 @@
 
       <section class="panel brief">
         <p class="level" id="level"></p>
-        <h2 id="title">Загрузка…</h2>
+        <div class="brief-title">
+          <h2 id="title">Загрузка…</h2>
+          <button id="copy-link" type="button" class="ghost-btn" title="Скопировать ссылку на задачу">Ссылка</button>
+        </div>
         <p id="statement"></p>
         <div id="file-box" class="file-box hidden"></div>
         <div class="meta">
@@ -106,6 +117,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/jump-to-line.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/match-highlighter.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/app.js?v=20260916b"></script>
+  <script src="/static/app.js?v=20260916c"></script>
 </body>
 </html>
