@@ -111,8 +111,22 @@ class GradeResult:
             "passed": self.passed,
             "total": self.total,
             "syntax": asdict(self.syntax) if self.syntax else None,
-            "tests": [asdict(item) for item in self.tests],
+            "tests": [public_test_dict(item) for item in self.tests],
             "hints": [asdict(item) for item in self.hints],
             "trace": [asdict(item) for item in self.trace],
             "first_fail_index": self.first_fail_index,
         }
+
+
+def public_test_dict(item: TestResult) -> dict[str, Any]:
+    data = asdict(item)
+    if not item.hidden:
+        return data
+    data["stdin"] = ""
+    data["expected"] = ""
+    data["got"] = ""
+    if item.verdict not in {"RE", "TLE"}:
+        data["error"] = ""
+        data["error_type"] = ""
+        data["error_line"] = None
+    return data

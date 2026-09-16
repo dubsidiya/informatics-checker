@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Кабинет учителя</title>
-  <link rel="stylesheet" href="/static/style.css?v=20260916b">
+  <link rel="stylesheet" href="/static/style.css?v=20260916c">
 </head>
 <body>
   <div class="page">
@@ -32,14 +32,36 @@
       <div id="stats" class="stats"></div>
       <div class="panel">
         <div class="board-bar">
-          <h2>Кто что сдал</h2>
-          <p class="muted">Нажми ячейку, чтобы открыть последнюю попытку и код.</p>
+          <div>
+            <h2>Кто что сдал</h2>
+            <p class="muted">Нажми ячейку, чтобы открыть код и историю попыток. Таблица сама обновляется.</p>
+          </div>
+          <p id="updated" class="muted"></p>
+        </div>
+        <div class="board-tools">
+          <label class="board-field">
+            <span>Тема</span>
+            <select id="topic-filter"></select>
+          </label>
+          <label class="board-field">
+            <span>Ученик</span>
+            <input id="student-search" type="search" placeholder="Найти по имени" autocomplete="off">
+          </label>
+          <label class="check-filter">
+            <input id="only-attempted" type="checkbox" checked>
+            только задачи с попытками
+          </label>
+          <label class="check-filter">
+            <input id="auto-refresh" type="checkbox" checked>
+            автообновление
+          </label>
+          <button id="refresh" class="ghost-btn" type="button">Обновить</button>
         </div>
         <div id="grid" class="table-wrap"></div>
       </div>
       <section id="attempt" class="panel result hidden"></section>
     </section>
   </div>
-  <script src="/static/teacher.js?v=20260916b"></script>
+  <script src="/static/teacher.js?v=20260916c"></script>
 </body>
 </html>

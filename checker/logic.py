@@ -97,7 +97,7 @@ def build_hints(
             )
         )
 
-    return _dedupe(hints)
+    return _redact_hidden_io(_dedupe(hints), tests)
 
 
 def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
@@ -192,7 +192,11 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
             Hint(
                 kind="format",
                 title="Напечатано 1/0 вместо слова",
-                detail=f"Ожидалось `{_preview(expected)}`, а программа напечатала `{_preview(got)}`. Нужны слова из условия, не True/False и не 1/0.",
+                detail=(
+                    "Нужны слова из условия, не True/False и не 1/0."
+                    if test.hidden
+                    else f"Ожидалось `{_preview(expected)}`, а программа напечатала `{_preview(got)}`. Нужны слова из условия, не True/False и не 1/0."
+                ),
             )
         )
         return hints
@@ -237,7 +241,11 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
         Hint(
             kind="logic",
             title="Вывод не совпал с эталоном",
-            detail=f"Ожидалось `{_preview(expected)}`, получилось `{_preview(got)}`. Пройди алгоритм на этом вводе вручную и сравни с трассировкой ниже.",
+            detail=(
+                "Ответ на скрытом тесте не совпал. Пройди условие вручную на своих примерах, включая нули и отрицательные."
+                if test.hidden
+                else f"Ожидалось `{_preview(expected)}`, получилось `{_preview(got)}`. Пройди алгоритм на этом вводе вручную и сравни с трассировкой ниже."
+            ),
         )
     )
     return hints
@@ -455,6 +463,11 @@ def _looks_like_missing_last(got: float, expected: float, stdin: str) -> bool:
 
 
 def _compare_numbers(got: float, expected: float, test: TestResult) -> str:
+    if test.hidden:
+        return (
+            "На скрытом тесте получается другое число. "
+            "Пройди условие на своих примерах, включая нули и отрицательные."
+        )
     shown_in = _preview(test.stdin.replace("\n", " / "))
     return (
         f"На вводе `{shown_in}` ожидалось { _as_int(expected) }, "
@@ -492,6 +505,30 @@ def to_trace_steps(raw: list[dict]) -> list[TraceStep]:
             )
         )
     return steps
+
+
+def _redact_hidden_io(hints: list[Hint], tests: list[TestResult]) -> list[Hint]:
+    first = next((item for item in tests if item.verdict != "OK"), None)
+    if first is None or not first.hidden:
+        return hints
+    secrets: list[str] = []
+    for raw in (first.stdin, first.expected, first.got):
+        blob = compact(raw or "")
+        if len(blob) >= 2:
+            secrets.append(blob)
+        for token in blob.split():
+            if len(token) >= 3:
+                secrets.append(token)
+    secrets = sorted(set(secrets), key=len, reverse=True)
+    if not secrets:
+        return hints
+    redacted: list[Hint] = []
+    for hint in hints:
+        detail = hint.detail
+        for secret in secrets:
+            detail = detail.replace(secret, "скрытый тест")
+        redacted.append(Hint(kind=hint.kind, title=hint.title, detail=detail, line=hint.line))
+    return redacted
 
 
 def _dedupe(hints: list[Hint]) -> list[Hint]:

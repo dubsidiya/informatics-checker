@@ -320,5 +320,38 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(anna["problems"]["sum-two"]["best_status"], "ok")
 
 
+class PublicPayloadTests(unittest.TestCase):
+    def test_hidden_tests_redacted_in_dict(self):
+        result = grade_solution(
+            get_problem("sum-two"),
+            "a, b = map(int, input().split())\n"
+            "s = a + b\n"
+            "print(1 if s == 0 else s)\n",
+        )
+        self.assertEqual(result.status, "fail")
+        payload = result.to_dict()
+        hidden = [item for item in payload["tests"] if item["hidden"]]
+        self.assertTrue(hidden)
+        for item in hidden:
+            self.assertEqual(item["stdin"], "")
+            self.assertEqual(item["expected"], "")
+            self.assertEqual(item["got"], "")
+        blob = " ".join(hint["detail"] for hint in payload["hints"])
+        self.assertNotIn("0 0", blob)
+        visible = [item for item in payload["tests"] if not item["hidden"]]
+        self.assertTrue(any(item["stdin"] == "2 3" for item in visible))
+
+    def test_visible_fail_still_shows_io(self):
+        result = grade_solution(
+            get_problem("sum-two"),
+            "a, b = input().split()\nprint(a + b)\n",
+        )
+        payload = result.to_dict()
+        first = payload["tests"][0]
+        self.assertFalse(first["hidden"])
+        self.assertEqual(first["stdin"], "2 3")
+        self.assertEqual(first["expected"], "5")
+
+
 if __name__ == "__main__":
     unittest.main()
