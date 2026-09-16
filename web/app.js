@@ -64,9 +64,25 @@ function persistCode() {
 }
 
 function starterFor(problem) {
-  if (problem.files && problem.files[0]) {
-    const name = problem.files[0].name;
+  const tags = problem.tags || [];
+  const name = problem.files && problem.files[0] ? problem.files[0].name : "";
+  if (tags.includes("ege9") && name) {
+    if (name.endsWith(".txt")) {
+      return `# ${problem.title}\nfor line in open('${name}'):\n    a = [int(x) for x in line.split()]\n\n`;
+    }
+    return `# ${problem.title}\nfor line in open('${name}'):\n    a = [int(x) for x in line.replace(',', ';').split(';') if x.strip()]\n\n`;
+  }
+  if (name) {
     return `# ${problem.title}\ndata = [int(x) for x in open('${name}')]\n\n`;
+  }
+  if (tags.includes("ege8")) {
+    return `# ${problem.title}\nfrom itertools import product\n\n`;
+  }
+  if (tags.includes("ege13")) {
+    return `# ${problem.title}\nfrom ipaddress import ip_address, ip_network\n\n`;
+  }
+  if (tags.includes("ege16") || tags.includes("ege23")) {
+    return `# ${problem.title}\nfrom functools import lru_cache\n\n`;
   }
   return `# ${problem.title}\n# прочитай ввод и выведи только ответ\n\n`;
 }
@@ -164,7 +180,8 @@ async function openProblem(id, updateHash) {
   if (problem.files && problem.files[0]) {
     const name = problem.files[0].name;
     els.fileBox.classList.remove("hidden");
-    els.fileBox.innerHTML = `К задаче приложен <a href="/api/problems/${encodeURIComponent(problem.id)}/file">${escapeHtml(name)}</a>. <code>open('${escapeHtml(name)}')</code> или <code>open('17.txt')</code> его откроет.`;
+    const alias = (problem.tags || []).includes("ege9") ? "9.txt" : "17.txt";
+    els.fileBox.innerHTML = `К задаче приложен <a href="/api/problems/${encodeURIComponent(problem.id)}/file">${escapeHtml(name)}</a>. <code>open('${escapeHtml(name)}')</code> или <code>open('${alias}')</code> его откроет.`;
   } else if (els.fileBox) {
     els.fileBox.classList.add("hidden");
     els.fileBox.innerHTML = "";

@@ -374,7 +374,11 @@ def _format_only(got: str, expected: str) -> bool:
         return False
     compact_got = " ".join(got.split())
     compact_exp = " ".join(expected.split())
-    return compact_got == compact_exp or got.strip().lower() == expected.strip().lower()
+    if compact_got == compact_exp or got.strip().lower() == expected.strip().lower():
+        return True
+    got_tokens = _tokens(got)
+    exp_tokens = _tokens(expected)
+    return bool(got_tokens) and got_tokens == exp_tokens
 
 
 def _int_or_none(text: str) -> int | None:

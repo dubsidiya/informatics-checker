@@ -94,6 +94,8 @@ def _prepare_files(work: Path, files: list[str]) -> str | None:
         dest = work / src.name
         shutil.copyfile(src, dest)
         shutil.copyfile(src, work / "17.txt")
+        shutil.copyfile(src, work / "9.txt")
+        shutil.copyfile(src, work / (src.stem + ".txt"))
         canonical = src.name
     return canonical
 

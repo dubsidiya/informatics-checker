@@ -9,6 +9,7 @@ from checker.facts import (
     extract_outcome,
     parse_div_filters,
 )
+from checker.ege_hints import diagnose_ege
 from checker.flips import extra_findings
 from checker.models import Hint, Problem, TestResult
 
@@ -28,6 +29,7 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
     elif "ege17" in problem.tags:
         findings.extend(_ege_file(facts, problem, outcome))
 
+    findings.extend(diagnose_ege(facts, problem, outcome))
     findings.extend(extra_findings(facts, problem, outcome))
 
     if outcome.first.verdict == "WA" and not any(weight >= 80 for weight, _ in findings):
@@ -80,6 +82,14 @@ def _common(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[
 
     if outcome.format_only:
         found.append(hint("Ответ верный, формат нет", "Лишние пробелы, пустая строка или другой регистр. Печатай ровно то, что просят в условии.", kind="format", weight=92))
+
+    if ("[" in outcome.got or "]" in outcome.got) and "[" not in outcome.expected:
+        found.append(hint(
+            "Напечатан список, а не числа",
+            "print(массив) выводит скобки и запятые. Нужно print(*массив) — числа через пробел, как в условии.",
+            kind="format",
+            weight=90,
+        ))
 
     if "integers_from_input" in tags and not facts.has_input and not facts.has_open:
         found.append(hint("Ввод не читается", "Числа нужно брать из input(), а не записывать константой.", weight=88))

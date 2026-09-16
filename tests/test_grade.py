@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import os
 import tempfile
 import unittest
@@ -7,6 +8,14 @@ from pathlib import Path
 from checker.grade import grade_solution
 from checker.problems import all_problems, get_problem, list_summaries
 from checker.store import clean_student_name, record_attempt, reset_ready, summarize
+
+def _harvest_solutions():
+    root = Path(__file__).resolve().parent.parent / "data"
+    out = {}
+    for name in ("harvest_8_14_16.json", "harvest_9_23_25.json", "harvest_13.json"):
+        for item in json.loads((root / name).read_text(encoding="utf-8")):
+            out[item["id"]] = item["source"]
+    return out
 
 
 SOLUTIONS = {
@@ -143,6 +152,7 @@ SOLUTIONS = {
         "print(len(xs), max(xs))\n"
     ),
 }
+SOLUTIONS.update(_harvest_solutions())
 
 
 class GradeTests(unittest.TestCase):
@@ -190,7 +200,8 @@ class GradeTests(unittest.TestCase):
         self.assertTrue(all(item.get("topic") and item.get("level") for item in items))
         for problem in all_problems():
             self.assertTrue(problem.tests)
-            if not problem.files and "ege17" not in problem.tags:
+            ege = any(tag.startswith("ege") for tag in problem.tags)
+            if not problem.files and not ege:
                 self.assertGreaterEqual(len(problem.tests), 4)
                 self.assertTrue(problem.examples)
 

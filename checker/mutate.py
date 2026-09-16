@@ -91,6 +91,24 @@ def _text_mutants(source: str) -> list[Mutant]:
         found.append(Mutant("drop_bin_prefix", source.replace("[2:]", "", 1), "0b"))
     if "set(" in source:
         found.append(Mutant("drop_set", source.replace("set(", "(", 1), "set"))
+    if "product" in source:
+        found.append(Mutant("product_to_perm", source.replace("product", "permutations"), "product"))
+    if "permutations" in source and "product" not in source.replace("permutations", ""):
+        found.append(Mutant("perm_to_product", source.replace("permutations", "product"), "permutations"))
+    if "split(';')" in source:
+        found.append(Mutant("split_semi", source.replace("split(';')", "split(',')", 1), "split"))
+    if 'split(";")' in source:
+        found.append(Mutant("split_semi", source.replace('split(";")', 'split(",")', 1), "split"))
+    if "split(',')" in source:
+        found.append(Mutant("split_comma", source.replace("split(',')", "split(';')", 1), "split"))
+    if "@lru_cache" in source:
+        found.append(Mutant("drop_cache", source.replace("@lru_cache(None)\n", "").replace("@lru_cache\n", ""), "cache"))
+    if "print(*" in source:
+        found.append(Mutant("drop_star", source.replace("print(*", "print(", 1), "print-star"))
+    if '".join' in source:
+        found.append(Mutant("drop_dots", source.replace('".join', '"".join', 1), "dots"))
+    if "', '.join" in source or '", ".join' in source:
+        found.append(Mutant("drop_comma_join", source.replace("', '.join", "' '.join", 1).replace('", ".join', '" ".join', 1), "comma-join"))
     return found
 
 
@@ -126,7 +144,7 @@ def _ast_mutants(tree: ast.Module) -> list[Mutant]:
                 swapped.args[0], swapped.args[1] = swapped.args[1], swapped.args[0]
                 sites.append(("swap_print_args", node, swapped))
             if node.func.id == "range" and len(node.args) >= 2:
-                stop = node.args[1]
+                start, stop = node.args[0], node.args[1]
                 if isinstance(stop, ast.BinOp) and isinstance(stop.op, ast.Add):
                     shorter = copy.deepcopy(node)
                     shorter.args[1] = copy.deepcopy(stop.left)
@@ -135,6 +153,10 @@ def _ast_mutants(tree: ast.Module) -> list[Mutant]:
                     shorter = copy.deepcopy(node)
                     shorter.args[1] = ast.Constant(value=stop.value - 1)
                     sites.append(("range_end", node, shorter))
+                if isinstance(start, ast.Constant) and isinstance(start.value, int):
+                    shifted = copy.deepcopy(node)
+                    shifted.args[0] = ast.Constant(value=start.value + 1)
+                    sites.append(("range_start", node, shifted))
         if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
             sites.append(("drop_not", node, copy.deepcopy(node.operand)))
         if isinstance(node, ast.Constant) and isinstance(node.value, int):

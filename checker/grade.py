@@ -81,6 +81,10 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
 def _run_test(source: str, index: int, case, problem: Problem) -> TestResult:
     files = problem.files_for(case)
     timeout = 4.0 if files else 1.5
+    if any(tag in problem.tags for tag in ("ege8", "ege16", "ege23", "ege25")):
+        timeout = max(timeout, 3.0)
+    if "ege9" in problem.tags:
+        timeout = max(timeout, 4.0)
     shown_in = f"[файл {files[0].rsplit('/', 1)[-1]}]" if files else case.stdin
     result = run_student(source, case.stdin, timeout=timeout, files=files)
     if result.timed_out:
