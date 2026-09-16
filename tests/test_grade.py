@@ -338,6 +338,8 @@ class PublicPayloadTests(unittest.TestCase):
             self.assertEqual(item["got"], "")
         blob = " ".join(hint["detail"] for hint in payload["hints"])
         self.assertNotIn("0 0", blob)
+        self.assertNotIn("ждали 0", blob)
+        self.assertNotIn("Получилось 1, ждали 0", blob)
         visible = [item for item in payload["tests"] if not item["hidden"]]
         self.assertTrue(any(item["stdin"] == "2 3" for item in visible))
 

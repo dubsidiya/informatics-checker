@@ -219,13 +219,31 @@ def _one_number_facts(facts: CodeFacts, problem: Problem, outcome: Outcome) -> l
     if got_n == exp_n:
         return []
     if got_n == -exp_n:
-        return [hint("Не тот знак", f"Модуль совпал ({int(abs(got_n))}), знак нет. Проверь вычитание и abs.", weight=88)]
+        detail = (
+            "Модуль совпал, знак нет. Проверь вычитание и abs."
+            if outcome.first.hidden
+            else f"Модуль совпал ({int(abs(got_n))}), знак нет. Проверь вычитание и abs."
+        )
+        return [hint("Не тот знак", detail, weight=88)]
     if abs(got_n - exp_n) == 1:
-        return [hint("Ошибка на единицу", f"Получилось {outcome.got_tokens[0]}, ждали {outcome.exp_tokens[0]}. Часто виноват range без n или индекс на 1 короче.", weight=86)]
+        detail = (
+            "Ответ отличается на 1. Часто виноват range без n или индекс на 1 короче."
+            if outcome.first.hidden
+            else f"Получилось {outcome.got_tokens[0]}, ждали {outcome.exp_tokens[0]}. Часто виноват range без n или индекс на 1 короче."
+        )
+        return [hint("Ошибка на единицу", detail, weight=86)]
     if exp_n != 0 and (got_n == 2 * exp_n or exp_n == 2 * got_n):
         return [hint("Ответ в два раза больше или меньше", "Дважды учли элемент или делят не ту величину.", weight=84)]
     if facts.true_div and not facts.floor_div and "integer" in " ".join(problem.tags):
         return [hint("Обычное деление вместо //", "Оператор / даёт дробь. Для целого ответа нужен //.", weight=86)]
+    if outcome.first.hidden:
+        return [
+            hint(
+                "На этом тесте получается другое число",
+                "На скрытом тесте ответ не совпал. Пройди условие на своих примерах, включая нули и отрицательные.",
+                weight=80,
+            )
+        ]
     return [
         hint(
             "На этом тесте получается другое число",

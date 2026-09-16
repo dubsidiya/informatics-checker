@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from checker.diagnose import diagnose
 from checker.models import Hint, Problem, TestResult, TraceStep
 
@@ -526,7 +528,7 @@ def _redact_hidden_io(hints: list[Hint], tests: list[TestResult]) -> list[Hint]:
     for hint in hints:
         detail = hint.detail
         for secret in secrets:
-            detail = detail.replace(secret, "скрытый тест")
+            detail = re.sub(rf"(?<![\w.]){re.escape(secret)}(?![\w.])", "скрытый тест", detail)
         redacted.append(Hint(kind=hint.kind, title=hint.title, detail=detail, line=hint.line))
     return redacted
 
