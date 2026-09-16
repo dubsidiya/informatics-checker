@@ -543,16 +543,21 @@ function fillShortcutHelp() {
 
 function setupEditor() {
   fillShortcutHelp();
-  if (!window.CodeMirror) {
-    els.code.addEventListener("input", persistCode);
+  if (!window.CodeMirror || !els.code) {
+    if (els.code) els.code.addEventListener("input", persistCode);
     return;
   }
   if (window.CodeMirror.registerHelper) {
     window.CodeMirror.registerHelper("hint", "python", pythonHint);
   }
+  try {
   editor = window.CodeMirror.fromTextArea(els.code, {
     mode: { name: "python", version: 3 },
     theme: "material",
+    inputStyle: "contenteditable",
+    spellcheck: false,
+    autocorrect: false,
+    autocapitalize: false,
     lineNumbers: true,
     indentUnit: 4,
     tabSize: 4,
@@ -563,9 +568,8 @@ function setupEditor() {
     styleActiveLine: true,
     foldGutter: true,
     scrollPastEnd: true,
-    viewportMargin: Infinity,
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-    highlightSelectionMatches: { showToken: /\w/, minChars: 2 },
+    highlightSelectionMatches: { minChars: 2 },
     hintOptions: { hint: pythonHint, completeSingle: false, alignWithWord: true, extraKeys: { Tab: pickCompletion, Enter: pickCompletion } },
     extraKeys: {
       Tab: smartTab,
@@ -598,6 +602,10 @@ function setupEditor() {
       if (event.altKey) return { addNew: true };
     },
   });
+  const wrap = editor.getWrapperElement();
+  wrap.style.clipPath = "none";
+  wrap.addEventListener("mousedown", () => editor.focus());
+  editor.setOption("readOnly", false);
   editor.on("change", (cm) => {
     persistCode();
     clearTimeout(lintTimer);
@@ -622,9 +630,15 @@ function setupEditor() {
   });
   setTimeout(() => {
     editor.refresh();
-    editor.setSize(null, "100%");
     updateStatus(editor);
+    editor.focus();
   }, 40);
+  } catch (err) {
+    console.error(err);
+    editor = null;
+    els.code.style.display = "block";
+    els.code.addEventListener("input", persistCode);
+  }
 }
 
 async function openProblem(id, updateHash) {
