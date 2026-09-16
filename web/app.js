@@ -631,7 +631,6 @@ function setupEditor() {
   setTimeout(() => {
     editor.refresh();
     updateStatus(editor);
-    editor.focus();
   }, 40);
   } catch (err) {
     console.error(err);
