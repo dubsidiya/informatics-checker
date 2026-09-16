@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Журнал сдач проверяльщика решений.">
   <title>Кабинет учителя</title>
-  <link rel="stylesheet" href="/static/style.css?v=20260917b">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css?v=20260917c">
 </head>
 <body>
   <div class="page">
@@ -21,6 +23,7 @@
 
     <section id="login-panel" class="panel login-panel">
       <h2>Вход</h2>
+      <p class="muted">Пин задаётся на сервере. После входа журнал можно скачать, чтобы оценки не пропали при выкладке.</p>
       <form id="login-form" class="login-form">
         <input id="pin" type="password" autocomplete="current-password" placeholder="Пин учителя">
         <button type="submit">Войти</button>
@@ -34,7 +37,7 @@
         <div class="board-bar">
           <div>
             <h2>Кто что сдал</h2>
-            <p class="muted">По умолчанию только задачи, которые уже сдавали. Нажми ячейку — откроется лучшая сдача и история.</p>
+            <p class="muted">По умолчанию только задачи, которые уже сдавали. Нажми ячейку — лучшая сдача и история. Имя ученика подставляет поиск.</p>
           </div>
           <div class="board-tools">
             <input id="board-search" type="search" placeholder="Ученик или задача" autocomplete="off">
@@ -43,6 +46,14 @@
               <option value="attempted">Сданные</option>
               <option value="all">Все задачи</option>
             </select>
+            <select id="board-period" aria-label="Период">
+              <option value="all">Всё время</option>
+              <option value="today">Сегодня</option>
+              <option value="lesson">Этот урок · 45 мин</option>
+            </select>
+            <label class="quiet-check"><input id="board-auto" type="checkbox"> Автообновление</label>
+            <a class="ghost-link" href="/api/teacher/export.csv">CSV</a>
+            <a class="ghost-link" href="/api/teacher/export.json">JSON</a>
             <button id="board-refresh" type="button" class="ghost-link">Обновить</button>
           </div>
         </div>
@@ -51,6 +62,6 @@
       <section id="attempt" class="panel result hidden"></section>
     </section>
   </div>
-  <script src="/static/teacher.js?v=20260917b"></script>
+  <script src="/static/teacher.js?v=20260917c"></script>
 </body>
 </html>

@@ -20,6 +20,12 @@ const els = {
   keys: document.getElementById("editor-keys"),
   search: document.getElementById("task-search"),
   hideSolved: document.getElementById("hide-solved"),
+  reset: document.getElementById("code-reset"),
+  copy: document.getElementById("code-copy"),
+  next: document.getElementById("next-task"),
+  progress: document.getElementById("topic-progress"),
+  progressLabel: document.getElementById("topic-progress-label"),
+  progressBar: document.getElementById("topic-progress-bar"),
 };
 
 const LEVELS = ["все", "старт", "средне", "сложно"];
@@ -31,6 +37,8 @@ let levelFilter = "все";
 let searchQuery = "";
 let hideSolved = false;
 let editor = null;
+let openGen = 0;
+let progressTimer = 0;
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "");
 const PYTHON_WORDS = [
@@ -177,6 +185,66 @@ function starterFor(problem) {
   return `# ${problem.title}\n# прочитай ввод и выведи только ответ\n\n`;
 }
 
+function resultKey(id) {
+  return `result:${studentName() || "_"}:${id}`;
+}
+
+function saveResult(id, data) {
+  try {
+    sessionStorage.setItem(resultKey(id), JSON.stringify(data));
+  } catch {
+    /* quota */
+  }
+}
+
+function loadResult(id) {
+  try {
+    return JSON.parse(sessionStorage.getItem(resultKey(id)) || "null");
+  } catch {
+    return null;
+  }
+}
+
+function renderProgress() {
+  if (!els.progress || !els.progressLabel || !els.progressBar) return;
+  const pool = topicFilter === "все" ? problems : problems.filter((item) => item.topic === topicFilter);
+  if (!pool.length) {
+    els.progress.classList.add("hidden");
+    return;
+  }
+  const solved = solvedSet();
+  const done = pool.filter((item) => solved.has(item.id)).length;
+  els.progress.classList.remove("hidden");
+  els.progressLabel.textContent = `Сдано ${done} из ${pool.length}`;
+  els.progressBar.style.width = `${Math.round((done / pool.length) * 100)}%`;
+}
+
+async function syncProgress() {
+  const name = studentName();
+  if (!name) {
+    renderList();
+    renderProgress();
+    return;
+  }
+  try {
+    const response = await fetch(`/api/progress?student=${encodeURIComponent(name)}`);
+    if (!response.ok) return;
+    const data = await response.json();
+    const set = solvedSet();
+    for (const id of data.solved || []) set.add(id);
+    localStorage.setItem("solved", JSON.stringify([...set]));
+    renderList();
+    renderProgress();
+  } catch {
+    renderProgress();
+  }
+}
+
+function scheduleProgressSync() {
+  clearTimeout(progressTimer);
+  progressTimer = setTimeout(syncProgress, 400);
+}
+
 function filteredProblems() {
   const q = searchQuery.trim().toLowerCase();
   const solved = solvedSet();
@@ -205,7 +273,8 @@ function renderChips() {
 function renderList() {
   const items = filteredProblems();
   const solved = solvedSet();
-  els.count.textContent = `${items.length} из ${problems.length}`;
+  els.count.textContent = `${items.length} · сдано ${items.filter((item) => solved.has(item.id)).length}`;
+  renderProgress();
   els.list.innerHTML = "";
   for (const item of items) {
     const button = document.createElement("button");
@@ -238,6 +307,8 @@ async function boot() {
     return;
   }
   renderChips();
+  renderProgress();
+  syncProgress();
   const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   const start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
   if (start) {
@@ -668,6 +739,10 @@ function setupEditor() {
     editor = null;
     els.code.style.display = "block";
     els.code.addEventListener("input", persistCode);
+    const note = document.createElement("p");
+    note.className = "muted";
+    note.textContent = "Редактор с подсветкой не загрузился — можно писать в этом поле.";
+    els.code.insertAdjacentElement("beforebegin", note);
   }
 }
 
@@ -675,40 +750,57 @@ async function openProblem(id, updateHash) {
   if (currentId && currentId !== id) {
     persistCode();
   }
+  const gen = ++openGen;
   currentId = id;
   if (updateHash) {
     history.replaceState(null, "", `#${id}`);
   }
   renderList();
-  const problem = await (await fetch(`/api/problems/${id}`)).json();
-  currentProblem = problem;
-  els.level.textContent = `${problem.topic} · ${problem.level}`;
-  els.title.textContent = problem.title;
-  els.statement.textContent = problem.statement;
-  if (problem.files && problem.files[0]) {
-    const name = problem.files[0].name;
-    els.fileBox.classList.remove("hidden");
-    const alias = (problem.tags || []).includes("ege9") ? "9.txt" : "17.txt";
-    els.fileBox.innerHTML = `К задаче приложен <a href="/api/problems/${encodeURIComponent(problem.id)}/file">${escapeHtml(name)}</a>. <code>open('${escapeHtml(name)}')</code> или <code>open('${alias}')</code> его откроет.`;
-  } else if (els.fileBox) {
-    els.fileBox.classList.add("hidden");
-    els.fileBox.innerHTML = "";
-  }
-  els.input.textContent = problem.input_format;
-  els.output.textContent = problem.output_format;
-  els.examples.innerHTML = problem.examples.map((example) => `
-    <div class="example">
-      <div><strong>вход</strong>\n${escapeHtml(example.stdin)}</div>
-      <div><strong>выход</strong>\n${escapeHtml(example.stdout)}</div>
-    </div>
-  `).join("");
-  const saved = loadSavedCode(id);
-  setCode(saved && saved.trim() ? saved : starterFor(problem));
-  els.result.classList.add("hidden");
-  if (editor) {
-    editor.getWrapperElement().classList.remove("syntax-mark");
-  } else {
-    els.code.classList.remove("syntax-mark");
+  els.title.textContent = "Загрузка…";
+  els.statement.textContent = "";
+  try {
+    const response = await fetch(`/api/problems/${encodeURIComponent(id)}`);
+    if (!response.ok) throw new Error("missing");
+    const problem = await response.json();
+    if (gen !== openGen) return;
+    currentProblem = problem;
+    els.level.textContent = `${problem.topic} · ${problem.level}`;
+    els.title.textContent = problem.title;
+    els.statement.textContent = problem.statement;
+    if (problem.files && problem.files[0]) {
+      const name = problem.files[0].name;
+      els.fileBox.classList.remove("hidden");
+      const alias = (problem.tags || []).includes("ege9") ? "9.txt" : "17.txt";
+      els.fileBox.innerHTML = `К задаче приложен <a href="/api/problems/${encodeURIComponent(problem.id)}/file">${escapeHtml(name)}</a>. <code>open('${escapeHtml(name)}')</code> или <code>open('${alias}')</code> его откроет.`;
+    } else if (els.fileBox) {
+      els.fileBox.classList.add("hidden");
+      els.fileBox.innerHTML = "";
+    }
+    els.input.textContent = problem.input_format;
+    els.output.textContent = problem.output_format;
+    els.examples.innerHTML = (problem.examples || []).map((example) => `
+      <div class="example">
+        <div><strong>вход</strong>\n${escapeHtml(example.stdin)}</div>
+        <div><strong>выход</strong>\n${escapeHtml(example.stdout)}</div>
+      </div>
+    `).join("") || `<p class="muted">Для этой задачи отдельный пример ввода не показан — смотри условие.</p>`;
+    const saved = loadSavedCode(id);
+    setCode(saved && saved.trim() ? saved : starterFor(problem));
+    const previous = loadResult(id);
+    if (previous) {
+      renderResult(previous);
+    } else {
+      els.result.classList.add("hidden");
+    }
+    if (editor) {
+      editor.getWrapperElement().classList.remove("syntax-mark");
+    } else {
+      els.code.classList.remove("syntax-mark");
+    }
+  } catch {
+    if (gen !== openGen) return;
+    els.title.textContent = "Не удалось открыть задачу";
+    els.statement.textContent = "Обнови страницу или выбери другую задачу из списка.";
   }
 }
 
@@ -741,7 +833,9 @@ async function check() {
     if (data.status === "ok") {
       markSolved(currentId);
       renderList();
+      renderProgress();
     }
+    saveResult(currentId, data);
     renderResult(data);
   } catch (error) {
     els.result.classList.remove("hidden");
@@ -761,6 +855,7 @@ function renderResult(data) {
     els.result.innerHTML = `
       <div class="banner ok">${escapeHtml(data.message)}</div>
       <p>Пройдено тестов: ${data.passed} из ${data.total}.</p>
+      <p><button type="button" class="ghost-link" data-next="1">Следующая нерешённая</button></p>
     `;
     els.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
     return;
@@ -879,10 +974,12 @@ els.student.addEventListener("input", () => {
   }
   localStorage.setItem("student", now);
   markNameState();
+  scheduleProgressSync();
 });
 els.student.addEventListener("change", () => {
   localStorage.setItem("student", studentName());
   markNameState();
+  syncProgress();
 });
 
 if (els.search) {
@@ -921,4 +1018,50 @@ window.addEventListener("hashchange", () => {
 });
 
 els.run.addEventListener("click", check);
+
+function flashAction(button, text) {
+  if (!button) return;
+  const previous = button.textContent;
+  button.textContent = text;
+  setTimeout(() => {
+    button.textContent = previous;
+  }, 1200);
+}
+
+async function copyCode() {
+  const text = getCode();
+  try {
+    await navigator.clipboard.writeText(text);
+    flashAction(els.copy, "Скопировано");
+  } catch {
+    els.code.focus();
+    els.code.select?.();
+    flashAction(els.copy, "Выдели код");
+  }
+}
+
+function resetCode() {
+  if (!currentProblem) return;
+  if (!window.confirm("Вернуть заготовку? Текст в поле заменится.")) return;
+  setCode(starterFor(currentProblem));
+  persistCode();
+}
+
+function openNextUnsolved() {
+  const solved = solvedSet();
+  const items = filteredProblems();
+  if (!items.length) return;
+  const idx = items.findIndex((item) => item.id === currentId);
+  const later = items.slice(idx + 1).find((item) => !solved.has(item.id));
+  const next = later || items.find((item) => !solved.has(item.id) && item.id !== currentId);
+  if (next) openProblem(next.id, true);
+}
+
+if (els.copy) els.copy.addEventListener("click", copyCode);
+if (els.reset) els.reset.addEventListener("click", resetCode);
+if (els.next) els.next.addEventListener("click", openNextUnsolved);
+els.result.addEventListener("click", (event) => {
+  if (event.target.closest("[data-next]")) openNextUnsolved();
+});
+
 boot();

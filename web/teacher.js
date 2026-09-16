@@ -10,14 +10,18 @@ const pin = document.getElementById("pin");
 const boardSearch = document.getElementById("board-search");
 const boardTopic = document.getElementById("board-topic");
 const boardCols = document.getElementById("board-cols");
+const boardPeriod = document.getElementById("board-period");
+const boardAuto = document.getElementById("board-auto");
 const boardRefresh = document.getElementById("board-refresh");
 
 let problems = [];
 let summary = { students: [], total_attempts: 0, total_students: 0 };
 let topicFilter = "все";
 let colMode = "attempted";
+let period = "all";
 let query = "";
 let openCell = null;
+let refreshTimer = 0;
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -30,6 +34,16 @@ function escapeHtml(value) {
 function when(ts) {
   if (!ts) return "—";
   return new Date(ts * 1000).toLocaleString("ru-RU", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" });
+}
+
+function inPeriod(ts) {
+  if (period === "all") return true;
+  if (!ts) return false;
+  const now = Date.now() / 1000;
+  if (period === "lesson") return now - ts <= 45 * 60;
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  return ts >= start.getTime() / 1000;
 }
 
 async function api(url, options) {
@@ -73,6 +87,7 @@ function fillTopicFilter() {
 }
 
 function showLogin() {
+  stopAuto();
   loginPanel.classList.remove("hidden");
   board.classList.add("hidden");
   logout.classList.add("hidden");
@@ -91,25 +106,39 @@ async function loadSummary() {
   renderGrid();
 }
 
+function roster() {
+  const q = query.trim().toLowerCase();
+  let students = summary.students.filter((item) => inPeriod(item.last_ts));
+  if (!q) return students;
+  const nameHits = students.filter((item) => item.name.toLowerCase().includes(q));
+  if (nameHits.length) return nameHits;
+  return students;
+}
+
 function renderStats() {
+  const students = roster();
   const attempted = new Set();
-  for (const student of summary.students) {
+  let solved = 0;
+  for (const student of students) {
+    solved += student.solved || 0;
     for (const id of Object.keys(student.problems || {})) attempted.add(id);
   }
   stats.innerHTML = `
-    <article class="stat"><b>${summary.total_students}</b><span>учеников</span></article>
-    <article class="stat"><b>${summary.total_attempts}</b><span>попыток</span></article>
+    <article class="stat"><b>${students.length}</b><span>учеников в срезе</span></article>
+    <article class="stat"><b>${solved}</b><span>сдач задач</span></article>
     <article class="stat"><b>${attempted.size} / ${problems.length}</b><span>задач трогали</span></article>
+    <article class="stat"><b>${summary.total_attempts}</b><span>попыток всего</span></article>
   `;
 }
 
 function visibleProblems() {
+  const students = roster();
   const attempted = new Set();
-  for (const student of summary.students) {
+  for (const student of students) {
     for (const id of Object.keys(student.problems || {})) attempted.add(id);
   }
   const q = query.trim().toLowerCase();
-  const nameHits = q ? summary.students.filter((item) => item.name.toLowerCase().includes(q)) : [];
+  const nameHits = q ? students.filter((item) => item.name.toLowerCase().includes(q)) : [];
   return problems.filter((problem) => {
     if (topicFilter !== "все" && problem.topic !== topicFilter) return false;
     if (colMode === "attempted" && !attempted.has(problem.id)) return false;
@@ -121,21 +150,17 @@ function visibleProblems() {
   });
 }
 
-function visibleStudents() {
-  const q = query.trim().toLowerCase();
-  if (!q) return summary.students;
-  const nameHits = summary.students.filter((item) => item.name.toLowerCase().includes(q));
-  if (nameHits.length) return nameHits;
-  return summary.students;
-}
-
 function renderGrid() {
+  const rowsData = roster();
   if (!summary.students.length) {
     grid.innerHTML = `<p class="muted">Пока никто не отправлял решения. Пусть ученики укажут имя и нажмут «Проверить».</p>`;
     return;
   }
+  if (!rowsData.length) {
+    grid.innerHTML = `<p class="muted">В этом периоде никого нет. Переключи «Всё время», если журнал за сегодня пуст.</p>`;
+    return;
+  }
   const cols = visibleProblems();
-  const rowsData = visibleStudents();
   if (!cols.length) {
     grid.innerHTML = `<p class="muted">Нет задач в этом фильтре. Переключи «Все задачи» или сбрось поиск.</p>`;
     return;
@@ -153,7 +178,7 @@ function renderGrid() {
       return `<td class="cell ${klass}" data-student="${escapeHtml(student.name)}" data-problem="${problem.id}" data-id="${attemptId}">${label}<small>${cell.attempts} попыток</small></td>`;
     }).join("");
     return `<tr>
-      <th class="name-col">${escapeHtml(student.name)}<small>${student.solved} сдано · ${student.attempts} попыток · ${when(student.last_ts)}</small></th>
+      <th class="name-col" data-student="${escapeHtml(student.name)}" title="Нажми, чтобы найти этого ученика">${escapeHtml(student.name)}<small>${student.solved} сдано · ${student.attempts} попыток · ${when(student.last_ts)}</small></th>
       ${cells}
     </tr>`;
   }).join("");
@@ -190,8 +215,11 @@ async function openAttempt(student, problemId, attemptId) {
       <p class="muted">${when(item.ts)} · тесты ${item.passed} / ${item.total}</p>
       <h3>История попыток</h3>
       <div class="history-list">${historyHtml || "<p class='muted'>Других попыток нет.</p>"}</div>
+      <div class="editor-actions" style="margin-bottom:10px">
+        <button type="button" class="ghost-btn" data-copy-code="1">Копировать код</button>
+      </div>
       <h3>Код</h3>
-      <pre class="snippet">${escapeHtml(item.code || "")}</pre>
+      <pre class="snippet" id="attempt-code">${escapeHtml(item.code || "")}</pre>
     `;
     attemptBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } catch (error) {
@@ -215,20 +243,52 @@ async function doLogin(event) {
   }
 }
 
+function stopAuto() {
+  clearInterval(refreshTimer);
+  refreshTimer = 0;
+}
+
+function startAuto() {
+  stopAuto();
+  refreshTimer = setInterval(() => {
+    loadSummary().catch(() => {});
+  }, 12000);
+}
+
 loginForm.addEventListener("submit", doLogin);
 
 logout.addEventListener("click", async () => {
+  stopAuto();
+  if (boardAuto) boardAuto.checked = false;
   await api("/api/teacher/logout", { method: "POST" });
   showLogin();
 });
 
 grid.addEventListener("click", (event) => {
+  const name = event.target.closest("th.name-col[data-student]");
+  if (name) {
+    query = name.dataset.student || "";
+    boardSearch.value = query;
+    renderStats();
+    renderGrid();
+    return;
+  }
   const cell = event.target.closest("td.cell[data-student]");
   if (!cell) return;
   openAttempt(cell.dataset.student, cell.dataset.problem, cell.dataset.id);
 });
 
-attemptBox.addEventListener("click", (event) => {
+attemptBox.addEventListener("click", async (event) => {
+  if (event.target.closest("[data-copy-code]")) {
+    const code = document.getElementById("attempt-code");
+    try {
+      await navigator.clipboard.writeText(code ? code.textContent : "");
+      event.target.textContent = "Скопировано";
+    } catch {
+      event.target.textContent = "Не вышло";
+    }
+    return;
+  }
   const button = event.target.closest("button.history-item[data-id]");
   if (!button) return;
   openAttempt(button.dataset.student, button.dataset.problem, button.dataset.id);
@@ -236,11 +296,13 @@ attemptBox.addEventListener("click", (event) => {
 
 boardSearch.addEventListener("input", () => {
   query = boardSearch.value || "";
+  renderStats();
   renderGrid();
 });
 
 boardTopic.addEventListener("change", () => {
   topicFilter = boardTopic.value || "все";
+  renderStats();
   renderGrid();
 });
 
@@ -248,6 +310,19 @@ boardCols.addEventListener("change", () => {
   colMode = boardCols.value || "attempted";
   renderGrid();
 });
+
+boardPeriod.addEventListener("change", () => {
+  period = boardPeriod.value || "all";
+  renderStats();
+  renderGrid();
+});
+
+if (boardAuto) {
+  boardAuto.addEventListener("change", () => {
+    if (boardAuto.checked) startAuto();
+    else stopAuto();
+  });
+}
 
 boardRefresh.addEventListener("click", async () => {
   boardRefresh.disabled = true;

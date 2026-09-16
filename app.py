@@ -5,6 +5,7 @@ import json
 import os
 import threading
 import time
+import traceback
 from collections import defaultdict, deque
 from http.cookies import SimpleCookie
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -15,10 +16,13 @@ from checker.grade import grade_solution
 from checker.problems import get_problem, list_summaries
 from checker.store import (
     clean_student_name,
+    export_attempts,
+    export_csv,
     get_attempt,
     latest_attempt,
     list_attempts,
     record_attempt,
+    student_progress,
     summarize,
 )
 
@@ -26,8 +30,6 @@ ROOT = Path(__file__).resolve().parent
 WEB = ROOT / "web"
 HOST = os.environ.get("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "8765"))
-TEACHER_PIN = os.environ.get("TEACHER_PIN", "159753pupil")
-TEACHER_TOKEN = hashlib.sha256(f"checker::{TEACHER_PIN}".encode("utf-8")).hexdigest()
 
 _RATE_LOCK = threading.Lock()
 _HITS: dict[str, deque[float]] = defaultdict(deque)
@@ -35,7 +37,16 @@ RATE_LIMIT = 90
 RATE_WINDOW = 60.0
 LOGIN_LIMIT = 8
 NAME_LIMIT = 25
+PROGRESS_LIMIT = 60
 _GRADE_GATE = threading.Semaphore(4)
+
+
+def _teacher_pin() -> str:
+    return os.environ.get("TEACHER_PIN", "159753pupil")
+
+
+def _teacher_token() -> str:
+    return hashlib.sha256(f"checker::{_teacher_pin()}".encode("utf-8")).hexdigest()
 
 
 def _allow(key: str, limit: int = RATE_LIMIT) -> bool:
@@ -73,7 +84,13 @@ class Handler(SimpleHTTPRequestHandler):
         return {key: morsel.value for key, morsel in jar.items()}
 
     def _is_teacher(self) -> bool:
-        return self._cookies().get("teacher") == TEACHER_TOKEN
+        return self._cookies().get("teacher") == _teacher_token()
+
+    def _security_headers(self) -> None:
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header("Referrer-Policy", "same-origin")
+        self.send_header("X-Frame-Options", "DENY")
+        self.send_header("Cache-Control", "no-store")
 
     def _set_teacher_cookie(self, value: str, max_age: int) -> None:
         flags = "HttpOnly; Path=/; SameSite=Lax"
@@ -81,7 +98,28 @@ class Handler(SimpleHTTPRequestHandler):
             flags += "; Secure"
         self.send_header("Set-Cookie", f"teacher={value}; Max-Age={max_age}; {flags}")
 
+    def do_HEAD(self) -> None:
+        parsed = urlparse(self.path)
+        path = parsed.path.rstrip("/") or "/"
+        if path in {"/", "/health", "/api/health"}:
+            self.send_response(200)
+            self._security_headers()
+            self.send_header("Content-Type", "application/json; charset=utf-8" if path != "/" else "text/html; charset=utf-8")
+            self.end_headers()
+            return
+        self.send_response(200)
+        self._security_headers()
+        self.end_headers()
+
     def do_GET(self) -> None:
+        try:
+            self._route_get()
+        except Exception:
+            traceback.print_exc()
+            if not getattr(self, "_headers_sent", False):
+                self._send_json({"detail": "Внутренняя ошибка проверяльщика."}, 500)
+
+    def _route_get(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         query = parse_qs(parsed.query)
@@ -92,11 +130,23 @@ class Handler(SimpleHTTPRequestHandler):
         if path == "/teacher":
             self._send_file(WEB / "teacher.html", "text/html; charset=utf-8")
             return
+        if path in {"/favicon.svg", "/favicon.ico"}:
+            icon = WEB / "favicon.svg"
+            if icon.is_file():
+                self._send_file(icon, "image/svg+xml")
+                return
         if path in {"/health", "/api/health"}:
             self._send_json({"ok": True})
             return
         if path == "/api/problems":
             self._send_json(list_summaries())
+            return
+        if path == "/api/progress":
+            if not _allow(f"progress:{self._client_ip()}", PROGRESS_LIMIT):
+                self._send_json({"detail": "Слишком много запросов. Подожди минуту."}, 429)
+                return
+            student = (query.get("student") or [""])[0]
+            self._send_json(student_progress(student))
             return
         if path.startswith("/api/problems/") and path.endswith("/file"):
             problem_id = path.removeprefix("/api/problems/").removesuffix("/file").strip("/")
@@ -115,6 +165,7 @@ class Handler(SimpleHTTPRequestHandler):
                 return
             data = file_path.read_bytes()
             self.send_response(200)
+            self._security_headers()
             self.send_header("Content-Type", "text/plain; charset=utf-8")
             self.send_header("Content-Disposition", f'attachment; filename="{file_path.name}"')
             self.send_header("Content-Length", str(len(data)))
@@ -136,6 +187,25 @@ class Handler(SimpleHTTPRequestHandler):
                 self._send_json({"detail": "Нужен вход учителя"}, 401)
                 return
             self._send_json(summarize())
+            return
+        if path == "/api/teacher/export.csv":
+            if not self._is_teacher():
+                self._send_json({"detail": "Нужен вход учителя"}, 401)
+                return
+            body = export_csv().encode("utf-8")
+            self.send_response(200)
+            self._security_headers()
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header("Content-Disposition", 'attachment; filename="attempts.csv"')
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
+        if path == "/api/teacher/export.json":
+            if not self._is_teacher():
+                self._send_json({"detail": "Нужен вход учителя"}, 401)
+                return
+            self._send_json(export_attempts())
             return
         if path == "/api/teacher/attempts":
             if not self._is_teacher():
@@ -184,19 +254,28 @@ class Handler(SimpleHTTPRequestHandler):
                 ".css": "text/css; charset=utf-8",
                 ".js": "text/javascript; charset=utf-8",
                 ".html": "text/html; charset=utf-8",
+                ".svg": "image/svg+xml",
             }.get(file_path.suffix, "application/octet-stream")
             self._send_file(file_path, content_type)
             return
-        self.send_error(404)
+        self._send_json({"detail": "Страница не найдена"}, 404)
 
     def do_POST(self) -> None:
+        try:
+            self._route_post()
+        except Exception:
+            traceback.print_exc()
+            if not getattr(self, "_headers_sent", False):
+                self._send_json({"detail": "Внутренняя ошибка проверяльщика."}, 500)
+
+    def _route_post(self) -> None:
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
-        length = int(self.headers.get("Content-Length", "0"))
+        length = int(self.headers.get("Content-Length", "0") or 0)
         if length > 200_000:
             self._send_json({"detail": "Слишком большой запрос"}, 413)
             return
-        raw = self.rfile.read(length)
+        raw = self.rfile.read(length) if length else b""
 
         if path == "/api/teacher/login":
             if not _allow(f"login:{self._client_ip()}", LOGIN_LIMIT):
@@ -208,10 +287,10 @@ class Handler(SimpleHTTPRequestHandler):
             except (json.JSONDecodeError, TypeError, UnicodeDecodeError):
                 self._send_json({"detail": "Некорректный запрос"}, 400)
                 return
-            if pin != TEACHER_PIN:
+            if not isinstance(pin, str) or pin != _teacher_pin():
                 self._send_json({"detail": "Неверный пин"}, 403)
                 return
-            self._send_json({"ok": True}, cookie=TEACHER_TOKEN)
+            self._send_json({"ok": True}, cookie=_teacher_token())
             return
 
         if path == "/api/teacher/logout":
@@ -219,7 +298,7 @@ class Handler(SimpleHTTPRequestHandler):
             return
 
         if path != "/api/check":
-            self.send_error(404)
+            self._send_json({"detail": "Страница не найдена"}, 404)
             return
         if not _allow(self._client_ip()):
             self._send_json({"detail": "Слишком много попыток. Подожди минуту."}, 429)
@@ -238,23 +317,31 @@ class Handler(SimpleHTTPRequestHandler):
                 return
             if not isinstance(code, str) or len(code) > 80_000:
                 raise ValueError("bad code")
-            with _GRADE_GATE:
-                result = grade_solution(get_problem(problem_id), code)
-        except KeyError:
-            self._send_json({"detail": "Задача не найдена"}, 404)
-            return
-        except (json.JSONDecodeError, TypeError, ValueError, UnicodeDecodeError):
+            try:
+                with _GRADE_GATE:
+                    result = grade_solution(get_problem(problem_id), code)
+            except KeyError:
+                self._send_json({"detail": "Задача не найдена"}, 404)
+                return
+            except Exception:
+                traceback.print_exc()
+                self._send_json({"detail": "Проверяльщик не смог запустить эту программу. Попробуй ещё раз."}, 500)
+                return
+        except (json.JSONDecodeError, TypeError, ValueError, UnicodeDecodeError, KeyError):
             self._send_json({"detail": "Некорректный запрос"}, 400)
             return
-        record_attempt(
-            student=student,
-            problem_id=problem_id,
-            status=result.status,
-            passed=result.passed,
-            total=result.total,
-            message=result.message,
-            code=code,
-        )
+        try:
+            record_attempt(
+                student=student,
+                problem_id=problem_id,
+                status=result.status,
+                passed=result.passed,
+                total=result.total,
+                message=result.message,
+                code=code,
+            )
+        except Exception:
+            traceback.print_exc()
         payload_out = result.to_dict()
         payload_out["student"] = student
         self._send_json(payload_out)
@@ -262,6 +349,7 @@ class Handler(SimpleHTTPRequestHandler):
     def _send_json(self, payload: dict | list, status: int = 200, cookie: str | None = None, cookie_age: int = 60 * 60 * 12) -> None:
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
+        self._security_headers()
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         if cookie is not None:
@@ -272,10 +360,9 @@ class Handler(SimpleHTTPRequestHandler):
     def _send_file(self, path: Path, content_type: str) -> None:
         data = path.read_bytes()
         self.send_response(200)
+        self._security_headers()
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(data)))
-        if path.suffix in {".css", ".js", ".html"}:
-            self.send_header("Cache-Control", "no-store")
         self.end_headers()
         self.wfile.write(data)
 

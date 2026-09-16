@@ -38,7 +38,23 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
             syntax=blocked,
         )
 
-    tests = [_run_test(source, index, case, problem) for index, case in enumerate(problem.tests)]
+    tests = []
+    for index, case in enumerate(problem.tests):
+        try:
+            tests.append(_run_test(source, index, case, problem))
+        except Exception as exc:
+            tests.append(
+                TestResult(
+                    index=index,
+                    hidden=case.hidden,
+                    verdict="RE",
+                    stdin="",
+                    expected="",
+                    got="",
+                    error="внутренний сбой проверки",
+                    error_type=type(exc).__name__,
+                )
+            )
     passed = sum(1 for item in tests if item.verdict == "OK")
     first_fail = next((item for item in tests if item.verdict != "OK"), None)
 

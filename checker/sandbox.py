@@ -22,6 +22,8 @@ LIMITED_ENV = {
     "TMPDIR": tempfile.gettempdir(),
 }
 
+MAX_OUTPUT = 80_000
+
 LAUNCHER = """\
 import builtins
 import runpy
@@ -49,6 +51,13 @@ class RunResult:
     error_type: str = ""
     error_line: int | None = None
     error_message: str = ""
+
+
+def _clip_output(text: str | None) -> str:
+    raw = text or ""
+    if len(raw) <= MAX_OUTPUT:
+        return raw
+    return raw[:MAX_OUTPUT] + "\n…"
 
 
 def _apply_limits(cpu_seconds: int = 2) -> None:
@@ -140,8 +149,8 @@ def run_student(
         )
         error_type, error_line, error_message = parse_traceback(completed.stderr)
         return RunResult(
-            stdout=completed.stdout,
-            stderr=completed.stderr,
+            stdout=_clip_output(completed.stdout),
+            stderr=_clip_output(completed.stderr),
             returncode=completed.returncode,
             timed_out=False,
             error_type=error_type,
@@ -156,8 +165,8 @@ def run_student(
         if isinstance(stderr, bytes):
             stderr = stderr.decode("utf-8", errors="replace")
         return RunResult(
-            stdout=stdout,
-            stderr=stderr,
+            stdout=_clip_output(stdout),
+            stderr=_clip_output(stderr),
             returncode=-1,
             timed_out=True,
             error_type="TimeoutError",

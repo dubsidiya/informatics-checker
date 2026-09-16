@@ -35,11 +35,10 @@ BANNED_MODULES = {
     "glob",
     "runpy",
     "pkgutil",
-    "hashlib",
+    "posix",
+    "nt",
+    "sysconfig",
 }
-
-# hashlib is fine for school — remove it
-BANNED_MODULES.remove("hashlib")
 
 BANNED_FUNCS = {
     "open",

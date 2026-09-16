@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Cache-Control" content="no-store">
+  <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
-  <link rel="stylesheet" href="/static/style.css?v=20260917b">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css?v=20260917c">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
@@ -45,6 +47,10 @@
           <h2>Задачи</h2>
           <p id="task-count" class="task-count"></p>
         </div>
+        <div id="topic-progress" class="topic-progress hidden" aria-hidden="true">
+          <span id="topic-progress-label"></span>
+          <div class="progress-line"><span id="topic-progress-bar"></span></div>
+        </div>
         <input id="task-search" class="task-search" type="search" placeholder="Найти задачу" autocomplete="off">
         <label class="quiet-check"><input id="hide-solved" type="checkbox"> Скрыть сданные</label>
         <nav id="task-list" class="task-list"></nav>
@@ -73,6 +79,9 @@
         <div class="editor-bar">
           <h2>Твой код</h2>
           <div class="editor-actions">
+            <button id="code-reset" type="button" class="ghost-btn" title="Вернуть заготовку">Заготовка</button>
+            <button id="code-copy" type="button" class="ghost-btn" title="Скопировать код">Копировать</button>
+            <button id="next-task" type="button" class="ghost-btn" title="Следующая нерешённая">Дальше</button>
             <button id="editor-full" type="button" class="ghost-btn" title="На весь экран">На весь экран</button>
             <button id="run" type="button">Проверить</button>
           </div>
@@ -108,6 +117,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/jump-to-line.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/match-highlighter.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/app.js?v=20260917b"></script>
+  <script src="/static/app.js?v=20260917c"></script>
 </body>
 </html>

@@ -8,7 +8,14 @@ from pathlib import Path
 from checker.grade import grade_solution
 from checker.models import GradeResult, Hint, TestResult
 from checker.problems import all_problems, get_problem, list_summaries
-from checker.store import clean_student_name, record_attempt, reset_ready, summarize
+from checker.store import (
+    clean_student_name,
+    export_csv,
+    record_attempt,
+    reset_ready,
+    student_progress,
+    summarize,
+)
 
 def _harvest_solutions():
     root = Path(__file__).resolve().parent.parent / "data"
@@ -333,6 +340,15 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(cell["best_status"], "ok")
         self.assertEqual(cell["best_attempt_id"], ok_id)
         self.assertEqual(cell["status"], "fail")
+
+    def test_progress_and_csv(self):
+        record_attempt("Катя", "sum-two", "ok", 5, 5, "да", "print(2)")
+        record_attempt("Катя", "sum-1-n", "fail", 0, 4, "нет", "print(1)")
+        progress = student_progress("Катя")
+        self.assertEqual(progress["solved"], ["sum-two"])
+        csv_text = export_csv()
+        self.assertIn("Катя", csv_text)
+        self.assertIn("sum-two", csv_text)
 
 
 class HiddenPayloadTests(unittest.TestCase):

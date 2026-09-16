@@ -117,6 +117,40 @@ h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: 
 }
 .quiet-check input { accent-color: var(--ink); }
 
+.topic-progress {
+  margin: 0 0 10px;
+}
+#topic-progress-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.progress-line {
+  height: 6px;
+  background: #efe4d2;
+  border-radius: 999px;
+  overflow: hidden;
+}
+#topic-progress-bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  margin: 0;
+  background: var(--ok);
+  border-radius: 999px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.CodeMirror-focused {
+  outline: 2px solid var(--info);
+  outline-offset: 2px;
+}
+
 .ghost-link {
   color: var(--ink);
   text-decoration: none;
@@ -260,7 +294,7 @@ h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: 
 }
 .CodeMirror-dialog input { color: #eceff1; font-family: var(--mono); }
 
-.editor-actions { display: flex; align-items: center; gap: 8px; }
+.editor-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .ghost-btn {
   background: transparent;
   color: var(--ink);
@@ -351,7 +385,7 @@ body.editor-full .CodeMirror {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 16px;
 }
