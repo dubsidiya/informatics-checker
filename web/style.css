@@ -673,7 +673,13 @@ body.exam-on .coach { background: var(--info-bg); }
   color: var(--muted);
   margin-bottom: 4px;
 }
-.explain-block p { margin: 0; line-height: 1.5; font-size: 16px; }
+.explain-block.intent {
+  background: #fff;
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid #c5d7ea;
+}
+.explain-block.intent span { color: var(--info); }
 
 .more-checks { margin-top: 8px; }
 .more-checks summary {

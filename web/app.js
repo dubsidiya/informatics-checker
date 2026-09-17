@@ -1223,10 +1223,14 @@ function explanationCard(data) {
   if (!exp) return `<div class="banner ${data.status === "ok" ? "ok" : data.status === "syntax" ? "warn" : "bad"}">${escapeHtml(data.message || "")}</div>`;
   const line = exp.line ? `<div class="line">смотри строку ${exp.line}</div>` : "";
   const tries = data.tries > 1 ? ` · попытка ${data.tries}` : "";
+  const intent = exp.intent
+    ? `<div class="explain-block intent"><span>Что ты хотел</span><p>${escapeHtml(exp.intent)}</p></div>`
+    : "";
   return `
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
-      <p class="explain-kicker">Разбор для ученика${tries}</p>
+      <p class="explain-kicker">${exp.intent ? "Понял твой код" : "Разбор для ученика"}${tries}</p>
       <h3>${escapeHtml(exp.headline)}</h3>
+      ${intent}
       <div class="explain-block"><span>Что случилось</span><p>${escapeHtml(exp.what)}</p></div>
       <div class="explain-block"><span>Почему так</span><p>${escapeHtml(exp.why)}</p></div>
       <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how)}</p></div>

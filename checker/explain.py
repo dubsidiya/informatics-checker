@@ -6,8 +6,10 @@ from checker.models import Explanation, GradeResult, Hint, Problem, TestResult
 
 
 def attach_explanation(problem: Problem, result: GradeResult, source: str = "") -> GradeResult:
+    from checker.intent import apply_intent
+
     result.explanation = explain_result(problem, result, source)
-    return result
+    return apply_intent(problem, result, source)
 
 
 def explain_result(problem: Problem, result: GradeResult, source: str = "") -> Explanation:
