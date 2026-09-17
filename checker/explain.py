@@ -140,17 +140,35 @@ def _wrong_answer(problem: Problem, result: GradeResult, first: TestResult, hint
         )
 
     why = hint.detail if hint else "Ответ не совпал с правильным. Перечитай условие: что именно считают и в каком виде печатают."
-    how = _how_from_hint(hint) or _generic_how(problem, visible)
+    how = _how_from_hint(hint) or _how_from_detail(hint) or _generic_how(problem, visible)
     headline = hint.title if hint else "Ответ не тот"
     kind = hint.kind if hint else "logic"
     line = hint.line if hint else None
     return Explanation(headline=headline, what=what, why=why, how=how, line=line, kind=kind)
 
 
+def _how_from_detail(hint: Hint | None) -> str:
+    if not hint or not (hint.detail or "").strip():
+        return ""
+    detail = hint.detail.strip()
+    if detail.endswith("."):
+        detail = detail[:-1]
+    return "Сделай именно это: " + detail + ". Остальное в программе не ломай."
+
+
+def _ege17_how(problem: Problem) -> str:
+    blob = f"{problem.statement} {problem.input_format} {problem.title}".lower()
+    if "пар" in blob or "сосед" in blob:
+        return "Сверь, что такое пара (обычно два соседних числа), оба условия отбора и что печатать первым: количество или сумму/максимум."
+    if "файл" in blob or "17.txt" in blob:
+        return "Считай файл в список. Дальше отбери числа или пары по всем условиям из формулировки и напечатай два числа в том порядке, как просят."
+    return "Это отрезок, не файл. Цикл range(A, B + 1), в if все условия сразу, в конце print(количество, максимум или минимум) — как в условии."
+
+
 def _generic_how(problem: Problem, visible: bool) -> str:
     tags = set(problem.tags)
     if "ege17" in tags:
-        return "Сверь, что такое пара (обычно два соседних числа), оба условия отбора и что печатать первым: количество или сумму/максимум."
+        return _ege17_how(problem)
     if "ege9" in tags:
         return "Проверь split: в csv чаще `;`, в txt — пробел. Затем оба условия из формулировки на одной строке таблицы."
     if "ege8" in tags:
@@ -208,6 +226,9 @@ def _short(text: str, limit: int = 80) -> str:
 
 
 HOW_BY_TITLE = [
+    ("не делится", "Добавь в if все «не делится на …» из условия: `x % k != 0` для каждого такого k."),
+    ("нет проверки", "Допиши в if недостающую проверку из условия. Не выкидывай те, что уже стоят."),
+
     ("строк", "Сначала преврати ввод в числа: `a, b = map(int, input().split())`, и только потом складывай."),
     ("input() вернул строку", "После input() нужен int или map(int, ...). Иначе «2» + «3» склеится в 23."),
     ("складываются строки", "Нельзя писать input() + input(). Сначала int, потом сложение."),

@@ -41,6 +41,12 @@ class ExplainTests(unittest.TestCase):
         self.assertNotIn(hidden, payload)
         self.assertNotIn("-587", payload)
 
+    def test_ege17_range_how_is_not_about_pairs(self):
+        result = grade_solution(get_problem("ege17-1"), "print(1)\n")
+        how = (result.explanation.how or "").lower()
+        self.assertNotIn("\u0441\u043e\u0441\u0435\u0434", how)
+        self.assertTrue("%" in how or "\u0434\u0435\u043b" in how)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -35,7 +35,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  align-items: end;
+  align-items: start;
   margin-bottom: 24px;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--line);
@@ -51,7 +51,7 @@ html, body {
 }
 
 h1, h2, h3 { margin: 0; font-weight: 600; }
-h1 { font-size: 34px; }
+h1 { font-size: clamp(26px, 4vw, 34px); line-height: 1.15; overflow-wrap: anywhere; }
 h2 { font-size: 22px; margin-bottom: 12px; }
 h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-family: system-ui, sans-serif; margin-bottom: 6px; }
 
@@ -591,6 +591,9 @@ body.editor-full .CodeMirror {
   cursor: pointer;
 }
 .exam-start:disabled { opacity: 0.6; cursor: default; }
+body.exam-on .practice-only { display: none !important; }
+body.exam-on .filters { grid-template-columns: 1fr; }
+body.exam-on .editor-keys { display: none; }
 
 .onboard {
   display: flex;
@@ -604,7 +607,9 @@ body.editor-full .CodeMirror {
   border-radius: 14px;
 }
 .onboard.hidden { display: none; }
-.onboard p { margin: 4px 0 0; }
+.onboard > div { min-width: 0; flex: 1; }
+.onboard p { margin: 4px 0 0; overflow-wrap: anywhere; }
+body.exam-on .onboard { display: none !important; }
 .coach {
   margin: 0 0 14px;
   padding: 10px 12px;
@@ -627,7 +632,8 @@ body.exam-on .coach { background: var(--info-bg); }
   margin-bottom: 16px;
 }
 .classroom-card {
-  background: var(--panel);
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 14px;
   padding: 14px 16px;
 }
@@ -730,4 +736,13 @@ body.exam-on .coach { background: var(--info-bg); }
   .layout { grid-template-columns: 1fr; }
   .editor-keys ul { columns: 1; }
   .CodeMirror { min-height: 360px; }
+  .page { padding: 16px 12px 80px; }
+  .editor-bar { flex-wrap: wrap; align-items: start; }
+  #run {
+    position: sticky;
+    bottom: 12px;
+    z-index: 6;
+    box-shadow: 0 8px 24px rgba(29, 36, 48, 0.18);
+  }
+  body.exam-on .coach { font-size: 14px; }
 }

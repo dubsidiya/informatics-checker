@@ -231,9 +231,14 @@ function loadResult(id) {
 function renderProgress() {
   if (!els.progress || !els.progressLabel || !els.progressBar) return;
   const topicNow = examMode ? examTopic : topicFilter;
+  if (!examMode && topicNow === "все") {
+    els.progress.classList.add("hidden");
+    renderExamBar();
+    return;
+  }
   const pool = examMode
     ? examProblems()
-    : (topicNow === "все" ? problems : problems.filter((item) => item.topic === topicNow));
+    : problems.filter((item) => item.topic === topicNow);
   if (!pool.length) {
     els.progress.classList.add("hidden");
     return;
@@ -348,7 +353,7 @@ function renderCoach(topic) {
 function renderOnboard() {
   if (!els.onboard) return;
   const seen = localStorage.getItem("onboard") === "1";
-  els.onboard.classList.toggle("hidden", seen);
+  els.onboard.classList.toggle("hidden", seen || examMode);
 }
 
 async function pingExam(action, extra) {
@@ -431,6 +436,7 @@ function startExam() {
   const next = items.find((item) => !solved.has(item.id) && !examSkip.has(item.id)) || items[0];
   if (next) openProblem(next.id, true);
   renderExamBar();
+  renderOnboard();
 }
 
 function stopExam() {
@@ -447,6 +453,7 @@ function stopExam() {
   renderChips();
   renderList();
   renderCoach(topicFilter);
+  renderOnboard();
 }
 
 function skipExamTask() {
@@ -494,6 +501,7 @@ function restoreExam() {
   renderExamBar();
   renderChips();
   renderCoach(topic);
+  renderOnboard();
 }
 
 function filteredProblems() {
@@ -525,7 +533,7 @@ function renderChips() {
     <button type="button" data-level="${escapeAttr(level)}" class="${level === levelFilter ? "active" : ""}">${escapeHtml(level)}</button>
   `).join("");
   if (els.startExam) {
-    els.startExam.textContent = examMode ? "Идёт экзамен" : "Экзамен по теме";
+    els.startExam.textContent = examMode ? "Идёт зачёт" : "Начать зачёт · 8 задач";
     els.startExam.disabled = examMode;
   }
 }
@@ -1272,6 +1280,10 @@ els.topics.addEventListener("click", (event) => {
   renderChips();
   renderList();
   renderCoach(topicFilter);
+  const items = filteredProblems();
+  if (topicFilter !== "все" && items[0] && (!currentProblem || currentProblem.topic !== topicFilter)) {
+    openProblem(items[0].id, true);
+  }
 });
 
 els.levels.addEventListener("click", (event) => {

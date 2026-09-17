@@ -7,7 +7,7 @@
   <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20260917e">
+  <link rel="stylesheet" href="/static/style.css?v=20260917f">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
@@ -26,7 +26,7 @@
           <span>Имя ученика</span>
           <input id="student" type="text" maxlength="80" placeholder="Как подписать работу" autocomplete="name">
         </label>
-        <a class="ghost-link" href="/teacher">Кабинет учителя</a>
+        <a class="ghost-link practice-only" href="/teacher">Кабинет учителя</a>
       </div>
     </header>
 
@@ -55,7 +55,7 @@
         <p class="filter-label">Тема</p>
         <div id="topic-filters" class="chips"></div>
       </div>
-      <div>
+      <div class="practice-only">
         <p class="filter-label">Уровень</p>
         <div id="level-filters" class="chips"></div>
       </div>
@@ -71,9 +71,9 @@
           <span id="topic-progress-label"></span>
           <div class="progress-line"><span id="topic-progress-bar"></span></div>
         </div>
-        <input id="task-search" class="task-search" type="search" placeholder="Найти задачу" autocomplete="off">
-        <label class="quiet-check"><input id="hide-solved" type="checkbox"> Скрыть сданные</label>
-        <button id="start-exam" type="button" class="exam-start">Экзамен по теме</button>
+        <input id="task-search" class="task-search practice-only" type="search" placeholder="Найти задачу" autocomplete="off">
+        <label class="quiet-check practice-only"><input id="hide-solved" type="checkbox"> Скрыть сданные</label>
+        <button id="start-exam" type="button" class="exam-start">Начать зачёт · 8 задач</button>
         <nav id="task-list" class="task-list"></nav>
       </aside>
 
@@ -106,7 +106,7 @@
         <div class="editor-bar">
           <h2>Твой код</h2>
           <div class="editor-actions">
-            <button id="code-reset" type="button" class="ghost-btn" title="Вернуть заготовку">Заготовка</button>
+            <button id="code-reset" type="button" class="ghost-btn practice-only" title="Вернуть заготовку">Заготовка</button>
             <button id="code-copy" type="button" class="ghost-btn" title="Скопировать код">Копировать</button>
             <button id="next-task" type="button" class="ghost-btn" title="Следующая нерешённая">Дальше</button>
             <button id="editor-full" type="button" class="ghost-btn" title="На весь экран">На весь экран</button>
@@ -144,6 +144,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/jump-to-line.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/match-highlighter.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/app.js?v=20260917e"></script>
+  <script src="/static/app.js?v=20260917f"></script>
 </body>
 </html>
