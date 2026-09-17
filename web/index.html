@@ -7,7 +7,7 @@
   <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20260917d">
+  <link rel="stylesheet" href="/static/style.css?v=20260917e">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
@@ -30,13 +30,22 @@
       </div>
     </header>
 
+    <div id="onboard" class="onboard hidden">
+      <div>
+        <p class="eyebrow">Как работать на уроке</p>
+        <p>Напиши имя → выбери тему слева → «Экзамен по теме». Это 8 задач подряд, как зачёт. Если ошибка — читай три блока: что случилось, почему, что сделать.</p>
+      </div>
+      <button id="onboard-ok" type="button" class="ghost-btn">Понятно</button>
+    </div>
+
     <div id="exam-bar" class="exam-bar hidden">
       <div>
-        <p class="eyebrow">Зачёт по теме</p>
+        <p class="eyebrow">Зачёт · 8 задач темы</p>
         <h2 id="exam-heading">Экзамен</h2>
         <p id="exam-status" class="muted"></p>
       </div>
       <div class="exam-actions">
+        <button id="exam-skip" type="button" class="ghost-btn">Пропустить</button>
         <button id="exam-exit" type="button" class="ghost-btn">Выйти</button>
       </div>
     </div>
@@ -69,7 +78,13 @@
       </aside>
 
       <section class="panel brief">
-        <p class="level" id="level"></p>
+        <p id="level" class="level"></p>
+        <details id="coach" class="coach">
+          <summary id="coach-title">Как решать эту тему</summary>
+          <p id="coach-what"></p>
+          <ol id="coach-steps"></ol>
+          <p id="coach-watch" class="muted"></p>
+        </details>
         <h2 id="title">Загрузка…</h2>
         <p id="statement"></p>
         <div id="file-box" class="file-box hidden"></div>
@@ -129,6 +144,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/jump-to-line.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/match-highlighter.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/app.js?v=20260917d"></script>
+  <script src="/static/app.js?v=20260917e"></script>
 </body>
 </html>

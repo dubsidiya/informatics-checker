@@ -30,11 +30,21 @@ const els = {
   examHeading: document.getElementById("exam-heading"),
   examStatus: document.getElementById("exam-status"),
   examExit: document.getElementById("exam-exit"),
+  examSkip: document.getElementById("exam-skip"),
   startExam: document.getElementById("start-exam"),
+  onboard: document.getElementById("onboard"),
+  onboardOk: document.getElementById("onboard-ok"),
+  coach: document.getElementById("coach"),
+  coachTitle: document.getElementById("coach-title"),
+  coachWhat: document.getElementById("coach-what"),
+  coachSteps: document.getElementById("coach-steps"),
+  coachWatch: document.getElementById("coach-watch"),
 };
 
 const LEVELS = ["все", "старт", "средне", "сложно"];
+const EXAM_SIZE = 8;
 let problems = [];
+let topicCards = [];
 let currentId = null;
 let currentProblem = null;
 let topicFilter = "все";
@@ -46,6 +56,9 @@ let openGen = 0;
 let progressTimer = 0;
 let examMode = false;
 let examTopic = "";
+let examIds = [];
+let examSkip = new Set();
+let problemStats = {};
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "");
 const PYTHON_WORDS = [
@@ -169,6 +182,9 @@ function persistCode() {
 }
 
 function starterFor(problem) {
+  if (examMode) {
+    return `# ${problem.title}\n# Напиши решение с нуля, как на экзамене.\n\n`;
+  }
   const tags = problem.tags || [];
   const name = problem.files && problem.files[0] ? problem.files[0].name : "";
   if (tags.includes("ege9") && name) {
@@ -215,7 +231,9 @@ function loadResult(id) {
 function renderProgress() {
   if (!els.progress || !els.progressLabel || !els.progressBar) return;
   const topicNow = examMode ? examTopic : topicFilter;
-  const pool = topicNow === "все" ? problems : problems.filter((item) => item.topic === topicNow);
+  const pool = examMode
+    ? examProblems()
+    : (topicNow === "все" ? problems : problems.filter((item) => item.topic === topicNow));
   if (!pool.length) {
     els.progress.classList.add("hidden");
     return;
@@ -223,7 +241,9 @@ function renderProgress() {
   const solved = solvedSet();
   const done = pool.filter((item) => solved.has(item.id)).length;
   els.progress.classList.remove("hidden");
-  els.progressLabel.textContent = `Сдано ${done} из ${pool.length}`;
+  els.progressLabel.textContent = examMode
+    ? `Зачёт: сдано ${done} из ${pool.length}`
+    : `Сдано ${done} из ${pool.length}`;
   els.progressBar.style.width = `${Math.round((done / pool.length) * 100)}%`;
   renderExamBar();
 }
@@ -242,8 +262,10 @@ async function syncProgress() {
     const set = solvedSet();
     for (const id of data.solved || []) set.add(id);
     localStorage.setItem("solved", JSON.stringify([...set]));
+    problemStats = data.problems || {};
     renderList();
     renderProgress();
+    pingExamProgress();
   } catch {
     renderProgress();
   }
@@ -259,7 +281,104 @@ function examKey() {
 }
 
 function examProblems() {
+  if (examIds.length) {
+    return examIds.map((id) => problems.find((item) => item.id === id)).filter(Boolean);
+  }
   return problems.filter((item) => item.topic === examTopic);
+}
+
+function examCounts() {
+  const items = examProblems();
+  const solved = solvedSet();
+  const done = items.filter((item) => solved.has(item.id)).length;
+  return { items, done, skipped: examSkip.size };
+}
+
+function saveExamState() {
+  if (!examMode) return;
+  localStorage.setItem(examKey(), JSON.stringify({
+    topic: examTopic,
+    ids: examIds,
+    skip: [...examSkip],
+  }));
+}
+
+function pickExamSet(topic) {
+  const pool = problems.filter((item) => item.topic === topic);
+  const solved = solvedSet();
+  const unsolved = pool.filter((item) => !solved.has(item.id));
+  const source = unsolved.length ? unsolved : pool;
+  const buckets = { "старт": [], "средне": [], "сложно": [] };
+  for (const item of source) {
+    (buckets[item.level] || buckets["средне"]).push(item);
+  }
+  const picked = [];
+  function take(list, n) {
+    while (n > 0 && list.length) {
+      picked.push(list.shift());
+      n -= 1;
+    }
+  }
+  take(buckets["старт"], 3);
+  take(buckets["средне"], 3);
+  take(buckets["сложно"], 2);
+  const rest = source.filter((item) => !picked.includes(item));
+  take(rest, EXAM_SIZE - picked.length);
+  return picked.slice(0, EXAM_SIZE).map((item) => item.id);
+}
+
+function renderCoach(topic) {
+  if (!els.coach) return;
+  const name = topic && topic !== "все" ? topic : (currentProblem && currentProblem.topic);
+  const card = topicCards.find((item) => item.topic === name);
+  if (!card) {
+    els.coach.classList.add("hidden");
+    return;
+  }
+  els.coach.classList.remove("hidden");
+  if (els.coachTitle) els.coachTitle.textContent = card.title;
+  if (els.coachWhat) els.coachWhat.textContent = card.what;
+  if (els.coachSteps) {
+    els.coachSteps.innerHTML = (card.steps || []).map((step) => `<li>${escapeHtml(step)}</li>`).join("");
+  }
+  if (els.coachWatch) els.coachWatch.textContent = card.watch || "";
+  if (examMode) els.coach.open = true;
+}
+
+function renderOnboard() {
+  if (!els.onboard) return;
+  const seen = localStorage.getItem("onboard") === "1";
+  els.onboard.classList.toggle("hidden", seen);
+}
+
+async function pingExam(action, extra) {
+  const name = studentName();
+  if (!name) return;
+  try {
+    await fetch("/api/exam", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.assign({
+        student: name,
+        action,
+        topic: examTopic,
+        ids: examIds,
+      }, extra || {})),
+    });
+  } catch {
+    /* teacher board is best-effort */
+  }
+}
+
+function pingExamProgress() {
+  if (!examMode) return;
+  const { items, done, skipped } = examCounts();
+  const finished = items.length && done >= items.length;
+  pingExam(finished ? "finish" : "progress", {
+    solved: done,
+    skipped,
+    total: items.length,
+  });
 }
 
 function renderExamBar() {
@@ -271,65 +390,119 @@ function renderExamBar() {
   }
   els.examBar.classList.remove("hidden");
   document.body.classList.add("exam-on");
-  const items = examProblems();
-  const solved = solvedSet();
-  const done = items.filter((item) => solved.has(item.id)).length;
+  const { items, done } = examCounts();
   const idx = items.findIndex((item) => item.id === currentId);
   if (els.examHeading) els.examHeading.textContent = examTopic;
   if (els.examStatus) {
     els.examStatus.textContent = items.length && done === items.length
-      ? `Тема закрыта: сдано ${done} из ${items.length}`
-      : `Задача ${idx >= 0 ? idx + 1 : "—"} из ${items.length} · сдано ${done}`;
+      ? `Зачёт закрыт: сдано ${done} из ${items.length}`
+      : `Задача ${idx >= 0 ? idx + 1 : "—"} из ${items.length} · сдано ${done} · пропущено ${examSkip.size}`;
   }
 }
 
 function startExam() {
+  if (!studentName()) {
+    markNameState();
+    els.student.focus();
+    els.result.classList.remove("hidden");
+    els.result.innerHTML = `<div class="banner warn">Напиши имя сверху — учитель увидит, кто пишет зачёт.</div>`;
+    return;
+  }
   const topic = topicFilter !== "все" ? topicFilter : (currentProblem && currentProblem.topic);
   if (!topic || topic === "все") {
     els.result.classList.remove("hidden");
-    els.result.innerHTML = `<div class="banner warn">Сначала выбери тему слева сверху. Экзамен идёт по одной теме подряд, как зачёт.</div>`;
+    els.result.innerHTML = `<div class="banner warn">Сначала выбери тему слева сверху. Экзамен — 8 задач одной темы, как зачёт.</div>`;
     return;
   }
   examMode = true;
   examTopic = topic;
   topicFilter = topic;
+  examIds = pickExamSet(topic);
+  examSkip = new Set();
   hideSolved = false;
   if (els.hideSolved) els.hideSolved.checked = false;
-  localStorage.setItem(examKey(), topic);
+  saveExamState();
+  pingExam("start", { ids: examIds, topic });
+  renderCoach(topic);
   renderChips();
   renderList();
   const solved = solvedSet();
   const items = examProblems();
-  const next = items.find((item) => !solved.has(item.id)) || items[0];
+  const next = items.find((item) => !solved.has(item.id) && !examSkip.has(item.id)) || items[0];
   if (next) openProblem(next.id, true);
   renderExamBar();
 }
 
 function stopExam() {
+  if (examMode) {
+    const { items, done, skipped } = examCounts();
+    pingExam("leave", { solved: done, skipped, total: items.length });
+  }
   examMode = false;
   examTopic = "";
+  examIds = [];
+  examSkip = new Set();
   localStorage.removeItem(examKey());
   renderExamBar();
   renderChips();
   renderList();
+  renderCoach(topicFilter);
+}
+
+function skipExamTask() {
+  if (!examMode || !currentId) return;
+  examSkip.add(currentId);
+  saveExamState();
+  pingExamProgress();
+  const solved = solvedSet();
+  const items = examProblems();
+  const later = items.slice(items.findIndex((item) => item.id === currentId) + 1);
+  const next = later.find((item) => !solved.has(item.id) && !examSkip.has(item.id))
+    || items.find((item) => !solved.has(item.id) && !examSkip.has(item.id) && item.id !== currentId)
+    || later[0];
+  if (next) openProblem(next.id, true);
+  renderList();
+  renderExamBar();
 }
 
 function restoreExam() {
   const saved = localStorage.getItem(examKey());
-  if (!saved || !problems.some((item) => item.topic === saved)) return;
+  if (!saved) return;
+  let topic = "";
+  let ids = [];
+  let skip = [];
+  try {
+    const data = JSON.parse(saved);
+    if (typeof data === "string") {
+      topic = data;
+    } else {
+      topic = data.topic || "";
+      ids = Array.isArray(data.ids) ? data.ids : [];
+      skip = Array.isArray(data.skip) ? data.skip : [];
+    }
+  } catch {
+    topic = saved;
+  }
+  if (!topic || !problems.some((item) => item.topic === topic)) return;
   examMode = true;
-  examTopic = saved;
-  topicFilter = saved;
+  examTopic = topic;
+  topicFilter = topic;
+  examIds = ids.filter((id) => problems.some((item) => item.id === id));
+  if (!examIds.length) examIds = pickExamSet(topic);
+  examSkip = new Set(skip);
+  pingExam("start", { ids: examIds, topic });
   renderExamBar();
   renderChips();
+  renderCoach(topic);
 }
 
 function filteredProblems() {
   const q = searchQuery.trim().toLowerCase();
   const solved = solvedSet();
+  const pool = examMode ? examProblems() : problems;
   const examTopicNow = examMode ? examTopic : topicFilter;
-  return problems.filter((item) => {
-    const topicOk = examTopicNow === "все" || item.topic === examTopicNow;
+  return pool.filter((item) => {
+    const topicOk = examMode || examTopicNow === "все" || item.topic === examTopicNow;
     const levelOk = examMode || levelFilter === "все" || item.level === levelFilter;
     const searchOk = !q
       || item.title.toLowerCase().includes(q)
@@ -367,10 +540,17 @@ function renderList() {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.id = item.id;
-    button.className = item.id === currentId ? "active" : "";
+    button.className = [
+      item.id === currentId ? "active" : "",
+      examSkip.has(item.id) ? "skipped" : "",
+      !solved.has(item.id) && (problemStats[item.id]?.fails || 0) >= 3 ? "stuck" : "",
+    ].filter(Boolean).join(" ");
+    const fails = problemStats[item.id]?.fails || 0;
+    const mark = solved.has(item.id) ? "<i>✓</i>" : examSkip.has(item.id) ? "<i>~</i>" : "";
+    const extra = fails && !solved.has(item.id) ? ` · ${fails} попыток` : "";
     button.innerHTML = `
-      <span class="task-title">${solved.has(item.id) ? "<i>✓</i>" : ""}${escapeHtml(item.title)}</span>
-      <small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}</small>
+      <span class="task-title">${mark}${escapeHtml(item.title)}</span>
+      <small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}${extra}</small>
     `;
     button.addEventListener("click", () => openProblem(item.id, true));
     els.list.appendChild(button);
@@ -385,20 +565,34 @@ async function boot() {
   markNameState();
   setupEditor();
   try {
-    const response = await fetch("/api/problems");
-    if (!response.ok) throw new Error("bad");
-    problems = await response.json();
+    const [problemRes, topicRes] = await Promise.all([
+      fetch("/api/problems"),
+      fetch("/api/topics"),
+    ]);
+    if (!problemRes.ok) throw new Error("bad");
+    problems = await problemRes.json();
+    if (topicRes.ok) topicCards = await topicRes.json();
   } catch {
     els.title.textContent = "Не удалось загрузить задачи";
     els.statement.textContent = "Обнови страницу. Если снова ошибка — сервер проверяльщика недоступен.";
     return;
   }
+  renderOnboard();
   renderChips();
   renderProgress();
   restoreExam();
+  renderCoach(examMode ? examTopic : topicFilter);
   syncProgress();
   const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
-  const start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
+  let start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
+  if (examMode) {
+    const solved = solvedSet();
+    const items = examProblems();
+    const hashOk = fromHash && items.some((item) => item.id === fromHash);
+    start = hashOk
+      ? fromHash
+      : (items.find((item) => !solved.has(item.id)) || items[0] || {}).id || start;
+  }
   if (start) {
     await openProblem(start, false);
   } else {
@@ -853,6 +1047,7 @@ async function openProblem(id, updateHash) {
     if (gen !== openGen) return;
     currentProblem = problem;
     els.level.textContent = `${problem.topic} · ${problem.level}`;
+    renderCoach(problem.topic);
     els.title.textContent = problem.title;
     els.statement.textContent = problem.statement;
     if (problem.files && problem.files[0]) {
@@ -920,8 +1115,11 @@ async function check() {
     }
     if (data.status === "ok") {
       markSolved(currentId);
+      examSkip.delete(currentId);
+      saveExamState();
       renderList();
       renderProgress();
+      pingExamProgress();
     }
     saveResult(currentId, data);
     renderResult(data);
@@ -1016,9 +1214,10 @@ function explanationCard(data) {
   const exp = data.explanation;
   if (!exp) return `<div class="banner ${data.status === "ok" ? "ok" : data.status === "syntax" ? "warn" : "bad"}">${escapeHtml(data.message || "")}</div>`;
   const line = exp.line ? `<div class="line">смотри строку ${exp.line}</div>` : "";
+  const tries = data.tries > 1 ? ` · попытка ${data.tries}` : "";
   return `
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
-      <p class="explain-kicker">Разбор для ученика</p>
+      <p class="explain-kicker">Разбор для ученика${tries}</p>
       <h3>${escapeHtml(exp.headline)}</h3>
       <div class="explain-block"><span>Что случилось</span><p>${escapeHtml(exp.what)}</p></div>
       <div class="explain-block"><span>Почему так</span><p>${escapeHtml(exp.why)}</p></div>
@@ -1029,18 +1228,21 @@ function explanationCard(data) {
 }
 
 function examFooter(data) {
-  if (data.status !== "ok") return `<p><button type="button" class="ghost-link" data-next="1">Следующая нерешённая</button></p>`;
+  const skipBit = examMode
+    ? ` <button type="button" class="ghost-link" data-exam-skip="1">Пропустить</button>`
+    : "";
+  if (data.status !== "ok") {
+    return `<p><button type="button" class="ghost-link" data-next="1">Следующая нерешённая</button>${skipBit}</p>`;
+  }
   if (!examMode) {
     return `<p><button type="button" class="ghost-link" data-next="1">Следующая нерешённая</button></p>`;
   }
-  const items = examProblems();
-  const solved = solvedSet();
-  const done = items.filter((item) => solved.has(item.id)).length;
+  const { items, done } = examCounts();
   if (items.length && done >= items.length) {
     return `<div class="banner ok">Зачёт по теме «${escapeHtml(examTopic)}» закрыт: ${done} из ${items.length}.</div>
       <p><button type="button" class="ghost-link" data-exam-exit="1">Завершить экзамен</button></p>`;
   }
-  return `<p>В экзамене сдано ${done} из ${items.length}. <button type="button" class="ghost-link" data-next="1">Дальше по теме</button></p>`;
+  return `<p>В зачёте сдано ${done} из ${items.length}. <button type="button" class="ghost-link" data-next="1">Дальше по теме</button>${skipBit}</p>`;
 }
 
 function preview(text) {
@@ -1069,6 +1271,7 @@ els.topics.addEventListener("click", (event) => {
   topicFilter = button.dataset.topic;
   renderChips();
   renderList();
+  renderCoach(topicFilter);
 });
 
 els.levels.addEventListener("click", (event) => {
@@ -1169,8 +1372,9 @@ function openNextUnsolved() {
   const items = filteredProblems();
   if (!items.length) return;
   const idx = items.findIndex((item) => item.id === currentId);
-  const later = items.slice(idx + 1).find((item) => !solved.has(item.id));
-  const next = later || items.find((item) => !solved.has(item.id) && item.id !== currentId);
+  const wanted = (item) => !solved.has(item.id) && (!examMode || !examSkip.has(item.id));
+  const later = items.slice(idx + 1).find(wanted);
+  const next = later || items.find((item) => wanted(item) && item.id !== currentId) || items.slice(idx + 1)[0];
   if (next) openProblem(next.id, true);
 }
 
@@ -1180,9 +1384,17 @@ if (els.next) els.next.addEventListener("click", openNextUnsolved);
 els.result.addEventListener("click", (event) => {
   if (event.target.closest("[data-next]")) openNextUnsolved();
   if (event.target.closest("[data-exam-exit]")) stopExam();
+  if (event.target.closest("[data-exam-skip]")) skipExamTask();
 });
 
 if (els.startExam) els.startExam.addEventListener("click", startExam);
 if (els.examExit) els.examExit.addEventListener("click", stopExam);
+if (els.examSkip) els.examSkip.addEventListener("click", skipExamTask);
+if (els.onboardOk) {
+  els.onboardOk.addEventListener("click", () => {
+    localStorage.setItem("onboard", "1");
+    renderOnboard();
+  });
+}
 
 boot();

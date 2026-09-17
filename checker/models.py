@@ -115,6 +115,7 @@ class GradeResult:
     trace: list[TraceStep] = field(default_factory=list)
     first_fail_index: int | None = None
     explanation: Explanation | None = None
+    tries: int = 1
 
     def to_dict(self, *, reveal_hidden: bool = False) -> dict[str, Any]:
         tests = []
@@ -148,6 +149,7 @@ class GradeResult:
             "explanation": explain,
             "trace": [asdict(item) for item in self.trace] if not self._first_fail_is_hidden() or reveal_hidden else [],
             "first_fail_index": self.first_fail_index,
+            "tries": self.tries,
         }
 
     def _first_fail_is_hidden(self) -> bool:

@@ -15,7 +15,7 @@ const boardAuto = document.getElementById("board-auto");
 const boardRefresh = document.getElementById("board-refresh");
 
 let problems = [];
-let summary = { students: [], total_attempts: 0, total_students: 0 };
+let summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], exams: { live: [], recent: [] } };
 let topicFilter = "все";
 let colMode = "attempted";
 let period = "all";
@@ -119,16 +119,25 @@ function renderStats() {
   const students = roster();
   const attempted = new Set();
   let solved = 0;
+  const topicIds = topicFilter === "все" ? [] : problems.filter((item) => item.topic === topicFilter).map((item) => item.id);
+  let topicSolved = 0;
   for (const student of students) {
     solved += student.solved || 0;
     for (const id of Object.keys(student.problems || {})) attempted.add(id);
+    if (topicIds.length) {
+      topicSolved += topicIds.filter((id) => student.problems?.[id]?.best_status === "ok").length;
+    }
   }
+  const topicStat = topicIds.length
+    ? `<article class="stat"><b>${topicSolved}</b><span>сдач по теме</span></article>`
+    : `<article class="stat"><b>${attempted.size} / ${problems.length}</b><span>задач трогали</span></article>`;
   stats.innerHTML = `
     <article class="stat"><b>${students.length}</b><span>учеников в срезе</span></article>
     <article class="stat"><b>${solved}</b><span>сдач задач</span></article>
-    <article class="stat"><b>${attempted.size} / ${problems.length}</b><span>задач трогали</span></article>
+    ${topicStat}
     <article class="stat"><b>${summary.total_attempts}</b><span>попыток всего</span></article>
   `;
+  renderClassroom();
 }
 
 function visibleProblems() {
@@ -148,6 +157,45 @@ function visibleProblems() {
     if (nameHits.length) return true;
     return false;
   });
+}
+
+function problemTitle(id) {
+  return problems.find((item) => item.id === id)?.title || id;
+}
+
+function renderClassroom() {
+  const box = document.getElementById("classroom");
+  if (!box) return;
+  const live = (summary.exams && summary.exams.live) || [];
+  const recent = (summary.exams && summary.exams.recent) || [];
+  const stuck = (summary.stuck || []).filter((item) => inPeriod(item.ts)).slice(0, 12);
+  const liveHtml = live.length
+    ? `<ul>${live.map((item) => `<li><button type="button" class="ghost-link" data-find="${escapeHtml(item.student)}">${escapeHtml(item.student)}</button> · ${escapeHtml(item.topic)} · ${item.solved}/${item.total}</li>`).join("")}</ul>`
+    : `<p class="muted">Сейчас никто не пишет зачёт.</p>`;
+  const stuckHtml = stuck.length
+    ? `<ul>${stuck.map((item) => `<li><button type="button" class="ghost-link" data-find="${escapeHtml(item.student)}">${escapeHtml(item.student)}</button> · ${escapeHtml(problemTitle(item.problem_id))} · ${item.attempts} попыток, не сдано</li>`).join("")}</ul>`
+    : `<p class="muted">Нет учеников с тремя и больше неудачами на одной задаче.</p>`;
+  const recentHtml = recent.length
+    ? `<p class="muted">${recent.slice(0, 6).map((item) => `${escapeHtml(item.student)}: ${item.solved}/${item.total} «${escapeHtml(item.topic)}»`).join(" · ")}</p>`
+    : "";
+  box.innerHTML = `
+    <article class="classroom-card">
+      <h3>Сейчас пишут зачёт</h3>
+      ${liveHtml}
+      ${recentHtml}
+    </article>
+    <article class="classroom-card">
+      <h3>Кто застрял</h3>
+      ${stuckHtml}
+    </article>
+  `;
+}
+
+function topicScore(student) {
+  if (topicFilter === "все") return `${student.solved} сдано · ${student.attempts} попыток · ${when(student.last_ts)}`;
+  const ids = problems.filter((item) => item.topic === topicFilter).map((item) => item.id);
+  const done = ids.filter((id) => student.problems?.[id]?.best_status === "ok").length;
+  return `${done}/${ids.length} по теме · ${student.attempts} попыток · ${when(student.last_ts)}`;
 }
 
 function renderGrid() {
@@ -178,7 +226,7 @@ function renderGrid() {
       return `<td class="cell ${klass}" data-student="${escapeHtml(student.name)}" data-problem="${problem.id}" data-id="${attemptId}">${label}<small>${cell.attempts} попыток</small></td>`;
     }).join("");
     return `<tr>
-      <th class="name-col" data-student="${escapeHtml(student.name)}" title="Нажми, чтобы найти этого ученика">${escapeHtml(student.name)}<small>${student.solved} сдано · ${student.attempts} попыток · ${when(student.last_ts)}</small></th>
+      <th class="name-col" data-student="${escapeHtml(student.name)}" title="Нажми, чтобы найти этого ученика">${escapeHtml(student.name)}<small>${topicScore(student)}</small></th>
       ${cells}
     </tr>`;
   }).join("");
@@ -337,5 +385,46 @@ boardRefresh.addEventListener("click", async () => {
     boardRefresh.disabled = false;
   }
 });
+
+const classroom = document.getElementById("classroom");
+if (classroom) {
+  classroom.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-find]");
+    if (!button) return;
+    query = button.dataset.find || "";
+    boardSearch.value = query;
+    renderStats();
+    renderGrid();
+  });
+}
+
+const importInput = document.getElementById("board-import");
+const importNote = document.getElementById("import-note");
+if (importInput) {
+  importInput.addEventListener("change", async () => {
+    const file = importInput.files && importInput.files[0];
+    importInput.value = "";
+    if (!file) return;
+    const text = await file.text();
+    const format = /\.json$/i.test(file.name) ? "json" : "csv";
+    try {
+      const result = await api("/api/teacher/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ format, text }),
+      });
+      await loadSummary();
+      if (importNote) {
+        importNote.classList.remove("hidden");
+        importNote.textContent = `Вернул журнал: добавлено ${result.inserted}, пропущено ${result.skipped}.`;
+      }
+    } catch (error) {
+      if (importNote) {
+        importNote.classList.remove("hidden");
+        importNote.textContent = error.message || "Не удалось вернуть журнал.";
+      }
+    }
+  });
+}
 
 boot();

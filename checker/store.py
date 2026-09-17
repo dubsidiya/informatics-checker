@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import io
+import json
 import os
 import sqlite3
 import threading
@@ -74,6 +75,23 @@ def init_store() -> None:
         conn.execute(
             "CREATE INDEX IF NOT EXISTS idx_attempts_student_problem ON attempts(student, problem_id, ts)"
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS exams (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                ts REAL NOT NULL,
+                student TEXT NOT NULL,
+                topic TEXT NOT NULL,
+                status TEXT NOT NULL,
+                solved INTEGER NOT NULL DEFAULT 0,
+                total INTEGER NOT NULL DEFAULT 0,
+                skipped INTEGER NOT NULL DEFAULT 0,
+                problem_ids TEXT NOT NULL DEFAULT '[]',
+                updated REAL NOT NULL
+            )
+            """
+        )
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_exams_student ON exams(student, updated)")
         conn.commit()
         _READY_FOR = marker
 
@@ -108,8 +126,10 @@ def record_attempt(
     total: int,
     message: str,
     code: str,
+    ts: float | None = None,
 ) -> int:
     init_store()
+    stamp = float(ts) if ts else time.time()
     with _LOCK:
         conn = _connect()
         cursor = conn.execute(
@@ -118,7 +138,7 @@ def record_attempt(
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
-                time.time(),
+                stamp,
                 clean_student_name(student),
                 problem_id,
                 status,
@@ -130,6 +150,18 @@ def record_attempt(
         )
         conn.commit()
         return int(cursor.lastrowid)
+
+
+def _attempt_exists(conn: sqlite3.Connection, student: str, problem_id: str, status: str, ts: float) -> bool:
+    row = conn.execute(
+        """
+        SELECT id FROM attempts
+        WHERE student = ? AND problem_id = ? AND status = ? AND abs(ts - ?) < 1.5
+        LIMIT 1
+        """,
+        (student, problem_id, status, ts),
+    ).fetchone()
+    return row is not None
 
 
 def list_attempts(student: str = "", problem_id: str = "", limit: int = 120) -> list[dict[str, Any]]:
@@ -186,7 +218,7 @@ def latest_attempt(student: str, problem_id: str) -> dict[str, Any] | None:
 def student_progress(student: str) -> dict[str, Any]:
     name = clean_student_name(student)
     if name == "без имени":
-        return {"student": "", "solved": [], "attempts": 0}
+        return {"student": "", "solved": [], "attempts": 0, "problems": {}}
     init_store()
     with _LOCK:
         conn = _connect()
@@ -194,8 +226,33 @@ def student_progress(student: str) -> dict[str, Any]:
             "SELECT problem_id, status FROM attempts WHERE student = ?",
             (name,),
         ).fetchall()
-    solved = sorted({row["problem_id"] for row in rows if row["status"] == "ok"})
-    return {"student": name, "solved": solved, "attempts": len(rows)}
+    problems: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        cell = problems.setdefault(
+            row["problem_id"],
+            {"attempts": 0, "fails": 0, "solved": False},
+        )
+        cell["attempts"] += 1
+        if row["status"] == "ok":
+            cell["solved"] = True
+        else:
+            cell["fails"] += 1
+    solved = sorted(pid for pid, cell in problems.items() if cell["solved"])
+    return {"student": name, "solved": solved, "attempts": len(rows), "problems": problems}
+
+
+def problem_attempt_count(student: str, problem_id: str) -> int:
+    name = clean_student_name(student)
+    if name == "без имени" or not problem_id:
+        return 0
+    init_store()
+    with _LOCK:
+        conn = _connect()
+        row = conn.execute(
+            "SELECT COUNT(*) AS n FROM attempts WHERE student = ? AND problem_id = ?",
+            (name, problem_id),
+        ).fetchone()
+    return int(row["n"] if row else 0)
 
 
 def export_attempts(limit: int = 4000) -> list[dict[str, Any]]:
@@ -297,8 +354,251 @@ def summarize() -> dict[str, Any]:
         )
         roster.append(bucket)
     roster.sort(key=lambda item: (-item["solved"], -item["attempts"], item["name"].lower()))
+    stuck: list[dict[str, Any]] = []
+    for bucket in roster:
+        for cell in bucket["problems"].values():
+            if cell.get("best_status") == "ok":
+                continue
+            if int(cell.get("attempts") or 0) < 3:
+                continue
+            stuck.append(
+                {
+                    "student": bucket["name"],
+                    "problem_id": cell["problem_id"],
+                    "attempts": cell["attempts"],
+                    "passed": cell.get("best_passed", cell.get("passed", 0)),
+                    "total": cell.get("best_total", cell.get("total", 0)),
+                    "ts": cell.get("ts", 0),
+                }
+            )
+    stuck.sort(key=lambda item: (-item["attempts"], -item["ts"]))
     return {
         "students": roster,
         "total_attempts": len(rows),
         "total_students": len(roster),
+        "stuck": stuck[:40],
+        "exams": exam_board(),
     }
+
+
+def _exam_row(row: sqlite3.Row) -> dict[str, Any]:
+    try:
+        ids = json.loads(row["problem_ids"] or "[]")
+    except json.JSONDecodeError:
+        ids = []
+    if not isinstance(ids, list):
+        ids = []
+    return {
+        "id": row["id"],
+        "ts": row["ts"],
+        "student": row["student"],
+        "topic": row["topic"],
+        "status": row["status"],
+        "solved": row["solved"],
+        "total": row["total"],
+        "skipped": row["skipped"],
+        "problem_ids": [str(item) for item in ids][:40],
+        "updated": row["updated"],
+    }
+
+
+def exam_board() -> dict[str, Any]:
+    init_store()
+    now = time.time()
+    with _LOCK:
+        conn = _connect()
+        live_rows = conn.execute(
+            """
+            SELECT id, ts, student, topic, status, solved, total, skipped, problem_ids, updated
+            FROM exams
+            WHERE status = 'live' AND updated >= ?
+            ORDER BY updated DESC
+            LIMIT 80
+            """,
+            (now - 3 * 3600,),
+        ).fetchall()
+        recent_rows = conn.execute(
+            """
+            SELECT id, ts, student, topic, status, solved, total, skipped, problem_ids, updated
+            FROM exams
+            WHERE status IN ('done', 'left')
+            ORDER BY updated DESC
+            LIMIT 40
+            """
+        ).fetchall()
+    return {
+        "live": [_exam_row(row) for row in live_rows],
+        "recent": [_exam_row(row) for row in recent_rows],
+    }
+
+
+def start_exam(student: str, topic: str, problem_ids: list[str]) -> dict[str, Any]:
+    name = clean_student_name(student)
+    topic_name = " ".join(str(topic or "").split())[:80] or "тема"
+    ids = [str(item)[:80] for item in problem_ids if str(item).strip()][:40]
+    now = time.time()
+    payload = json.dumps(ids, ensure_ascii=False)
+    init_store()
+    with _LOCK:
+        conn = _connect()
+        conn.execute(
+            "UPDATE exams SET status = 'left', updated = ? WHERE student = ? AND status = 'live'",
+            (now, name),
+        )
+        cursor = conn.execute(
+            """
+            INSERT INTO exams (ts, student, topic, status, solved, total, skipped, problem_ids, updated)
+            VALUES (?, ?, ?, 'live', 0, ?, 0, ?, ?)
+            """,
+            (now, name, topic_name, len(ids), payload, now),
+        )
+        conn.commit()
+        exam_id = int(cursor.lastrowid)
+    return {
+        "id": exam_id,
+        "student": name,
+        "topic": topic_name,
+        "status": "live",
+        "solved": 0,
+        "total": len(ids),
+        "skipped": 0,
+        "problem_ids": ids,
+    }
+
+
+def update_exam(
+    student: str,
+    *,
+    solved: int | None = None,
+    skipped: int | None = None,
+    total: int | None = None,
+    status: str | None = None,
+) -> dict[str, Any] | None:
+    name = clean_student_name(student)
+    if name == "без имени":
+        return None
+    init_store()
+    now = time.time()
+    with _LOCK:
+        conn = _connect()
+        row = conn.execute(
+            """
+            SELECT id, ts, student, topic, status, solved, total, skipped, problem_ids, updated
+            FROM exams
+            WHERE student = ? AND status = 'live'
+            ORDER BY updated DESC
+            LIMIT 1
+            """,
+            (name,),
+        ).fetchone()
+        if not row:
+            return None
+        new_status = status if status in {"live", "done", "left"} else row["status"]
+        try:
+            new_solved = row["solved"] if solved is None else max(0, min(int(solved), 200))
+            new_skipped = row["skipped"] if skipped is None else max(0, min(int(skipped), 200))
+            new_total = row["total"] if total is None else max(0, min(int(total), 200))
+        except (TypeError, ValueError):
+            new_solved, new_skipped, new_total = row["solved"], row["skipped"], row["total"]
+        conn.execute(
+            """
+            UPDATE exams
+            SET solved = ?, skipped = ?, total = ?, status = ?, updated = ?
+            WHERE id = ?
+            """,
+            (new_solved, new_skipped, new_total, new_status, now, row["id"]),
+        )
+        conn.commit()
+        fresh = conn.execute(
+            """
+            SELECT id, ts, student, topic, status, solved, total, skipped, problem_ids, updated
+            FROM exams WHERE id = ?
+            """,
+            (row["id"],),
+        ).fetchone()
+    return _exam_row(fresh) if fresh else None
+
+
+def _parse_ts(value: object) -> float | None:
+    if isinstance(value, (int, float)) and value > 0:
+        return float(value)
+    if not isinstance(value, str):
+        return None
+    text = value.strip()
+    if not text:
+        return None
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S", "%d.%m.%Y %H:%M:%S"):
+        try:
+            return time.mktime(time.strptime(text[:19], fmt))
+        except ValueError:
+            continue
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def import_journal(text: str, kind: str = "csv") -> dict[str, Any]:
+    raw = text or ""
+    if len(raw) > 2_000_000:
+        return {"inserted": 0, "skipped": 0, "detail": "file too large"}
+    rows: list[dict[str, Any]] = []
+    mode = (kind or "csv").lower()
+    if mode == "json":
+        try:
+            payload = json.loads(raw)
+        except json.JSONDecodeError:
+            return {"inserted": 0, "skipped": 0, "detail": "bad json"}
+        if isinstance(payload, dict) and isinstance(payload.get("students"), list):
+            return {"inserted": 0, "skipped": 0, "detail": "need attempt list"}
+        items = payload if isinstance(payload, list) else payload.get("attempts") if isinstance(payload, dict) else []
+        if not isinstance(items, list):
+            return {"inserted": 0, "skipped": 0, "detail": "need attempt list"}
+        for item in items[:8000]:
+            if isinstance(item, dict):
+                rows.append(item)
+    else:
+        sample = raw.lstrip("\ufeff")
+        reader = csv.DictReader(io.StringIO(sample), delimiter=";")
+        if not reader.fieldnames:
+            return {"inserted": 0, "skipped": 0, "detail": "empty csv"}
+        for item in reader:
+            rows.append(item)
+            if len(rows) >= 8000:
+                break
+
+    inserted = 0
+    skipped = 0
+    init_store()
+    with _LOCK:
+        conn = _connect()
+        for item in rows:
+            student = clean_student_name(item.get("student") or item.get("ученик") or "")
+            problem_id = str(item.get("problem_id") or item.get("задача") or "").strip()[:80]
+            status = str(item.get("status") or item.get("статус") or "").strip()[:20]
+            if student == "без имени" or not problem_id or status not in {"ok", "fail", "syntax"}:
+                skipped += 1
+                continue
+            try:
+                passed = int(item.get("passed") if item.get("passed") is not None else item.get("пройдено") or 0)
+                total = int(item.get("total") if item.get("total") is not None else item.get("всего") or 0)
+            except (TypeError, ValueError):
+                skipped += 1
+                continue
+            message = str(item.get("message") or item.get("сообщение") or status)[:400]
+            code = str(item.get("code") or "")[:80_000]
+            stamp = _parse_ts(item.get("ts") or item.get("время")) or time.time()
+            if _attempt_exists(conn, student, problem_id, status, stamp):
+                skipped += 1
+                continue
+            conn.execute(
+                """
+                INSERT INTO attempts (ts, student, problem_id, status, passed, total, message, code)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (stamp, student, problem_id, status, passed, total, message, code),
+            )
+            inserted += 1
+        conn.commit()
+    return {"inserted": inserted, "skipped": skipped}
+

@@ -14,17 +14,23 @@ from urllib.parse import parse_qs, urlparse
 
 from checker.grade import grade_solution
 from checker.problems import get_problem, list_summaries
+from checker.explain import deepen_explanation
 from checker.store import (
     clean_student_name,
     export_attempts,
     export_csv,
     get_attempt,
+    import_journal,
     latest_attempt,
     list_attempts,
+    problem_attempt_count,
     record_attempt,
+    start_exam,
     student_progress,
     summarize,
+    update_exam,
 )
+from checker.topics import list_topic_cards
 
 ROOT = Path(__file__).resolve().parent
 WEB = ROOT / "web"
@@ -38,6 +44,7 @@ RATE_WINDOW = 60.0
 LOGIN_LIMIT = 8
 NAME_LIMIT = 25
 PROGRESS_LIMIT = 60
+EXAM_LIMIT = 40
 _GRADE_GATE = threading.Semaphore(4)
 
 
@@ -140,6 +147,9 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if path == "/api/problems":
             self._send_json(list_summaries())
+            return
+        if path == "/api/topics":
+            self._send_json(list_topic_cards())
             return
         if path == "/api/progress":
             if not _allow(f"progress:{self._client_ip()}", PROGRESS_LIMIT):
@@ -272,7 +282,8 @@ class Handler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         length = int(self.headers.get("Content-Length", "0") or 0)
-        if length > 200_000:
+        max_len = 2_000_000 if path == "/api/teacher/import" else 200_000
+        if length > max_len:
             self._send_json({"detail": "Слишком большой запрос"}, 413)
             return
         raw = self.rfile.read(length) if length else b""
@@ -297,6 +308,67 @@ class Handler(SimpleHTTPRequestHandler):
             self._send_json({"ok": True}, cookie="", cookie_age=0)
             return
 
+        if path == "/api/teacher/import":
+            if not self._is_teacher():
+                self._send_json({"detail": "Нужен вход учителя"}, 401)
+                return
+            try:
+                payload = json.loads(raw.decode("utf-8"))
+                kind = payload.get("format", "csv")
+                text = payload.get("text", "")
+            except (json.JSONDecodeError, TypeError, UnicodeDecodeError):
+                self._send_json({"detail": "Некорректный запрос"}, 400)
+                return
+            if not isinstance(text, str) or not isinstance(kind, str):
+                self._send_json({"detail": "Некорректный запрос"}, 400)
+                return
+            result = import_journal(text, kind)
+            self._send_json({"ok": True, **result})
+            return
+
+        if path == "/api/exam":
+            if not _allow(f"exam:{self._client_ip()}", EXAM_LIMIT):
+                self._send_json({"detail": "Слишком много запросов. Подожди минуту."}, 429)
+                return
+            try:
+                payload = json.loads(raw.decode("utf-8"))
+                raw_name = payload.get("student", "")
+                action = str(payload.get("action", "")).strip()
+            except (json.JSONDecodeError, TypeError, UnicodeDecodeError, AttributeError):
+                self._send_json({"detail": "Некорректный запрос"}, 400)
+                return
+            if not isinstance(raw_name, str) or not raw_name.strip():
+                self._send_json({"detail": "Напиши своё имя сверху, чтобы учитель увидел работу."}, 400)
+                return
+            student = clean_student_name(raw_name)
+            if action == "start":
+                topic = payload.get("topic", "")
+                ids = payload.get("ids") or []
+                if not isinstance(topic, str) or not topic.strip():
+                    self._send_json({"detail": "Выбери тему"}, 400)
+                    return
+                if not isinstance(ids, list):
+                    ids = []
+                clean_ids = [str(item) for item in ids if isinstance(item, str)][:40]
+                self._send_json(start_exam(student, topic.strip(), clean_ids))
+                return
+            if action in {"progress", "finish", "leave"}:
+                status = {"progress": "live", "finish": "done", "leave": "left"}[action]
+                exam = update_exam(
+                    student,
+                    solved=payload.get("solved"),
+                    skipped=payload.get("skipped"),
+                    total=payload.get("total"),
+                    status=status,
+                )
+                if not exam:
+                    self._send_json({"detail": "Экзамен не начат"}, 404)
+                    return
+                self._send_json(exam)
+                return
+            self._send_json({"detail": "Некорректный запрос"}, 400)
+            return
+
         if path != "/api/check":
             self._send_json({"detail": "Страница не найдена"}, 404)
             return
@@ -318,8 +390,11 @@ class Handler(SimpleHTTPRequestHandler):
             if not isinstance(code, str) or len(code) > 80_000:
                 raise ValueError("bad code")
             try:
+                problem = get_problem(problem_id)
+                tries = problem_attempt_count(student, problem_id) + 1
                 with _GRADE_GATE:
-                    result = grade_solution(get_problem(problem_id), code)
+                    result = grade_solution(problem, code)
+                deepen_explanation(problem, result, tries)
             except KeyError:
                 self._send_json({"detail": "Задача не найдена"}, 404)
                 return

@@ -592,6 +592,55 @@ body.editor-full .CodeMirror {
 }
 .exam-start:disabled { opacity: 0.6; cursor: default; }
 
+.onboard {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: #fff8e8;
+  border: 1px solid #ead7a8;
+  border-radius: 14px;
+}
+.onboard.hidden { display: none; }
+.onboard p { margin: 4px 0 0; }
+.coach {
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  background: #f6f1e8;
+  border-radius: 12px;
+}
+.coach summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.coach p, .coach ol { margin: 8px 0 0; }
+.coach ol { padding-left: 18px; }
+body.exam-on .coach { background: var(--info-bg); }
+.task-list button.skipped small { color: var(--muted); }
+.task-list button.stuck { box-shadow: inset 3px 0 0 var(--bad); }
+.classroom-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.classroom-card {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.classroom-card h3 { margin: 0 0 8px; font-size: 16px; }
+.classroom-card ul { margin: 0; padding-left: 18px; }
+.classroom-card li { margin: 4px 0; }
+.import-link { cursor: pointer; }
+.import-link input { display: none; }
+#import-note { margin: 8px 0 0; }
+@media (max-width: 900px) {
+  .classroom-strip, .onboard { grid-template-columns: 1fr; flex-direction: column; align-items: stretch; }
+}
+
 .explain-card {
   border-radius: 14px;
   padding: 16px 18px;

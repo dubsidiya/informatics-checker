@@ -246,3 +246,17 @@ HOW_BY_TITLE = [
     ("1/0 вместо слова", "Печатай YES/NO или EVEN/ODD, как в условии, не True/False и не 1/0."),
     ("наоборот", "Проверь if: не перепутаны ли == и !=, not, in. Условие сработало зеркально."),
 ]
+
+
+def deepen_explanation(problem: Problem, result: GradeResult, tries: int) -> GradeResult:
+    from checker.topics import retry_how
+
+    result.tries = max(1, int(tries or 1))
+    exp = result.explanation
+    if not exp or result.status == "ok":
+        return result
+    extra = retry_how(problem, result.tries)
+    if extra and extra not in (exp.how or ""):
+        exp.how = ((exp.how or "").rstrip() + " " + extra).strip()
+    return result
+
