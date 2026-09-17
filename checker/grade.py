@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from checker.explain import attach_explanation
 from checker.logic import build_hints, same_answer, to_trace_steps
 from checker.models import GradeResult, Problem, TestResult
 from checker.sandbox import run_student, run_trace
@@ -10,32 +11,44 @@ from checker.syntax import explain_syntax
 def grade_solution(problem: Problem, source: str) -> GradeResult:
     source = source.replace("\r\n", "\n")
     if not source.strip():
-        return GradeResult(
-            status="syntax",
-            message="Пустой файл: напиши программу и нажми «Проверить».",
-            passed=0,
-            total=len(problem.tests),
+        return attach_explanation(
+            problem,
+            GradeResult(
+                status="syntax",
+                message="Пустой файл: напиши программу и нажми «Проверить».",
+                passed=0,
+                total=len(problem.tests),
+            ),
+            source,
         )
 
     syntax = explain_syntax(source)
     if syntax:
-        return GradeResult(
-            status="syntax",
-            message="Синтаксическая ошибка: программа даже не запустилась.",
-            passed=0,
-            total=len(problem.tests),
-            syntax=syntax,
+        return attach_explanation(
+            problem,
+            GradeResult(
+                status="syntax",
+                message="Синтаксическая ошибка: программа даже не запустилась.",
+                passed=0,
+                total=len(problem.tests),
+                syntax=syntax,
+            ),
+            source,
         )
 
     allow_open = bool(problem.files) or any(case.file for case in problem.tests)
     blocked = find_forbidden(source, allow_open=allow_open)
     if blocked:
-        return GradeResult(
-            status="syntax",
-            message="Программа отклонена: есть запрещённые конструкции.",
-            passed=0,
-            total=len(problem.tests),
-            syntax=blocked,
+        return attach_explanation(
+            problem,
+            GradeResult(
+                status="syntax",
+                message="Программа отклонена: есть запрещённые конструкции.",
+                passed=0,
+                total=len(problem.tests),
+                syntax=blocked,
+            ),
+            source,
         )
 
     tests = []
@@ -59,12 +72,16 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
     first_fail = next((item for item in tests if item.verdict != "OK"), None)
 
     if first_fail is None:
-        return GradeResult(
-            status="ok",
-            message="Все тесты пройдены. Решение принимается.",
-            passed=passed,
-            total=len(tests),
-            tests=tests,
+        return attach_explanation(
+            problem,
+            GradeResult(
+                status="ok",
+                message="Все тесты пройдены. Решение принимается.",
+                passed=passed,
+                total=len(tests),
+                tests=tests,
+            ),
+            source,
         )
 
     hints = build_hints(source, problem, tests)
@@ -82,15 +99,19 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
     else:
         message = f"Неверный ответ на тесте {first_fail.index + 1}."
 
-    return GradeResult(
-        status="fail",
-        message=message,
-        passed=passed,
-        total=len(tests),
-        tests=tests,
-        hints=hints,
-        trace=trace,
-        first_fail_index=first_fail.index,
+    return attach_explanation(
+        problem,
+        GradeResult(
+            status="fail",
+            message=message,
+            passed=passed,
+            total=len(tests),
+            tests=tests,
+            hints=hints,
+            trace=trace,
+            first_fail_index=first_fail.index,
+        ),
+        source,
     )
 
 

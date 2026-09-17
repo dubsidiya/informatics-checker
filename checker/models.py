@@ -75,6 +75,16 @@ class Hint:
 
 
 @dataclass
+class Explanation:
+    headline: str
+    what: str
+    why: str
+    how: str
+    line: int | None = None
+    kind: str = "logic"
+
+
+@dataclass
 class TraceStep:
     line: int
     locals: dict[str, str]
@@ -104,6 +114,7 @@ class GradeResult:
     hints: list[Hint] = field(default_factory=list)
     trace: list[TraceStep] = field(default_factory=list)
     first_fail_index: int | None = None
+    explanation: Explanation | None = None
 
     def to_dict(self, *, reveal_hidden: bool = False) -> dict[str, Any]:
         tests = []
@@ -117,11 +128,15 @@ class GradeResult:
                     payload["error"] = item.error_type or "скрытый тест не пройден"
             tests.append(payload)
         hints = [asdict(item) for item in self.hints]
+        explain = asdict(self.explanation) if self.explanation else None
         if not reveal_hidden:
             secrets = self._hidden_secrets()
             for hint in hints:
                 hint["title"] = self._scrub(hint.get("title", ""), secrets)
                 hint["detail"] = self._scrub(hint.get("detail", ""), secrets)
+            if explain:
+                for key in ("headline", "what", "why", "how"):
+                    explain[key] = self._scrub(explain.get(key, ""), secrets)
         return {
             "status": self.status,
             "message": self.message,
@@ -130,6 +145,7 @@ class GradeResult:
             "syntax": asdict(self.syntax) if self.syntax else None,
             "tests": tests,
             "hints": hints,
+            "explanation": explain,
             "trace": [asdict(item) for item in self.trace] if not self._first_fail_is_hidden() or reveal_hidden else [],
             "first_fail_index": self.first_fail_index,
         }

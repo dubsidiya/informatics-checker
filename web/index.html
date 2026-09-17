@@ -7,7 +7,7 @@
   <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20260917c">
+  <link rel="stylesheet" href="/static/style.css?v=20260917d">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
@@ -29,6 +29,17 @@
         <a class="ghost-link" href="/teacher">Кабинет учителя</a>
       </div>
     </header>
+
+    <div id="exam-bar" class="exam-bar hidden">
+      <div>
+        <p class="eyebrow">Зачёт по теме</p>
+        <h2 id="exam-heading">Экзамен</h2>
+        <p id="exam-status" class="muted"></p>
+      </div>
+      <div class="exam-actions">
+        <button id="exam-exit" type="button" class="ghost-btn">Выйти</button>
+      </div>
+    </div>
 
     <div class="filters">
       <div>
@@ -53,6 +64,7 @@
         </div>
         <input id="task-search" class="task-search" type="search" placeholder="Найти задачу" autocomplete="off">
         <label class="quiet-check"><input id="hide-solved" type="checkbox"> Скрыть сданные</label>
+        <button id="start-exam" type="button" class="exam-start">Экзамен по теме</button>
         <nav id="task-list" class="task-list"></nav>
       </aside>
 
@@ -117,6 +129,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/jump-to-line.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/match-highlighter.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/app.js?v=20260917c"></script>
+  <script src="/static/app.js?v=20260917d"></script>
 </body>
 </html>

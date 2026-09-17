@@ -565,9 +565,67 @@ body.editor-full .CodeMirror {
   margin-bottom: 16px;
   font-size: 18px;
 }
-.banner.ok { background: var(--ok-bg); color: var(--ok); }
-.banner.bad { background: var(--bad-bg); color: var(--bad); }
-.banner.warn { background: var(--warn-bg); color: var(--warn); }
+.exam-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 16px;
+  padding: 16px 18px;
+  background: var(--info-bg);
+  border: 1px solid #c5d7ea;
+  border-radius: 14px;
+}
+.exam-bar.hidden { display: none; }
+.exam-bar h2 { margin: 0; font-size: 22px; }
+.exam-actions { display: flex; gap: 8px; }
+.exam-start {
+  width: 100%;
+  margin: 0 0 10px;
+  border: 1px solid var(--ink);
+  background: var(--ink);
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font: 600 14px var(--sans);
+  cursor: pointer;
+}
+.exam-start:disabled { opacity: 0.6; cursor: default; }
+
+.explain-card {
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  background: var(--info-bg);
+}
+.explain-card.syntax, .explain-card.runtime { background: var(--bad-bg); }
+.explain-card.format { background: var(--warn-bg); }
+.explain-card.ok { background: var(--ok-bg); }
+.explain-kicker {
+  margin: 0 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.explain-card h3 { margin: 0 0 12px; font-size: 22px; }
+.explain-block { margin-bottom: 12px; }
+.explain-block span {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.explain-block p { margin: 0; line-height: 1.5; font-size: 16px; }
+
+.more-checks { margin-top: 8px; }
+.more-checks summary {
+  cursor: pointer;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
 
 .grid-2 { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; }
 
