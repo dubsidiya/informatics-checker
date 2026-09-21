@@ -7,14 +7,15 @@
   <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20260917g">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/dialog/dialog.min.css">
+  <link rel="stylesheet" href="/static/style.css?v=20260918d">
+  <link rel="stylesheet" href="/vendor/codemirror/lib/codemirror.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror/theme/material.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror/addon/hint/show-hint.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror/addon/fold/foldgutter.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror/addon/dialog/dialog.min.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">К задачам</a>
   <div class="page">
     <header class="top">
       <div>
@@ -27,13 +28,16 @@
           <input id="student" type="text" maxlength="80" placeholder="Как подписать работу" autocomplete="name">
         </label>
         <a class="ghost-link practice-only" href="/teacher">Кабинет учителя</a>
+        <button id="theme-toggle" type="button" class="theme-toggle" aria-label="Переключить тему">
+          <span class="icon" aria-hidden="true"></span><span class="label">Тема</span>
+        </button>
       </div>
     </header>
 
     <div id="onboard" class="onboard hidden">
       <div>
         <p class="eyebrow">Как работать на уроке</p>
-        <p>Напиши имя → выбери тему слева → «Экзамен по теме». Это 8 задач подряд, как зачёт. Если ошибка — читай три блока: что случилось, почему, что сделать.</p>
+        <p>Напиши имя → выбери тему слева → «Начать зачёт». Это до 8 задач подряд. Если ошибка — читай три блока: что случилось, почему, что сделать.</p>
       </div>
       <button id="onboard-ok" type="button" class="ghost-btn">Понятно</button>
     </div>
@@ -42,7 +46,7 @@
       <div>
         <p class="eyebrow">Зачёт · 8 задач темы</p>
         <h2 id="exam-heading">Экзамен</h2>
-        <p id="exam-status" class="muted"></p>
+        <p id="exam-status" class="muted" aria-live="polite"></p>
       </div>
       <div class="exam-actions">
         <button id="exam-skip" type="button" class="ghost-btn">Пропустить</button>
@@ -50,14 +54,24 @@
       </div>
     </div>
 
+    <main id="main">
+    <section id="progress-card" class="progress-card panel hidden" aria-live="polite">
+      <div>
+        <p class="eyebrow">Мой прогресс</p>
+        <h2 id="progress-heading">Продолжим обучение?</h2>
+        <p id="progress-summary" class="muted"></p>
+        <button id="export-progress" type="button" class="ghost-btn" type="button">Скачать мой прогресс</button>
+      </div>
+      <div id="progress-recommendations" class="progress-recommendations"></div>
+    </section>
     <div class="filters">
       <div>
-        <p class="filter-label">Тема</p>
-        <div id="topic-filters" class="chips"></div>
+        <p class="filter-label" id="topic-label">Тема</p>
+        <div id="topic-filters" class="chips" role="group" aria-labelledby="topic-label"></div>
       </div>
       <div class="practice-only">
-        <p class="filter-label">Уровень</p>
-        <div id="level-filters" class="chips"></div>
+        <p class="filter-label" id="level-label">Уровень</p>
+        <div id="level-filters" class="chips" role="group" aria-labelledby="level-label"></div>
       </div>
     </div>
 
@@ -69,10 +83,14 @@
         </div>
         <div id="topic-progress" class="topic-progress hidden" aria-hidden="true">
           <span id="topic-progress-label"></span>
-          <div class="progress-line"><span id="topic-progress-bar"></span></div>
+          <div class="progress-line" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="topic-progress-label" id="topic-progress-meter">
+            <span id="topic-progress-bar"></span>
+          </div>
         </div>
+        <label class="task-search-label practice-only" for="task-search">Найти задачу</label>
         <input id="task-search" class="task-search practice-only" type="search" placeholder="Найти задачу" autocomplete="off">
         <label class="quiet-check practice-only"><input id="hide-solved" type="checkbox"> Скрыть сданные</label>
+        <button id="repeat-errors" type="button" class="ghost-btn practice-only">Повторить ошибки</button>
         <button id="start-exam" type="button" class="exam-start">Начать зачёт · 8 задач</button>
         <nav id="task-list" class="task-list"></nav>
       </aside>
@@ -126,24 +144,26 @@
       </section>
     </div>
 
-    <section id="result" class="panel result hidden"></section>
+    <section id="result" class="panel result hidden" aria-live="polite" aria-atomic="true"></section>
+    </main>
   </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/indent-fold.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/dialog/dialog.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/searchcursor.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/search.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/jump-to-line.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/match-highlighter.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/app.js?v=20260917g"></script>
+  <script src="/vendor/codemirror/lib/codemirror.min.js"></script>
+  <script src="/vendor/codemirror/mode/python/python.min.js"></script>
+  <script src="/vendor/codemirror/addon/edit/matchbrackets.min.js"></script>
+  <script src="/vendor/codemirror/addon/edit/closebrackets.min.js"></script>
+  <script src="/vendor/codemirror/addon/comment/comment.min.js"></script>
+  <script src="/vendor/codemirror/addon/selection/active-line.min.js"></script>
+  <script src="/vendor/codemirror/addon/hint/show-hint.min.js"></script>
+  <script src="/vendor/codemirror/addon/fold/foldcode.min.js"></script>
+  <script src="/vendor/codemirror/addon/fold/foldgutter.min.js"></script>
+  <script src="/vendor/codemirror/addon/fold/indent-fold.min.js"></script>
+  <script src="/vendor/codemirror/addon/dialog/dialog.min.js"></script>
+  <script src="/vendor/codemirror/addon/search/searchcursor.min.js"></script>
+  <script src="/vendor/codemirror/addon/search/search.min.js"></script>
+  <script src="/vendor/codemirror/addon/search/jump-to-line.min.js"></script>
+  <script src="/vendor/codemirror/addon/search/match-highlighter.min.js"></script>
+  <script src="/vendor/codemirror/addon/scroll/scrollpastend.min.js"></script>
+  <script src="/static/theme.js?v=20260918d"></script>
+  <script src="/static/app.js?v=20260918d"></script>
 </body>
 </html>

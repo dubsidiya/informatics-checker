@@ -6,9 +6,10 @@
   <meta name="description" content="Журнал сдач проверяльщика решений.">
   <title>Кабинет учителя</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20260917g">
+  <link rel="stylesheet" href="/static/style.css?v=20260918d">
 </head>
 <body>
+  <a class="skip-link" href="#main">К журналу</a>
   <div class="page">
     <header class="top">
       <div>
@@ -18,23 +19,30 @@
       <div class="top-tools">
         <a class="ghost-link" href="/">К задачам</a>
         <button id="logout" class="ghost-link hidden" type="button">Выйти</button>
+        <button id="theme-toggle" type="button" class="theme-toggle" aria-label="Переключить тему">
+          <span class="icon" aria-hidden="true"></span><span class="label">Тема</span>
+        </button>
       </div>
     </header>
 
+    <main id="main">
     <section id="login-panel" class="panel login-panel">
       <h2>Вход</h2>
       <p class="muted">Пин задаётся на сервере. Скачай журнал (CSV), чтобы оценки не пропали при выкладке. Если уже скачивал — верни файл кнопкой «Вернуть журнал».</p>
       <form id="login-form" class="login-form">
-        <input id="pin" type="password" autocomplete="current-password" placeholder="Пин учителя">
+        <label class="name-field" for="pin">Пин учителя
+          <input id="pin" type="password" autocomplete="current-password" placeholder="Пин учителя" required autofocus>
+        </label>
         <button type="submit">Войти</button>
       </form>
-      <p id="login-error" class="banner bad hidden"></p>
+      <p id="login-error" class="banner bad hidden" role="alert" aria-live="assertive"></p>
     </section>
 
     <section id="board" class="hidden">
       <div id="stats" class="stats"></div>
       <div id="classroom" class="classroom-strip"></div>
-      <p id="import-note" class="muted hidden"></p>
+      <div id="analytics" class="classroom-strip"></div>
+      <p id="import-note" class="muted hidden" aria-live="polite"></p>
       <div class="panel">
         <div class="board-bar">
           <div>
@@ -42,11 +50,12 @@
             <p class="muted">По умолчанию только задачи, которые уже сдавали. Нажми ячейку — лучшая сдача и история. Имя ученика подставляет поиск.</p>
           </div>
           <div class="board-tools">
-            <input id="board-search" type="search" placeholder="Ученик или задача" autocomplete="off">
+            <input id="board-search" type="search" placeholder="Ученик или задача" autocomplete="off" aria-label="Поиск по журналу">
             <select id="board-topic" aria-label="Тема"></select>
             <select id="board-cols" aria-label="Какие задачи">
               <option value="attempted">Сданные</option>
               <option value="all">Все задачи</option>
+              <option value="help">Нужна помощь</option>
             </select>
             <select id="board-period" aria-label="Период">
               <option value="all">Всё время</option>
@@ -54,17 +63,20 @@
               <option value="lesson">Этот урок · 45 мин</option>
             </select>
             <label class="quiet-check"><input id="board-auto" type="checkbox"> Автообновление</label>
-            <a class="ghost-link" href="/api/teacher/export.csv">CSV</a>
-            <a class="ghost-link" href="/api/teacher/export.json">JSON</a>
+            <button id="export-csv" type="button" class="ghost-link">CSV</button>
+            <button id="export-json" type="button" class="ghost-link">JSON</button>
+            <button id="backup-json" type="button" class="ghost-link">Полный backup</button>
             <label class="ghost-link import-link">Вернуть журнал<input id="board-import" type="file" accept=".csv,.json,text/csv,application/json" hidden></label>
             <button id="board-refresh" type="button" class="ghost-link">Обновить</button>
           </div>
         </div>
         <div id="grid" class="table-wrap"></div>
       </div>
-      <section id="attempt" class="panel result hidden"></section>
+      <section id="attempt" class="panel result hidden" aria-live="polite"></section>
     </section>
+    </main>
   </div>
-  <script src="/static/teacher.js?v=20260917f"></script>
+  <script src="/static/theme.js?v=20260918d"></script>
+  <script src="/static/teacher.js?v=20260918t"></script>
 </body>
 </html>

@@ -14,8 +14,9 @@ const boardPeriod = document.getElementById("board-period");
 const boardAuto = document.getElementById("board-auto");
 const boardRefresh = document.getElementById("board-refresh");
 
+let teacherCsrf = "";
 let problems = [];
-let summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], exams: { live: [], recent: [] } };
+let summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], topics: [], hard_tasks: [], inactive: [], exams: { live: [], recent: [] } };
 let topicFilter = "все";
 let colMode = "attempted";
 let period = "all";
@@ -46,8 +47,48 @@ function inPeriod(ts) {
   return ts >= start.getTime() / 1000;
 }
 
+function readCookie(name) {
+  const parts = document.cookie.split(";").map((item) => item.trim());
+  for (const part of parts) {
+    if (part.startsWith(`${name}=`)) return decodeURIComponent(part.slice(name.length + 1));
+  }
+  return "";
+}
+
+function csrfHeaders(extra) {
+  const headers = Object.assign({ "Content-Type": "application/json" }, extra || {});
+  const token = teacherCsrf || readCookie("teacher_csrf");
+  if (token) headers["X-CSRF-Token"] = token;
+  return headers;
+}
+
+function clearTeacherState() {
+  teacherCsrf = "";
+  summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], topics: [], hard_tasks: [], inactive: [], exams: { live: [], recent: [] } };
+  openCell = null;
+  query = "";
+  if (boardSearch) boardSearch.value = "";
+  if (attemptBox) {
+    attemptBox.classList.add("hidden");
+    attemptBox.innerHTML = "";
+  }
+  if (grid) grid.innerHTML = "";
+  if (stats) stats.innerHTML = "";
+  const classroom = document.getElementById("classroom");
+  if (classroom) classroom.innerHTML = "";
+}
+
 async function api(url, options) {
-  const response = await fetch(url, options);
+  const opts = options || {};
+  if (opts.method && opts.method !== "GET") {
+    opts.headers = csrfHeaders(opts.headers);
+  }
+  const response = await fetch(url, opts);
+  if (response.status === 401) {
+    stopAuto();
+    clearTeacherState();
+    showLogin();
+  }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     const error = new Error(data.detail || "Ошибка запроса");
@@ -58,6 +99,7 @@ async function api(url, options) {
 }
 
 async function boot() {
+  teacherCsrf = readCookie("teacher_csrf");
   try {
     problems = await api("/api/problems");
   } catch {
@@ -98,6 +140,7 @@ async function showBoard() {
   board.classList.remove("hidden");
   logout.classList.remove("hidden");
   await loadSummary();
+  boardSearch.focus();
 }
 
 async function loadSummary() {
@@ -137,7 +180,50 @@ function renderStats() {
     ${topicStat}
     <article class="stat"><b>${summary.total_attempts}</b><span>попыток всего</span></article>
   `;
+  renderAnalytics();
   renderClassroom();
+}
+
+function renderAnalytics() {
+  const box = document.getElementById("analytics");
+  if (!box) return;
+  const topics = (summary.topics || []).filter((item) => item.attempts);
+  const inactive = (summary.inactive || []).slice(0, 8);
+  const hardTasks = (summary.hard_tasks || []).slice(0, 8);
+  box.innerHTML = `
+    <article class="classroom-card">
+      <h3>Темы класса</h3>
+      ${topics.length ? `<ul>${topics.slice(0, 8).map((item) => `<li><b>${escapeHtml(item.topic)}</b> · ${item.solved}/${item.attempted} сдано · ${item.success_rate}% успеха</li>`).join("")}</ul>` : `<p class="muted">Пока нет данных по темам.</p>`}
+    </article>
+    <article class="classroom-card">
+      <h3>Самые сложные задачи</h3>
+      ${hardTasks.length ? `<ul>${hardTasks.map((item) => `<li><button type="button" class="ghost-link" data-find-problem="${escapeHtml(item.problem_id)}">${escapeHtml(item.title)}</button> · ${item.success_rate}% успеха · ${item.fails} неудач</li>`).join("")}</ul>` : `<p class="muted">Пока недостаточно попыток.</p>`}
+    </article>
+    <article class="classroom-card">
+      <h3>Нет активности 45+ минут</h3>
+      ${inactive.length ? `<ul>${inactive.map((item) => `<li><button type="button" class="ghost-link" data-find="${escapeHtml(item.name)}">${escapeHtml(item.name)}</button></li>`).join("")}</ul>` : `<p class="muted">Все ученики активны.</p>`}
+    </article>
+  `;
+}
+
+function findStudentFrom(event) {
+  const button = event.target.closest("[data-find]");
+  if (!button) return;
+  query = button.dataset.find || "";
+  boardSearch.value = query;
+  renderStats();
+  renderGrid();
+}
+
+function findProblemFrom(event) {
+  const button = event.target.closest("[data-find-problem]");
+  if (!button) return;
+  query = button.dataset.findProblem || "";
+  boardSearch.value = query;
+  boardCols.value = "all";
+  colMode = "all";
+  renderStats();
+  renderGrid();
 }
 
 function visibleProblems() {
@@ -151,6 +237,10 @@ function visibleProblems() {
   return problems.filter((problem) => {
     if (topicFilter !== "все" && problem.topic !== topicFilter) return false;
     if (colMode === "attempted" && !attempted.has(problem.id)) return false;
+    if (colMode === "help" && !students.some((student) => {
+      const cell = student.problems?.[problem.id];
+      return cell && cell.best_status !== "ok";
+    })) return false;
     if (!q) return true;
     const titleHit = problem.title.toLowerCase().includes(q) || problem.id.toLowerCase().includes(q);
     if (titleHit) return true;
@@ -217,16 +307,16 @@ function renderGrid() {
   const rows = rowsData.map((student) => {
     const cells = cols.map((problem) => {
       const cell = student.problems[problem.id];
-      if (!cell) {
+      if (!cell || (colMode === "help" && cell.best_status === "ok")) {
         return `<td class="cell empty">—</td>`;
       }
       const klass = cell.best_status === "ok" ? "ok" : cell.best_status === "syntax" ? "warn" : "bad";
       const label = cell.best_status === "ok" ? "сдано" : `${cell.passed}/${cell.total}`;
       const attemptId = cell.best_attempt_id || cell.attempt_id;
-      return `<td class="cell ${klass}" data-student="${escapeHtml(student.name)}" data-problem="${problem.id}" data-id="${attemptId}">${label}<small>${cell.attempts} попыток</small></td>`;
+      return `<td class="cell ${klass}" tabindex="0" role="button" data-student="${escapeHtml(student.name)}" data-problem="${problem.id}" data-id="${attemptId}">${label}<small>${cell.attempts} попыток</small></td>`;
     }).join("");
     return `<tr>
-      <th class="name-col" data-student="${escapeHtml(student.name)}" title="Нажми, чтобы найти этого ученика">${escapeHtml(student.name)}<small>${topicScore(student)}</small></th>
+      <th class="name-col" tabindex="0" data-student="${escapeHtml(student.name)}" title="Нажми, чтобы найти этого ученика">${escapeHtml(student.name)}<small>${topicScore(student)}</small></th>
       ${cells}
     </tr>`;
   }).join("");
@@ -263,7 +353,7 @@ async function openAttempt(student, problemId, attemptId) {
       <p class="muted">${when(item.ts)} · тесты ${item.passed} / ${item.total}</p>
       <h3>История попыток</h3>
       <div class="history-list">${historyHtml || "<p class='muted'>Других попыток нет.</p>"}</div>
-      <div class="editor-actions" style="margin-bottom:10px">
+      <div class="editor-actions spacing">
         <button type="button" class="ghost-btn" data-copy-code="1">Копировать код</button>
       </div>
       <h3>Код</h3>
@@ -279,15 +369,18 @@ async function doLogin(event) {
   if (event) event.preventDefault();
   loginError.classList.add("hidden");
   try {
-    await api("/api/teacher/login", {
+    const data = await api("/api/teacher/login", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pin: pin.value }),
     });
+    teacherCsrf = data.csrf || readCookie("teacher_csrf");
+    pin.value = "";
     await showBoard();
   } catch (error) {
     loginError.textContent = error.message;
     loginError.classList.remove("hidden");
+    pin.focus();
+    pin.select();
   }
 }
 
@@ -299,7 +392,12 @@ function stopAuto() {
 function startAuto() {
   stopAuto();
   refreshTimer = setInterval(() => {
-    loadSummary().catch(() => {});
+    loadSummary().catch((error) => {
+      if (importNote) {
+        importNote.classList.remove("hidden");
+        importNote.textContent = error.message || "Автообновление не удалось.";
+      }
+    });
   }, 12000);
 }
 
@@ -308,8 +406,30 @@ loginForm.addEventListener("submit", doLogin);
 logout.addEventListener("click", async () => {
   stopAuto();
   if (boardAuto) boardAuto.checked = false;
-  await api("/api/teacher/logout", { method: "POST" });
+  try {
+    await api("/api/teacher/logout", { method: "POST" });
+  } catch {
+    /* still leave */
+  }
+  clearTeacherState();
   showLogin();
+});
+
+grid.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const name = event.target.closest("th.name-col[data-student]");
+  if (name) {
+    event.preventDefault();
+    query = name.dataset.student || "";
+    boardSearch.value = query;
+    renderStats();
+    renderGrid();
+    return;
+  }
+  const cell = event.target.closest("td.cell[data-student]");
+  if (!cell) return;
+  event.preventDefault();
+  openAttempt(cell.dataset.student, cell.dataset.problem, cell.dataset.id);
 });
 
 grid.addEventListener("click", (event) => {
@@ -372,6 +492,9 @@ if (boardAuto) {
   });
 }
 
+document.addEventListener("click", findStudentFrom);
+document.addEventListener("click", findProblemFrom);
+
 boardRefresh.addEventListener("click", async () => {
   boardRefresh.disabled = true;
   try {
@@ -410,7 +533,6 @@ if (importInput) {
     try {
       const result = await api("/api/teacher/import", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ format, text }),
       });
       await loadSummary();
@@ -426,5 +548,47 @@ if (importInput) {
     }
   });
 }
+
+async function downloadExport(path, filename) {
+  const response = await fetch(path, { method: "POST", headers: csrfHeaders() });
+  if (response.status === 401) {
+    stopAuto();
+    clearTeacherState();
+    showLogin();
+    throw new Error("Нужен вход учителя");
+  }
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.detail || "Не удалось скачать файл");
+  }
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function bindExport(id, path, filename) {
+  const button = document.getElementById(id);
+  if (!button) return;
+  button.addEventListener("click", async () => {
+    try {
+      await downloadExport(path, filename);
+    } catch (error) {
+      if (importNote) {
+        importNote.classList.remove("hidden");
+        importNote.textContent = error.message || "Не удалось скачать файл.";
+      }
+    }
+  });
+}
+
+bindExport("export-csv", "/api/teacher/export.csv", "attempts.csv");
+bindExport("export-json", "/api/teacher/export.json", "attempts.json");
+bindExport("backup-json", "/api/teacher/backup.json", "backup.json");
 
 boot();

@@ -32,6 +32,7 @@ const els = {
   examExit: document.getElementById("exam-exit"),
   examSkip: document.getElementById("exam-skip"),
   startExam: document.getElementById("start-exam"),
+  repeatErrors: document.getElementById("repeat-errors"),
   onboard: document.getElementById("onboard"),
   onboardOk: document.getElementById("onboard-ok"),
   coach: document.getElementById("coach"),
@@ -39,10 +40,14 @@ const els = {
   coachWhat: document.getElementById("coach-what"),
   coachSteps: document.getElementById("coach-steps"),
   coachWatch: document.getElementById("coach-watch"),
+  progressCard: document.getElementById("progress-card"),
+  progressHeading: document.getElementById("progress-heading"),
+  progressSummary: document.getElementById("progress-summary"),
+  progressRecommendations: document.getElementById("progress-recommendations"),
+  exportProgress: document.getElementById("export-progress"),
 };
 
 const LEVELS = ["все", "старт", "средне", "сложно"];
-const EXAM_SIZE = 8;
 let problems = [];
 let topicCards = [];
 let currentId = null;
@@ -51,6 +56,7 @@ let topicFilter = "все";
 let levelFilter = "все";
 let searchQuery = "";
 let hideSolved = false;
+let repeatErrorsMode = false;
 let editor = null;
 let openGen = 0;
 let progressTimer = 0;
@@ -59,6 +65,11 @@ let examTopic = "";
 let examIds = [];
 let examSkip = new Set();
 let problemStats = {};
+let studentCsrf = "";
+let solvedIds = new Set();
+let sessionName = "";
+let checkController = null;
+let checkGeneration = 0;
 
 const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "");
 const PYTHON_WORDS = [
@@ -135,26 +146,37 @@ const SIGNATURES = {
   ip_address: "ip_address(address)",
 };
 
+function readCookie(name) {
+  const parts = document.cookie.split(";").map((item) => item.trim());
+  for (const part of parts) {
+    if (part.startsWith(`${name}=`)) {
+      return decodeURIComponent(part.slice(name.length + 1));
+    }
+  }
+  return "";
+}
+
+function csrfHeaders(extra) {
+  const headers = Object.assign({ "Content-Type": "application/json" }, extra || {});
+  const token = studentCsrf || readCookie("student_csrf");
+  if (token) headers["X-CSRF-Token"] = token;
+  return headers;
+}
+
 function studentName() {
   return (els.student.value || "").trim();
 }
 
 function solvedSet() {
-  try {
-    return new Set(JSON.parse(localStorage.getItem("solved") || "[]"));
-  } catch {
-    return new Set();
-  }
+  return solvedIds;
 }
 
 function markSolved(id) {
-  const set = solvedSet();
-  set.add(id);
-  localStorage.setItem("solved", JSON.stringify([...set]));
+  solvedIds.add(id);
 }
 
 function codeKey(id, name) {
-  return `code:${name ?? (studentName() || "_")}:${id}`;
+  return `draft:${name ?? (studentName() || "_")}:${id}`;
 }
 
 function loadSavedCode(id) {
@@ -214,7 +236,8 @@ function resultKey(id) {
 
 function saveResult(id, data) {
   try {
-    sessionStorage.setItem(resultKey(id), JSON.stringify(data));
+    // Keep the last check after a reload; the server remains authoritative.
+    localStorage.setItem(resultKey(id), JSON.stringify(data));
   } catch {
     /* quota */
   }
@@ -222,7 +245,7 @@ function saveResult(id, data) {
 
 function loadResult(id) {
   try {
-    return JSON.parse(sessionStorage.getItem(resultKey(id)) || "null");
+    return JSON.parse(localStorage.getItem(resultKey(id)) || "null");
   } catch {
     return null;
   }
@@ -233,6 +256,7 @@ function renderProgress() {
   const topicNow = examMode ? examTopic : topicFilter;
   if (!examMode && topicNow === "все") {
     els.progress.classList.add("hidden");
+    els.progress.setAttribute("aria-hidden", "true");
     renderExamBar();
     return;
   }
@@ -241,33 +265,126 @@ function renderProgress() {
     : problems.filter((item) => item.topic === topicNow);
   if (!pool.length) {
     els.progress.classList.add("hidden");
+    els.progress.setAttribute("aria-hidden", "true");
     return;
   }
   const solved = solvedSet();
   const done = pool.filter((item) => solved.has(item.id)).length;
   els.progress.classList.remove("hidden");
+  els.progress.setAttribute("aria-hidden", "false");
   els.progressLabel.textContent = examMode
     ? `Зачёт: сдано ${done} из ${pool.length}`
     : `Сдано ${done} из ${pool.length}`;
-  els.progressBar.style.width = `${Math.round((done / pool.length) * 100)}%`;
+  const pct = Math.round((done / pool.length) * 100);
+  els.progressBar.style.width = `${pct}%`;
+  const meter = document.getElementById("topic-progress-meter");
+  if (meter) meter.setAttribute("aria-valuenow", String(pct));
   renderExamBar();
 }
 
-async function syncProgress() {
+async function ensureSession() {
   const name = studentName();
-  if (!name) {
-    renderList();
-    renderProgress();
-    return;
+  if (!name) return false;
+  if (sessionName === name && (studentCsrf || readCookie("student_csrf"))) return true;
+  const response = await fetch("/api/student/session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ student: name }),
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.detail || "Не удалось сохранить имя");
   }
+  sessionName = data.student || name;
+  studentCsrf = data.csrf || readCookie("student_csrf");
+  if (data.student) els.student.value = data.student;
+  localStorage.setItem("student", sessionName);
+  return true;
+}
+
+function applyProgress(data) {
+  solvedIds = new Set(data.solved || []);
+  problemStats = data.problems || {};
+  renderLearningProgress();
+}
+
+function exportMyProgress() {
+  const name = studentName() || "ученик";
+  const drafts = {};
+  for (let i = 0; i < localStorage.length; i += 1) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith("draft:")) {
+      const code = localStorage.getItem(key) || "";
+      if (code.trim()) drafts[key] = code;
+    }
+  }
+  const payload = {
+    format: "informatics-checker-progress",
+    exported_at: new Date().toISOString(),
+    student: name,
+    solved: [...solvedIds].sort(),
+    attempts: Object.keys(problemStats).length,
+    problems: problemStats,
+    drafts,
+  };
+  const body = JSON.stringify(payload, null, 2);
+  const blob = new Blob([body], { type: "application/json; charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const safe = name.replace(/[^\p{L}\p{N}]+/gu, "_").slice(0, 40) || "student";
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `progress-${safe}.json`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function renderLearningProgress() {
+  if (!els.progressCard || !studentName()) return;
+  const attempted = Object.keys(problemStats).length;
+  const stuck = problems
+    .filter((item) => !solvedIds.has(item.id) && (problemStats[item.id]?.fails || 0) >= 3)
+    .sort((a, b) => (problemStats[b.id]?.fails || 0) - (problemStats[a.id]?.fails || 0));
+  const topic = currentProblem?.topic || (topicFilter !== "все" ? topicFilter : "");
+  const recommendations = problems
+    .filter((item) => !solvedIds.has(item.id) && item.id !== currentId)
+    .sort((a, b) => {
+      const score = (item) => (item.topic === topic ? 100 : 0) + (item.level === currentProblem?.level ? 20 : 0)
+        + Math.min(30, (problemStats[item.id]?.fails || 0) * 5);
+      return score(b) - score(a);
+    })
+    .slice(0, 3);
+  els.progressCard.classList.remove("hidden");
+  els.progressHeading.textContent = stuck.length ? "Разберём то, где было сложно" : "Продолжим обучение?";
+  els.progressSummary.textContent = `Сдано ${solvedIds.size} задач · начато ${attempted}.`;
+  const items = [...stuck.slice(0, 1), ...recommendations]
+    .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
+    .slice(0, 3);
+  els.progressRecommendations.innerHTML = items.length
+    ? items.map((item) => `<button type="button" class="progress-task" data-progress-task="${escapeAttr(item.id)}">
+        <strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}${problemStats[item.id]?.fails ? ` · ${problemStats[item.id].fails} ошибок` : ""}</small>
+      </button>`).join("")
+    : `<span class="muted">Все доступные задачи решены — отличный результат.</span>`;
+}
+
+async function syncProgress() {
   try {
-    const response = await fetch(`/api/progress?student=${encodeURIComponent(name)}`);
+    if (!studentName() && !readCookie("student")) {
+      renderList();
+      renderProgress();
+      return;
+    }
+    const response = await fetch("/api/progress");
+    if (response.status === 401) {
+      solvedIds = new Set();
+      problemStats = {};
+      renderList();
+      renderProgress();
+      return;
+    }
     if (!response.ok) return;
-    const data = await response.json();
-    const set = solvedSet();
-    for (const id of data.solved || []) set.add(id);
-    localStorage.setItem("solved", JSON.stringify([...set]));
-    problemStats = data.problems || {};
+    applyProgress(await response.json());
     renderList();
     renderProgress();
     pingExamProgress();
@@ -282,14 +399,21 @@ function scheduleProgressSync() {
 }
 
 function examKey() {
-  return `exam:${studentName() || "_"}`;
+  return `exam-draft:${studentName() || "_"}`;
 }
 
+let examCache = null;
+let examCacheKey = "";
+
 function examProblems() {
-  if (examIds.length) {
-    return examIds.map((id) => problems.find((item) => item.id === id)).filter(Boolean);
-  }
-  return problems.filter((item) => item.topic === examTopic);
+  // Memoize: examIds/examTopic/problems change rarely, but this is called 13+ times per render.
+  const key = `${examIds.length}:${examTopic}:${problems.length}`;
+  if (examCache && examCacheKey === key) return examCache;
+  examCacheKey = key;
+  examCache = examIds.length
+    ? examIds.map((id) => problems.find((item) => item.id === id)).filter(Boolean)
+    : problems.filter((item) => item.topic === examTopic);
+  return examCache;
 }
 
 function examCounts() {
@@ -297,39 +421,6 @@ function examCounts() {
   const solved = solvedSet();
   const done = items.filter((item) => solved.has(item.id)).length;
   return { items, done, skipped: examSkip.size };
-}
-
-function saveExamState() {
-  if (!examMode) return;
-  localStorage.setItem(examKey(), JSON.stringify({
-    topic: examTopic,
-    ids: examIds,
-    skip: [...examSkip],
-  }));
-}
-
-function pickExamSet(topic) {
-  const pool = problems.filter((item) => item.topic === topic);
-  const solved = solvedSet();
-  const unsolved = pool.filter((item) => !solved.has(item.id));
-  const source = unsolved.length ? unsolved : pool;
-  const buckets = { "старт": [], "средне": [], "сложно": [] };
-  for (const item of source) {
-    (buckets[item.level] || buckets["средне"]).push(item);
-  }
-  const picked = [];
-  function take(list, n) {
-    while (n > 0 && list.length) {
-      picked.push(list.shift());
-      n -= 1;
-    }
-  }
-  take(buckets["старт"], 3);
-  take(buckets["средне"], 3);
-  take(buckets["сложно"], 2);
-  const rest = source.filter((item) => !picked.includes(item));
-  take(rest, EXAM_SIZE - picked.length);
-  return picked.slice(0, EXAM_SIZE).map((item) => item.id);
 }
 
 function renderCoach(topic) {
@@ -356,22 +447,29 @@ function renderOnboard() {
   els.onboard.classList.toggle("hidden", seen || examMode);
 }
 
+function applyExam(exam) {
+  if (!exam || exam.status !== "live") return false;
+  examMode = true;
+  examTopic = exam.topic;
+  topicFilter = exam.topic;
+  examIds = Array.isArray(exam.problem_ids) ? exam.problem_ids : [];
+  examSkip = new Set(Array.isArray(exam.skipped_ids) ? exam.skipped_ids : []);
+  examCache = null;
+  return true;
+}
+
 async function pingExam(action, extra) {
-  const name = studentName();
-  if (!name) return;
+  if (!studentCsrf && !readCookie("student_csrf")) return null;
   try {
-    await fetch("/api/exam", {
+    const response = await fetch("/api/exam", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(Object.assign({
-        student: name,
-        action,
-        topic: examTopic,
-        ids: examIds,
-      }, extra || {})),
+      headers: csrfHeaders(),
+      body: JSON.stringify(Object.assign({ action, topic: examTopic }, extra || {})),
     });
+    if (!response.ok) return null;
+    return await response.json();
   } catch {
-    /* teacher board is best-effort */
+    return null;
   }
 }
 
@@ -405,12 +503,18 @@ function renderExamBar() {
   }
 }
 
-function startExam() {
-  if (!studentName()) {
-    markNameState();
-    els.student.focus();
+async function startExam() {
+  try {
+    if (!await ensureSession()) {
+      markNameState();
+      els.student.focus();
+      els.result.classList.remove("hidden");
+      els.result.innerHTML = `<div class="banner warn">Напиши имя сверху — учитель увидит, кто пишет зачёт.</div>`;
+      return;
+    }
+  } catch (error) {
     els.result.classList.remove("hidden");
-    els.result.innerHTML = `<div class="banner warn">Напиши имя сверху — учитель увидит, кто пишет зачёт.</div>`;
+    els.result.innerHTML = `<div class="banner warn">${escapeHtml(error.message)}</div>`;
     return;
   }
   const topic = topicFilter !== "все" ? topicFilter : (currentProblem && currentProblem.topic);
@@ -419,15 +523,14 @@ function startExam() {
     els.result.innerHTML = `<div class="banner warn">Сначала выбери тему слева сверху. Экзамен — 8 задач одной темы, как зачёт.</div>`;
     return;
   }
-  examMode = true;
-  examTopic = topic;
-  topicFilter = topic;
-  examIds = pickExamSet(topic);
-  examSkip = new Set();
+  const exam = await pingExam("start", { topic });
+  if (!exam || !applyExam(exam)) {
+    els.result.classList.remove("hidden");
+    els.result.innerHTML = `<div class="banner warn">Не удалось начать зачёт. Обнови страницу.</div>`;
+    return;
+  }
   hideSolved = false;
   if (els.hideSolved) els.hideSolved.checked = false;
-  saveExamState();
-  pingExam("start", { ids: examIds, topic });
   renderCoach(topic);
   renderChips();
   renderList();
@@ -448,7 +551,10 @@ function stopExam() {
   examTopic = "";
   examIds = [];
   examSkip = new Set();
+  examCache = null;
   localStorage.removeItem(examKey());
+  els.result.classList.add("hidden");
+  els.result.innerHTML = "";
   renderExamBar();
   renderChips();
   renderList();
@@ -459,8 +565,7 @@ function stopExam() {
 function skipExamTask() {
   if (!examMode || !currentId) return;
   examSkip.add(currentId);
-  saveExamState();
-  pingExamProgress();
+  pingExam("skip", { problem_id: currentId });
   const solved = solvedSet();
   const items = examProblems();
   const later = items.slice(items.findIndex((item) => item.id === currentId) + 1);
@@ -472,37 +577,6 @@ function skipExamTask() {
   renderExamBar();
 }
 
-function restoreExam() {
-  const saved = localStorage.getItem(examKey());
-  if (!saved) return;
-  let topic = "";
-  let ids = [];
-  let skip = [];
-  try {
-    const data = JSON.parse(saved);
-    if (typeof data === "string") {
-      topic = data;
-    } else {
-      topic = data.topic || "";
-      ids = Array.isArray(data.ids) ? data.ids : [];
-      skip = Array.isArray(data.skip) ? data.skip : [];
-    }
-  } catch {
-    topic = saved;
-  }
-  if (!topic || !problems.some((item) => item.topic === topic)) return;
-  examMode = true;
-  examTopic = topic;
-  topicFilter = topic;
-  examIds = ids.filter((id) => problems.some((item) => item.id === id));
-  if (!examIds.length) examIds = pickExamSet(topic);
-  examSkip = new Set(skip);
-  pingExam("start", { ids: examIds, topic });
-  renderExamBar();
-  renderChips();
-  renderCoach(topic);
-  renderOnboard();
-}
 
 function filteredProblems() {
   const q = searchQuery.trim().toLowerCase();
@@ -517,7 +591,8 @@ function filteredProblems() {
       || item.id.toLowerCase().includes(q)
       || (item.topic || "").toLowerCase().includes(q);
     const solvedOk = !hideSolved || !solved.has(item.id);
-    return topicOk && levelOk && searchOk && solvedOk;
+    const errorsOk = !repeatErrorsMode || ((problemStats[item.id]?.fails || 0) > 0 && !solved.has(item.id));
+    return topicOk && levelOk && searchOk && solvedOk && errorsOk;
   });
 }
 
@@ -527,14 +602,15 @@ function renderChips() {
     : ["все", ...[...new Set(problems.map((item) => item.topic))]];
   const activeTopic = examMode ? examTopic : topicFilter;
   els.topics.innerHTML = topics.map((topic) => `
-    <button type="button" data-topic="${escapeAttr(topic)}" class="${topic === activeTopic ? "active" : ""}">${escapeHtml(topic)}</button>
+    <button type="button" data-topic="${escapeAttr(topic)}" aria-pressed="${topic === activeTopic}" class="${topic === activeTopic ? "active" : ""}">${escapeHtml(topic)}</button>
   `).join("");
   els.levels.innerHTML = LEVELS.map((level) => `
-    <button type="button" data-level="${escapeAttr(level)}" class="${level === levelFilter ? "active" : ""}">${escapeHtml(level)}</button>
+    <button type="button" data-level="${escapeAttr(level)}" aria-pressed="${level === levelFilter}" class="${level === levelFilter ? "active" : ""}">${escapeHtml(level)}</button>
   `).join("");
   if (els.startExam) {
     els.startExam.textContent = examMode ? "Идёт зачёт" : "Начать зачёт · 8 задач";
     els.startExam.disabled = examMode;
+    els.startExam.setAttribute("aria-pressed", String(examMode));
   }
 }
 
@@ -548,6 +624,8 @@ function renderList() {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.id = item.id;
+    button.setAttribute("aria-pressed", String(item.id === currentId));
+    if (item.id === currentId) button.setAttribute("aria-current", "true");
     button.className = [
       item.id === currentId ? "active" : "",
       examSkip.has(item.id) ? "skipped" : "",
@@ -570,6 +648,7 @@ function renderList() {
 
 async function boot() {
   els.student.value = localStorage.getItem("student") || "";
+  studentCsrf = readCookie("student_csrf");
   markNameState();
   setupEditor();
   try {
@@ -585,12 +664,26 @@ async function boot() {
     els.statement.textContent = "Обнови страницу. Если снова ошибка — сервер проверяльщика недоступен.";
     return;
   }
+  let me = null;
+  try {
+    const meRes = await fetch("/api/student/me");
+    if (meRes.ok) me = await meRes.json();
+  } catch {
+    me = null;
+  }
+  if (me && me.ok) {
+    sessionName = me.student || "";
+    els.student.value = sessionName;
+    localStorage.setItem("student", sessionName);
+    studentCsrf = studentCsrf || readCookie("student_csrf");
+    applyProgress(me.progress || {});
+    applyExam(me.exam);
+  }
   renderOnboard();
   renderChips();
   renderProgress();
-  restoreExam();
   renderCoach(examMode ? examTopic : topicFilter);
-  syncProgress();
+  if (!me || !me.ok) await syncProgress();
   const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   let start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
   if (examMode) {
@@ -1040,6 +1133,11 @@ async function openProblem(id, updateHash) {
   if (currentId && currentId !== id) {
     persistCode();
   }
+  if (checkController) {
+    checkController.abort();
+    checkController = null;
+  }
+  checkGeneration += 1;
   const gen = ++openGen;
   currentId = id;
   if (updateHash) {
@@ -1048,6 +1146,8 @@ async function openProblem(id, updateHash) {
   renderList();
   els.title.textContent = "Загрузка…";
   els.statement.textContent = "";
+  els.result.classList.add("hidden");
+  els.result.innerHTML = "";
   try {
     const response = await fetch(`/api/problems/${encodeURIComponent(id)}`);
     if (!response.ok) throw new Error("missing");
@@ -1097,34 +1197,44 @@ async function openProblem(id, updateHash) {
 
 async function check() {
   if (!currentId) return;
+  const requestGeneration = ++checkGeneration;
   persistCode();
-  if (!studentName()) {
-    markNameState();
-    els.student.focus();
+  try {
+    if (!await ensureSession()) {
+      markNameState();
+      els.student.focus();
+      els.result.classList.remove("hidden");
+      els.result.innerHTML = `<div class="banner warn">Напиши своё имя сверху, чтобы учитель увидел работу.</div>`;
+      return;
+    }
+  } catch (error) {
     els.result.classList.remove("hidden");
-    els.result.innerHTML = `<div class="banner warn">Напиши своё имя сверху, чтобы учитель увидел работу.</div>`;
+    els.result.innerHTML = `<div class="banner warn">${escapeHtml(error.message)}</div>`;
     return;
   }
   els.run.disabled = true;
   els.run.textContent = "Проверяю…";
+  const controller = new AbortController();
+  checkController = controller;
+  const timeout = setTimeout(() => controller.abort(), 35_000);
   try {
     const response = await fetch("/api/check", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: csrfHeaders(),
+      signal: controller.signal,
       body: JSON.stringify({
         problem_id: currentId,
         code: getCode(),
-        student: studentName(),
       }),
     });
     const data = await response.json();
+    if (requestGeneration !== checkGeneration) return;
     if (!response.ok) {
       throw new Error(data.detail || "Ошибка проверки");
     }
     if (data.status === "ok") {
       markSolved(currentId);
       examSkip.delete(currentId);
-      saveExamState();
       renderList();
       renderProgress();
       pingExamProgress();
@@ -1132,9 +1242,18 @@ async function check() {
     saveResult(currentId, data);
     renderResult(data);
   } catch (error) {
+    if (requestGeneration !== checkGeneration) return;
     els.result.classList.remove("hidden");
-    els.result.innerHTML = `<div class="banner bad">${escapeHtml(error.message || "Не удалось связаться с проверяющей системой.")}</div>`;
+    const message = error.name === "AbortError"
+      ? "Проверка заняла слишком много времени или соединение прервалось."
+      : (error.message || "Не удалось связаться с проверяющей системой.");
+    els.result.innerHTML = `
+      <div class="banner bad">${escapeHtml(message)}</div>
+      <button type="button" class="ghost-link" data-retry-check="1">Повторить проверку</button>
+    `;
   } finally {
+    clearTimeout(timeout);
+    if (checkController === controller) checkController = null;
     els.run.disabled = false;
     els.run.textContent = "Проверить";
   }
@@ -1209,7 +1328,7 @@ function renderResult(data) {
         <tbody>${tests}</tbody>
       </table>
       ${extraHints}
-      ${trace ? `<h3 style="margin-top:18px">Ход программы на упавшем тесте</h3>${trace}` : ""}
+      ${trace ? `<h3 class="trace-head">Ход программы на упавшем тесте</h3>${trace}` : ""}
     </details>
   `;
   if (data.explanation && data.explanation.line && editor) {
@@ -1223,6 +1342,17 @@ function explanationCard(data) {
   if (!exp) return `<div class="banner ${data.status === "ok" ? "ok" : data.status === "syntax" ? "warn" : "bad"}">${escapeHtml(data.message || "")}</div>`;
   const line = exp.line ? `<div class="line">смотри строку ${exp.line}</div>` : "";
   const tries = data.tries > 1 ? ` · попытка ${data.tries}` : "";
+  const failed = (data.tests || []).find((test) => !test.hidden && test.verdict !== "OK");
+  const counterexample = failed
+    ? `<div class="counterexample"><span>Проверим на конкретном примере</span>
+        <code>ввод: ${escapeHtml(preview(failed.stdin))}</code>
+        <code>нужно: ${escapeHtml(preview(failed.expected))}</code>
+        <code>получилось: ${escapeHtml(preview(failed.got || failed.error || "ничего"))}</code>
+      </div>`
+    : "";
+  const checks = (data.hints || []).slice(0, 3).map((hint) => `
+    <li><b>${escapeHtml(hint.title)}</b><span>${escapeHtml(hint.detail)}</span></li>
+  `).join("");
   const intent = exp.intent
     ? `<div class="explain-block intent"><span>Что ты хотел</span><p>${escapeHtml(exp.intent)}</p></div>`
     : "";
@@ -1234,6 +1364,8 @@ function explanationCard(data) {
       <div class="explain-block"><span>Что случилось</span><p>${escapeHtml(exp.what)}</p></div>
       <div class="explain-block"><span>Почему так</span><p>${escapeHtml(exp.why)}</p></div>
       <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how)}</p></div>
+      ${counterexample}
+      ${checks ? `<div class="self-check"><h4>Проверь перед следующей попыткой</h4><ul>${checks}</ul></div>` : ""}
       ${line}
     </article>
   `;
@@ -1312,9 +1444,14 @@ els.student.addEventListener("input", () => {
   markNameState();
   scheduleProgressSync();
 });
-els.student.addEventListener("change", () => {
+els.student.addEventListener("change", async () => {
   localStorage.setItem("student", studentName());
   markNameState();
+  try {
+    if (studentName()) await ensureSession();
+  } catch {
+    /* name shown in check */
+  }
   syncProgress();
 });
 
@@ -1389,19 +1526,53 @@ function openNextUnsolved() {
   if (!items.length) return;
   const idx = items.findIndex((item) => item.id === currentId);
   const wanted = (item) => !solved.has(item.id) && (!examMode || !examSkip.has(item.id));
-  const later = items.slice(idx + 1).find(wanted);
-  const next = later || items.find((item) => wanted(item) && item.id !== currentId) || items.slice(idx + 1)[0];
+  const candidates = items.filter((item) => wanted(item) && item.id !== currentId);
+  if (!candidates.length) {
+    const fallback = items.slice(idx + 1)[0];
+    if (fallback) openProblem(fallback.id, true);
+    return;
+  }
+  const currentTopic = currentProblem?.topic || topicFilter;
+  const currentLevel = currentProblem?.level || levelFilter;
+  const score = (item) => {
+    const stats = problemStats[item.id] || {};
+    const fails = Number(stats.fails || 0);
+    let value = 0;
+    if (fails >= 3) value += 1000 + fails * 20;
+    if (item.topic === currentTopic) value += 300;
+    if (item.level === currentLevel) value += 100;
+    if (item.id === items[(idx + 1 + items.length) % items.length]?.id) value += 20;
+    return value;
+  };
+  const next = candidates.sort((a, b) => score(b) - score(a))[0];
   if (next) openProblem(next.id, true);
 }
 
 if (els.copy) els.copy.addEventListener("click", copyCode);
 if (els.reset) els.reset.addEventListener("click", resetCode);
 if (els.next) els.next.addEventListener("click", openNextUnsolved);
+if (els.exportProgress) els.exportProgress.addEventListener("click", exportMyProgress);
+if (els.repeatErrors) els.repeatErrors.addEventListener("click", () => {
+  repeatErrorsMode = !repeatErrorsMode;
+  els.repeatErrors.classList.toggle("active", repeatErrorsMode);
+  els.repeatErrors.setAttribute("aria-pressed", String(repeatErrorsMode));
+  renderList();
+});
 els.result.addEventListener("click", (event) => {
+  if (event.target.closest("[data-retry-check]")) {
+    check();
+    return;
+  }
   if (event.target.closest("[data-next]")) openNextUnsolved();
   if (event.target.closest("[data-exam-exit]")) stopExam();
   if (event.target.closest("[data-exam-skip]")) skipExamTask();
 });
+if (els.progressRecommendations) {
+  els.progressRecommendations.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-progress-task]");
+    if (button) openProblem(button.dataset.progressTask, true);
+  });
+}
 
 if (els.startExam) els.startExam.addEventListener("click", startExam);
 if (els.examExit) els.examExit.addEventListener("click", stopExam);

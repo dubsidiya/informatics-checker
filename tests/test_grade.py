@@ -5,6 +5,9 @@ import tempfile
 import unittest
 from pathlib import Path
 
+os.environ.setdefault("CHECKER_ENV", "test")
+os.environ.setdefault("CHECKER_RUNNER", "local")
+
 from checker.grade import grade_solution
 from checker.models import GradeResult, Hint, TestResult
 from checker.problems import all_problems, get_problem, list_summaries
@@ -87,6 +90,36 @@ SOLUTIONS = {
         "    seen.add(x)\n"
         "print('YES' if ok else 'NO')\n"
     ),
+    "ege5-logic-table": "x = int(input())\nprint(int(x % 3 == 0 and x % 5 != 0))\n",
+    "ege5-boolean-condition": "a, b = map(int, input().split())\nprint(int((a > 0) != (b > 0)))\n",
+    "ege5-interval": "x = int(input())\nprint(int(10 <= x <= 20 and x != 15))\n",
+    "ege5-three-condition": "x = int(input())\nprint(int(x > 0 and x % 2 != 0 and x % 3 == 0))\n",
+    "ege5-exclusive-or": "a, b = map(int, input().split())\nprint(int((a % 2 == 0) != (b % 3 == 0)))\n",
+    "ege5-range-exclusions": "x = int(input())\nprint(int(-5 <= x <= 12 and x not in (0, 7)))\n",
+    "ege5-min-condition": "x = int(input())\nprint(int(x == 4))\n",
+    "ege5-order": "a, b, c = map(int, input().split())\nprint(int(a < b < c))\n",
+    "ege5-three-divisibility": "x = int(input())\nprint(int(sum(x % d == 0 for d in (2, 3, 5)) == 2))\n",
+    "ege5-digits-order": "x = input()\nprint(int(x[0] < x[1] < x[2]))\n",
+    "ege5-area": "x, y = map(int, input().split())\nprint(int(-2 <= x <= 4 and 1 <= y <= 5 and x != 1))\n",
+    "ege5-absolute": "x = int(input())\nprint(int(abs(x) <= 7 and x != 0))\n",
+    "ege5-union": "x = int(input())\nprint(int(-10 <= x <= -3 or 5 <= x <= 9))\n",
+    "ege5-exactly-two": "x = int(input())\nprint(int(sum((x > 0, x % 2 == 0, x % 3 == 0)) == 2))\n",
+    "ege5-between": "a, b, x = map(int, input().split())\nprint(int(min(a, b) < x < max(a, b)))\n",
+    "ege5-max-digit": "s = input()\nprint(int(s[0] > s[1] and s[0] > s[2]))\n",
+    "ege5-sum-sign": "a, b = map(int, input().split())\nprint(int(a + b > 0 and a * b < 0))\n",
+    "ege5-digits-sum": "s = input()\nprint(int(sum(map(int, s)) > 10))\n",
+    "ege5-parity-match": "a, b = map(int, input().split())\nprint(int((a % 2) == (b % 2)))\n",
+    "ege5-divisor-choice": "x = int(input())\nprint(int(x > 0 and ((x % 4 == 0) != (x % 7 == 0))))\n",
+    "ege5-last-digit-div": "x = int(input())\nprint(int(abs(x) % 10 in (4, 7) and x % 3 == 0))\n",
+    "ege5-range-step": "x = int(input())\nprint(int(10 <= x <= 50 and x % 6 == 0 and x % 9 != 0))\n",
+    "ege5-sum-divisible": "a, b = map(int, input().split())\ns = a + b\nprint(int(s > 0 and s % 5 == 0))\n",
+    "ege5-not-all": "x = int(input())\nprint(int(not (x > 0 and x % 2 == 0 and x % 4 == 0)))\n",
+    "ege5-two-digits": "x = int(input())\nprint(int(10 <= abs(x) <= 99))\n",
+    "ege5-diff-range": "a, b = map(int, input().split())\nd = abs(a - b)\nprint(int(3 <= d <= 10))\n",
+    "ege5-digit-count": "x = input().strip().lstrip('-')\nprint(int(len(x) == 3))\n",
+    "ege5-middle-of-three": "a, b, c = map(int, input().split())\nprint(int(a < b < c or c < b < a))\n",
+    "ege5-pair-product": "a, b = map(int, input().split())\nprint(int(a * b > 10))\n",
+    "ege5-remainder-check": "x = int(input())\nprint(int(x % 7 in (2, 4)))\n",
     "ege17-1": (
         "xs = [x for x in range(1012, 9639) if x % 3 == 0 and all(x % p != 0 for p in (11, 13, 17, 19))]\n"
         "print(len(xs), max(xs))\n"
@@ -168,6 +201,60 @@ SOLUTIONS = {
         "k = 7 if m7 > m13 else 13\n"
         "xs = [x for x in data if x % k == 0]\n"
         "print(len(xs), max(xs))\n"
+    ),
+    "count-words": "print(len(input().split()))\n",
+    "reverse-number": "print(int(input()[::-1]))\n",
+    "max-pair-diff": (
+        "a = list(map(int, input().split()))\n"
+        "print(max(abs(a[i + 1] - a[i]) for i in range(len(a) - 1)))\n"
+    ),
+    "count-divisible-range": (
+        "a, b, k = map(int, input().split())\n"
+        "print(sum(1 for x in range(a, b + 1) if x % k == 0))\n"
+    ),
+    "leap-year": (
+        "y = int(input())\n"
+        "print('YES' if (y % 4 == 0 and y % 100 != 0) or y % 400 == 0 else 'NO')\n"
+    ),
+    "second-minimum": "a = sorted(set(map(int, input().split())))\nprint(a[-2])\n",
+    "ege8-word-abc": (
+        "from itertools import product\n"
+        "n = int(input())\n"
+        "L = ['А', 'Б', 'В', 'Г']\n"
+        "words = [''.join(p) for p in product(L, repeat=4)]\n"
+        "print(words[n - 1])\n"
+    ),
+    "ege14-sum-base5": (
+        "n = 125\n"
+        "s = ''\n"
+        "while n > 0:\n"
+        "    s = str(n % 5) + s\n"
+        "    n //= 5\n"
+        "print(sum(int(c) for c in s))\n"
+    ),
+    "ege16-fmod": (
+        "from functools import lru_cache\n"
+        "@lru_cache(None)\n"
+        "def f(n):\n"
+        "    return 1 if n <= 2 else f(n - 1) + f(n - 2)\n"
+        "print(str(f(50) % 100).zfill(2))\n"
+    ),
+    "ege23-programs": (
+        "from functools import lru_cache\n"
+        "@lru_cache(None)\n"
+        "def p(c, g=8):\n"
+        "    if c > g:\n"
+        "        return 0\n"
+        "    if c == g:\n"
+        "        return 1\n"
+        "    return p(c + 1) + p(c * 2)\n"
+        "print(p(1))\n"
+    ),
+    "ege25-div3-7": (
+        "for x in range(100, 201):\n"
+        "    d = [i for i in range(1, x) if x % i == 0]\n"
+        "    if len(d) == 3:\n"
+        "        print(x, max(d))\n"
     ),
 }
 SOLUTIONS.update(_harvest_solutions())

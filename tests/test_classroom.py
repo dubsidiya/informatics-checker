@@ -8,6 +8,10 @@ from http.client import HTTPConnection
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 
+os.environ["CHECKER_ENV"] = "test"
+os.environ["CHECKER_RUNNER"] = "local"
+os.environ.setdefault("TEACHER_PIN", "test-teacher-pin")
+
 from checker.explain import deepen_explanation
 from checker.grade import grade_solution
 from checker.problems import get_problem
@@ -96,11 +100,13 @@ class StoreClassroomTests(unittest.TestCase):
         self.assertTrue(any(item["student"] == "Petya" for item in board["stuck"]))
 
     def test_exam_live_and_finish(self):
-        start_exam("Anya", "\u0415\u0413\u042d 17", ["ege17-271", "ege17-1"])
+        exam = start_exam("Anya", "\u0415\u0413\u042d 17")
+        self.assertEqual(exam["status"], "live")
+        self.assertEqual(exam["total"], 8)
+        self.assertEqual(len(exam["problem_ids"]), 8)
         live = summarize()["exams"]["live"]
         self.assertEqual(live[0]["student"], "Anya")
-        self.assertEqual(live[0]["total"], 2)
-        done = update_exam("Anya", solved=2, total=2, status="done")
+        done = update_exam("Anya", status="done")
         self.assertEqual(done["status"], "done")
         self.assertFalse(summarize()["exams"]["live"])
 
@@ -138,7 +144,7 @@ class ClassroomApiTests(unittest.TestCase):
         for extra in (cls.tmp.name + "-wal", cls.tmp.name + "-shm"):
             Path(extra).unlink(missing_ok=True)
 
-    def _request(self, method, path, body=None, cookie=""):
+    def _request(self, method, path, body=None, cookie="", csrf=""):
         conn = HTTPConnection("127.0.0.1", self.port, timeout=30)
         extra = {}
         payload = None
@@ -148,6 +154,8 @@ class ClassroomApiTests(unittest.TestCase):
             extra["Content-Length"] = str(len(payload))
         if cookie:
             extra["Cookie"] = cookie
+        if csrf:
+            extra["X-CSRF-Token"] = csrf
         conn.request(method, path, body=payload, headers=extra)
         response = conn.getresponse()
         raw = response.read()
@@ -159,16 +167,23 @@ class ClassroomApiTests(unittest.TestCase):
             data = text
         return response.status, response.getheaders(), data
 
+    def _cookie(self, headers, name):
+        for key, value in headers:
+            if key.lower() == "set-cookie" and value.startswith(name + "="):
+                return value.split(";", 1)[0]
+        return ""
+
+    def _student(self, name):
+        status, headers, data = self._request("POST", "/api/student/session", {"student": name})
+        self.assertEqual(status, 200)
+        return self._cookie(headers, "student"), data["csrf"]
+
     def _login(self):
         status, headers, data = self._request("POST", "/api/teacher/login", {"pin": self.pin})
         self.assertEqual(status, 200)
-        cookie = ""
-        for key, value in headers:
-            if key.lower() == "set-cookie" and value.startswith("teacher="):
-                cookie = value.split(";", 1)[0]
-                break
+        cookie = self._cookie(headers, "teacher")
         self.assertTrue(cookie)
-        return cookie
+        return cookie, data["csrf"]
 
     def test_topics_endpoint(self):
         status, _, data = self._request("GET", "/api/topics")
@@ -177,29 +192,37 @@ class ClassroomApiTests(unittest.TestCase):
         self.assertIn("steps", data[0])
 
     def test_exam_start_and_tries(self):
+        cookie, csrf = self._student("Exam User")
         status, _, exam = self._request(
             "POST",
             "/api/exam",
             {
-                "student": "Exam User",
                 "action": "start",
                 "topic": "\u0415\u0413\u042d 17",
                 "ids": ["ege17-271"],
             },
+            cookie=cookie,
+            csrf=csrf,
         )
         self.assertEqual(status, 200)
         self.assertEqual(exam["status"], "live")
+        self.assertEqual(exam["total"], 8)
+        self.assertNotEqual(exam["problem_ids"], ["ege17-271"])
         status, _, fail = self._request(
             "POST",
             "/api/check",
-            {"problem_id": "sum-two", "code": "a, b = input().split()\nprint(a + b)\n", "student": "Exam User"},
+            {"problem_id": "sum-two", "code": "a, b = input().split()\nprint(a + b)\n"},
+            cookie=cookie,
+            csrf=csrf,
         )
         self.assertEqual(status, 200)
         self.assertEqual(fail["tries"], 1)
         status, _, fail2 = self._request(
             "POST",
             "/api/check",
-            {"problem_id": "sum-two", "code": "a, b = input().split()\nprint(a + b)\n", "student": "Exam User"},
+            {"problem_id": "sum-two", "code": "a, b = input().split()\nprint(a + b)\n"},
+            cookie=cookie,
+            csrf=csrf,
         )
         self.assertEqual(status, 200)
         self.assertEqual(fail2["tries"], 2)
@@ -209,7 +232,7 @@ class ClassroomApiTests(unittest.TestCase):
         )
 
     def test_teacher_import_json(self):
-        cookie = self._login()
+        cookie, csrf = self._login()
         payload = [
             {
                 "student": "Restored",
@@ -226,6 +249,7 @@ class ClassroomApiTests(unittest.TestCase):
             "/api/teacher/import",
             {"format": "json", "text": json.dumps(payload)},
             cookie=cookie,
+            csrf=csrf,
         )
         self.assertEqual(status, 200)
         self.assertGreaterEqual(data["inserted"], 1)
@@ -233,6 +257,9 @@ class ClassroomApiTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertTrue(any(item["name"] == "Restored" for item in summary["students"]))
         self.assertIn("stuck", summary)
+        self.assertIn("topics", summary)
+        self.assertIn("hard_tasks", summary)
+        self.assertIn("inactive", summary)
         self.assertIn("exams", summary)
 
 

@@ -1169,17 +1169,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Четыре числа от 0 до 255 через точку — восстановленный IP-адрес.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "25.74.125.136"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "25.74.125.136",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1197,17 +1192,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — номер компьютера в сети.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "28"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "28",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1225,17 +1215,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество адресов компьютеров.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "510"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "510",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1253,17 +1238,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно десятичное число — третий слева байт маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "224"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "224",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1281,17 +1261,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно десятичное число — наибольшее значение третьего слева байта маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "0"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "0",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1309,17 +1284,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно десятичное число — наименьшее возможное значение третьего слева байта маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "192"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "192",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1337,17 +1307,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наименьшее количество единиц в маске.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "18"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "18",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1365,17 +1330,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наименьшее количество нулей в маске.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "9"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "9",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1393,17 +1353,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наименьшее количество нулей в маске.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "12"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "12",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1421,17 +1376,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наименьшее возможное количество единиц в двоичной записи маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "18"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "18",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1449,17 +1399,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество различных масок.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1477,17 +1422,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наибольшее количество адресов в сети.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "16384"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "16384",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1505,17 +1445,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наименьшее количество единиц в масках.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "25"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "25",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1533,17 +1468,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно десятичное число — наименьшее возможное значение третьего слева байта маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "255"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "255",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1561,17 +1491,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество подходящих IP-адресов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1589,17 +1514,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество IP-адресов, кратных четырём.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "8192"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "8192",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1617,17 +1537,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество IP-адресов с чётной суммой единиц.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "512"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "512",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1645,17 +1560,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество различных масок.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1673,17 +1583,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество IP-адресов с чётным числом нулей.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "131072"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "131072",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1701,17 +1606,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — максимальная сумма единиц в IP-адресе.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "26"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "26",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1729,17 +1629,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно десятичное число — наименьшее значение последнего байта маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "224"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "224",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1757,17 +1652,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — минимальное допустимое значение A.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "254"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "254",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1785,17 +1675,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — максимальное допустимое значение A.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "192"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "192",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1813,17 +1698,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — максимальное допустимое значение A.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "129"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "129",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1841,17 +1721,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно десятичное число — наибольшее значение третьего слева байта маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "240"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "240",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1869,17 +1744,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наименьшее количество адресов с чётным числом единиц.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2048"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2048",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1897,17 +1767,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество IP-адресов с нечётной суммой единиц.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "262144"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "262144",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1925,17 +1790,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество IP-адресов, где число единиц не кратно 5.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1663"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1663",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1953,17 +1813,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество единиц в двоичной записи маски.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "22"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "22",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -1981,17 +1836,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — наименьшее количество адресов с 21 единицей.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "78"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "78",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2009,17 +1859,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "IP-адрес без точек (четыре октета подряд), например 11122344.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "21819482190"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "21819482190",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2037,17 +1882,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "IP-адрес без точек (четыре октета подряд), например 11122344.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "13513142126"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "13513142126",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2065,17 +1905,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "IP-адрес без точек (четыре октета подряд), например 11122344.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "14316872222"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "14316872222",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2093,17 +1928,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — сумма октетов найденного IP-адреса.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "332"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "332",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2121,17 +1951,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — сумма октетов найденного IP-адреса.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "346"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "346",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2149,17 +1974,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "IP-адрес без пробелов и разделителей, например 1001034.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1921912540"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1921912540",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2176,17 +1996,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Основания через запятую в порядке возрастания.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6, 9, 18"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6, 9, 18",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2204,17 +2019,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество цифр 0.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "14"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "14",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2232,17 +2042,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "14"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "14",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2260,17 +2065,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "23"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "23",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2288,17 +2088,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "15"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "15",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2316,17 +2111,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "31"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "31",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2344,17 +2134,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "17"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "17",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2372,17 +2157,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "259"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "259",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2400,17 +2180,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество цифр 6.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "48"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "48",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2428,17 +2203,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "83"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "83",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2456,17 +2226,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "257"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "257",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2484,17 +2249,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "478"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "478",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2512,17 +2272,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1891"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1891",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2540,17 +2295,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "77888"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "77888",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2568,17 +2318,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "7806"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "7806",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2596,17 +2341,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1535"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1535",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2624,17 +2364,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4292"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4292",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2652,17 +2387,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "44354819"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "44354819",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2680,17 +2410,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "27051"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "27051",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2708,17 +2433,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "12848"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "12848",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2736,17 +2456,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "10512"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "10512",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2764,17 +2479,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — значение yxy в десятичной системе.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2636"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2636",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2792,17 +2502,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "119959"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "119959",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2820,17 +2525,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "141"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "141",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2848,17 +2548,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — количество.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1143"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1143",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2876,17 +2571,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "14688"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "14688",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2904,17 +2594,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1996970915"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1996970915",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2932,17 +2617,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3182"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3182",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2960,17 +2640,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "5577"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "5577",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -2988,17 +2663,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "7000"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "7000",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3016,17 +2686,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — значение 5xA в десятичной системе.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "135568"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "135568",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3044,17 +2709,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "201768066"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "201768066",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3072,17 +2732,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "72450445"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "72450445",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3100,17 +2755,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "48"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "48",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3128,17 +2778,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1529685"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1529685",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3156,17 +2801,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — значение F(19).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1834984"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1834984",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3184,17 +2824,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Числа через пробел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "520 7"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "520 7",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3212,17 +2847,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "100"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "100",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3240,17 +2870,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "216"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "216",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3268,17 +2893,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "812"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "812",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3296,17 +2916,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "26"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "26",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3324,17 +2939,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "893"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "893",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3352,17 +2962,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "9"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "9",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3380,17 +2985,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Четыре последние цифры числа F(47).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "5073"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "5073",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3408,17 +3008,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "84"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "84",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3436,17 +3031,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3464,17 +3054,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "25"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "25",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3492,17 +3077,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3712"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3712",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3520,17 +3100,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "23"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "23",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3548,17 +3123,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Последние цифры числа — одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "36"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "36",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3576,17 +3146,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "36002376306"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "36002376306",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3604,17 +3169,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1024"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1024",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3632,17 +3192,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "89"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "89",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3660,17 +3215,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "14"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "14",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3688,17 +3238,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "9920"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "9920",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3716,17 +3261,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "33333334"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "33333334",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3744,17 +3284,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "55252"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "55252",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3772,17 +3307,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2541865828329"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2541865828329",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3800,17 +3330,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "57142859"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "57142859",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3828,17 +3353,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2930"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2930",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3856,17 +3376,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1122"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1122",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3884,17 +3399,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4048"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4048",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3912,17 +3422,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4060"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4060",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3940,17 +3445,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "55427328"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "55427328",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3968,17 +3468,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "16015625"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "16015625",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -3996,17 +3491,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "14765625"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "14765625",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4024,17 +3514,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4084141"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4084141",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4052,17 +3537,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "78"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "78",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4080,17 +3560,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Одно целое число — значение выражения.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "12116"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "12116",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4108,17 +3583,12 @@
     "input_format": "Ввода нет. Все данные даны в условии.",
     "output_format": "Последние цифры числа — одно целое число.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "425920"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "425920",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4136,17 +3606,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Шесть последних цифр числа F(73137).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "785250"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "785250",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4164,17 +3629,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2151 9630"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2151 9630",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4192,17 +3652,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1649 12876"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1649 12876",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4220,17 +3675,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1178 10992"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1178 10992",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4248,17 +3698,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1265 13188"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1265 13188",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4276,17 +3721,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1414 1200"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1414 1200",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4304,17 +3744,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "573 1107"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "573 1107",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4332,17 +3767,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4358 1098"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4358 1098",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4360,17 +3790,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4726 12205"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4726 12205",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4388,17 +3813,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3590 12567"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3590 12567",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4416,17 +3836,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1867 1050"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1867 1050",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4444,17 +3859,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем сумма.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "363 2319207"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "363 2319207",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4472,17 +3882,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "494 1874"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "494 1874",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4500,17 +3905,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "723 -3115"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "723 -3115",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4528,17 +3928,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "851 335"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "851 335",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4556,17 +3951,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: сначала максимальное, затем количество.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "7896 225"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "7896 225",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4584,17 +3974,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "10334 99972"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "10334 99972",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4612,17 +3997,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "9 9303"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "9 9303",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4640,17 +4020,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "25708 251775"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "25708 251775",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4668,17 +4043,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем максимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "810 15893"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "810 15893",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4696,17 +4066,12 @@
     "input_format": "Ввода нет. Границы отрезка даны в условии.",
     "output_format": "Два числа через пробел: количество, затем минимум.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6 4715"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6 4715",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -4727,17 +4092,12 @@
     "files": [
       "ege17/17-202.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "18 14769"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "18 14769",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-202.txt"
       }
     ]
@@ -4760,17 +4120,12 @@
     "files": [
       "ege17/17-204.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "206 23427"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "206 23427",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-204.txt"
       }
     ]
@@ -4793,17 +4148,12 @@
     "files": [
       "ege17/17-205.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "69 17534"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "69 17534",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-205.txt"
       }
     ]
@@ -4826,17 +4176,12 @@
     "files": [
       "ege17/17-243.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "34 11169"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "34 11169",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-243.txt"
       }
     ]
@@ -4857,17 +4202,12 @@
     "files": [
       "ege17/17-257.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "92 9815"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "92 9815",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-257.txt"
       }
     ]
@@ -4968,17 +4308,12 @@
     "files": [
       "ege17/17-274.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "61 -19308"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "61 -19308",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-274.txt"
       }
     ]
@@ -5000,17 +4335,12 @@
     "files": [
       "ege17/17-278.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "98 2851"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "98 2851",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-278.txt"
       }
     ]
@@ -5032,17 +4362,12 @@
     "files": [
       "ege17/17-300.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "774 9700"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "774 9700",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-300.txt"
       }
     ]
@@ -5064,17 +4389,12 @@
     "files": [
       "ege17/17-316.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1093 3148"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1093 3148",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-316.txt"
       }
     ]
@@ -5096,17 +4416,12 @@
     "files": [
       "ege17/17-340.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "689 53804"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "689 53804",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-340.txt"
       }
     ]
@@ -5128,17 +4443,12 @@
     "files": [
       "ege17/17-360.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2458 121"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2458 121",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-360.txt"
       }
     ]
@@ -5160,17 +4470,12 @@
     "files": [
       "ege17/17-380.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6315 84523"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6315 84523",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-380.txt"
       }
     ]
@@ -5192,17 +4497,12 @@
     "files": [
       "ege17/17-400.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1771 6020"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1771 6020",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-400.txt"
       }
     ]
@@ -5224,17 +4524,12 @@
     "files": [
       "ege17/17-418.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1949 19942"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1949 19942",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-418.txt"
       }
     ]
@@ -5256,17 +4551,12 @@
     "files": [
       "ege17/17-432.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "10007 7953"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "10007 7953",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-432.txt"
       }
     ]
@@ -5287,17 +4577,12 @@
     "files": [
       "ege17/17-442.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "13 110680"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "13 110680",
-        "hidden": false,
+        "hidden": true,
         "file": "ege17/17-442.txt"
       }
     ]
@@ -5316,17 +4601,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "36"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "36",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5344,17 +4624,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "32"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "32",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5372,17 +4647,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "96"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "96",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5400,17 +4670,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "38"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "38",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5428,17 +4693,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "225"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "225",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5456,17 +4716,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "230"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "230",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5484,17 +4739,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "298"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "298",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5512,17 +4762,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "32"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "32",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5540,17 +4785,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "102"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "102",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5568,17 +4808,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "60"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "60",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5596,17 +4831,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "26"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "26",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5624,17 +4854,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "84"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "84",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5652,17 +4877,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "201"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "201",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5680,17 +4900,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "17"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "17",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5708,17 +4923,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "28"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "28",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5736,17 +4946,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "55"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "55",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5764,17 +4969,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "377"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "377",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5792,17 +4992,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "124"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "124",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5820,17 +5015,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "40"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "40",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5848,17 +5038,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "390"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "390",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5876,17 +5061,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "400"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "400",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5904,17 +5084,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5932,17 +5107,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "881"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "881",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5960,17 +5130,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "825"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "825",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -5988,17 +5153,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "181"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "181",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6016,17 +5176,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6044,17 +5199,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "35"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "35",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6072,17 +5222,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "276210"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "276210",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6100,17 +5245,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "31894"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "31894",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6128,17 +5268,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "9"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "9",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6156,17 +5291,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6370599"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6370599",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6184,17 +5314,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "36"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "36",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6212,17 +5337,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "115"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "115",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6240,17 +5360,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "212"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "212",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6268,17 +5383,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "792"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "792",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6296,17 +5406,12 @@
     "input_format": "Ввода нет. Параметры задачи заданы в условии.",
     "output_format": "Одно целое число — количество программ.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "21133"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "21133",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6324,17 +5429,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 3 42283 126849\n1 47 2699 126853\n1 5 25373 126865\n1 293 433 126869"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 3 42283 126849\n1 47 2699 126853\n1 5 25373 126865\n1 293 433 126869",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6352,17 +5452,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 5 20543 102715\n1 59 1741 102719\n1 139 739 102721\n1 2 51361 102722"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 5 20543 102715\n1 59 1741 102719\n1 139 739 102721\n1 2 51361 102722",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6380,17 +5475,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 233 647 150751\n1 2 75377 150754\n1 41 3677 150757\n1 13 11597 150761\n1 107 1409 150763"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 233 647 150751\n1 2 75377 150754\n1 41 3677 150757\n1 13 11597 150761\n1 107 1409 150763",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6408,17 +5498,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 271 1249 338479\n1 2 169241 338482\n1 59 5737 338483\n1 2 169243 338486\n1 23 14717 338491\n1 3 112831 338493"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 271 1249 338479\n1 2 169241 338482\n1 59 5737 338483\n1 2 169243 338486\n1 23 14717 338491\n1 3 112831 338493",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6436,17 +5521,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 2 4 41177 82354 164708\n1 3 9 18301 54903 164709\n1 2 4 41179 82358 164716\n1 2 4 41183 82366 164732"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 2 4 41177 82354 164708\n1 3 9 18301 54903 164709\n1 2 4 41179 82358 164716\n1 2 4 41183 82366 164732",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6464,17 +5544,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 19 361 499 9481 180139\n1 11 121 1489 16379 180169\n1 7 49 3677 25739 180173\n1 5 25 7207 36035 180175"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 19 361 499 9481 180139\n1 11 121 1489 16379 180169\n1 7 49 3677 25739 180173\n1 5 25 7207 36035 180175",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6492,17 +5567,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 17 289 349 5933 100861\n1 2 4 25219 50438 100876\n1 2 4 25229 50458 100916\n1 3 9 11213 33639 100917\n1 2 4 25237 50474 100948\n1 29 59 1711 3481 100949"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 17 289 349 5933 100861\n1 2 4 25219 50438 100876\n1 2 4 25229 50458 100916\n1 3 9 11213 33639 100917\n1 2 4 25237 50474 100948\n1 29 59 1711 3481 100949",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6519,17 +5589,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 23 529 12167 279841"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 23 529 12167 279841",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6547,17 +5612,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Три числа через пробел: количество делителей, два наибольших делителя.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "48 394450 197225"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "48 394450 197225",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6575,17 +5635,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "574992 967"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "574992 967",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6603,17 +5658,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 2943467\n2 2943491\n3 2943503\n4 2943527"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 2943467\n2 2943491\n3 2943503\n4 2943527",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6631,17 +5681,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 4730729\n2 4730771\n3 4730779\n4 4730807\n5 4730809\n6 4730813"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 4730729\n2 4730771\n3 4730779\n4 4730807\n5 4730809\n6 4730813",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6659,17 +5704,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 5962477\n2 5962499\n3 5962519\n4 5962547\n5 5962549\n6 5962573\n7 5962577"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 5962477\n2 5962499\n3 5962519\n4 5962547\n5 5962549\n6 5962573\n7 5962577",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6687,17 +5727,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1 195193\n2 195493\n3 195593\n4 195893\n5 196193"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1 195193\n2 195493\n3 195593\n4 195893\n5 196193",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6715,17 +5750,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1024\n2048\n4096\n8192\n16384"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1024\n2048\n4096\n8192\n16384",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6743,17 +5773,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "25"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "25",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6771,17 +5796,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "21891"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "21891",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6799,17 +5819,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "58326"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "58326",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6827,17 +5842,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2 342467"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2 342467",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6855,17 +5865,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4961 497009"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4961 497009",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6883,17 +5888,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "38086 278\n44998 302\n53332 268"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "38086 278\n44998 302\n53332 268",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6911,17 +5911,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Числа через пробел, как указано в условии.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2095133040 19"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2095133040 19",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6939,17 +5934,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "125000000 15\n131072000 23\n195312500 13\n204800000 21"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "125000000 15\n131072000 23\n195312500 13\n204800000 21",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6967,17 +5957,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "10000495 2014799\n10000601 792131\n10000604 7500457\n10000847 273059\n10000917 4444861"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "10000495 2014799\n10000601 792131\n10000604 7500457\n10000847 273059\n10000917 4444861",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -6995,17 +5980,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4 7\n405954 23\n13636364 23\n10344828 47\n118 7"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4 7\n405954 23\n13636364 23\n10344828 47\n118 7",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7023,17 +6003,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "По строке на каждое число: само число и частное от деления на 17.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "113456759 6673927\n133456749 7850397\n153456739 9026867\n173456729 10203337\n193456719 11379807"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "113456759 6673927\n133456749 7850397\n153456739 9026867\n173456729 10203337\n193456719 11379807",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7051,17 +6026,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "122145 2395\n122451 2401\n124542 2442\n124593 2443\n127245 2495"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "122145 2395\n122451 2401\n124542 2442\n124593 2443\n127245 2495",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7079,17 +6049,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "18958656 12\n1939958656 40"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "18958656 12\n1939958656 40",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7107,17 +6072,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1236 12\n2369 23\n2678 26\n16789 163"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1236 12\n2369 23\n2678 26\n16789 163",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7135,17 +6095,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1234576 16912\n12345176 169112\n123451176 1691112\n123458476 1691212\n1234503876 16911012"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1234576 16912\n12345176 169112\n123451176 1691112\n123458476 1691212\n1234503876 16911012",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7163,17 +6118,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "321525543123 619509717\n322167546123 620746717\n323724546123 623746717\n324366549123 624983717\n325281546123 626746717\n325923549123 627983717"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "321525543123 619509717\n322167546123 620746717\n323724546123 623746717\n324366549123 624983717\n325281546123 626746717\n325923549123 627983717",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7191,17 +6141,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "12343000 3\n123400269 17\n123421875 23\n1234200000 2\n1234509249 29"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "12343000 3\n123400269 17\n123421875 23\n1234200000 2\n1234509249 29",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7219,17 +6164,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4212 13\n5292 7\n7232 113\n8232 7\n8262 17"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4212 13\n5292 7\n7232 113\n8232 7\n8262 17",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7247,17 +6187,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "700024 350014\n700045 140014\n700049 100014\n700224 350114\n700233 233414"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "700024 350014\n700045 140014\n700049 100014\n700224 350114\n700233 233414",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7275,17 +6210,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "800004 400004\n800009 114294\n800013 266674\n800024 400014\n800033 61554"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "800004 400004\n800009 114294\n800013 266674\n800024 400014\n800033 61554",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7303,17 +6233,12 @@
     "input_format": "Ввода нет. Границы отрезка или маска заданы в условии.",
     "output_format": "Для каждой найденной величины — строка с числами через пробел (см. условие).",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "44736821 5597\n4064736241 508537\n4303247361 538377\n4347368721 543897\n4447361151 556407\n4473658121 559697\n4794736931 599867"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "44736821 5597\n4064736241 508537\n4303247361 538377\n4347368721 543897\n4447361151 556407\n4473658121 559697\n4794736931 599867",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7331,17 +6256,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — номер слова в списке.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "92"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "92",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7359,17 +6279,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество последовательностей.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "29"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "29",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7387,17 +6302,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество кодов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4224"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4224",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7415,17 +6325,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество кодов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4200"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4200",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7443,17 +6348,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7471,17 +6371,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество кодов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1320"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1320",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7499,17 +6394,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "480"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "480",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7527,17 +6417,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1296"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1296",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7555,17 +6440,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество кодов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1456"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1456",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7583,17 +6463,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество кодов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "104"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "104",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7611,17 +6486,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1562"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1562",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7639,17 +6509,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "165"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "165",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7667,17 +6532,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3360"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3360",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7695,17 +6555,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1744"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1744",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7723,17 +6578,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "24"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "24",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7751,17 +6601,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "57344"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "57344",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7779,17 +6624,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — номер слова в списке.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3428"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3428",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7807,17 +6647,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "8681376"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "8681376",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7835,17 +6670,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "75870"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "75870",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7863,17 +6693,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1225"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1225",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7891,17 +6716,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "756000"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "756000",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7919,17 +6739,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "360"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "360",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7947,17 +6762,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество кодов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "309268"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "309268",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -7975,17 +6785,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "17438"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "17438",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8003,17 +6808,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "174"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "174",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8031,17 +6831,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "45"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "45",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8059,17 +6854,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "25000"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "25000",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8087,17 +6877,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "285"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "285",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8115,17 +6900,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "318"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "318",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8143,17 +6923,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "13000"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "13000",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8170,17 +6945,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одна строка из заглавных латинских букв.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "AREWJ"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "AREWJ",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8198,17 +6968,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество кодовых слов.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1944"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1944",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8226,17 +6991,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — количество чисел.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "55292"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "55292",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8254,17 +7014,12 @@
     "input_format": "Ввода нет.",
     "output_format": "Одно целое число — номер слова.",
     "files": [],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "270297"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "270297",
-        "hidden": false
+        "hidden": true
       }
     ]
   },
@@ -8284,17 +7039,12 @@
     "files": [
       "ege9/9-101.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "57"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "57",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-101.csv"
       }
     ]
@@ -8315,17 +7065,12 @@
     "files": [
       "ege9/9-132.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "184"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "184",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-132.csv"
       }
     ]
@@ -8346,17 +7091,12 @@
     "files": [
       "ege9/9-138.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2713"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2713",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-138.csv"
       }
     ]
@@ -8377,17 +7117,12 @@
     "files": [
       "ege9/9-147.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "4"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "4",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-147.csv"
       }
     ]
@@ -8408,17 +7143,12 @@
     "files": [
       "ege9/9-157.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-157.csv"
       }
     ]
@@ -8439,17 +7169,12 @@
     "files": [
       "ege9/9-160.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "104"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "104",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-160.csv"
       }
     ]
@@ -8470,17 +7195,12 @@
     "files": [
       "ege9/9-161.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "133"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "133",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-161.csv"
       }
     ]
@@ -8501,17 +7221,12 @@
     "files": [
       "ege9/9-162.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1820"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1820",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-162.csv"
       }
     ]
@@ -8532,17 +7247,12 @@
     "files": [
       "ege9/9-170.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2241"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2241",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-170.csv"
       }
     ]
@@ -8563,17 +7273,12 @@
     "files": [
       "ege9/9-170.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "134"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "134",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-170.csv"
       }
     ]
@@ -8594,17 +7299,12 @@
     "files": [
       "ege9/9-176.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "322"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "322",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-176.csv"
       }
     ]
@@ -8625,17 +7325,12 @@
     "files": [
       "ege9/9-178.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "53"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "53",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-178.csv"
       }
     ]
@@ -8656,17 +7351,12 @@
     "files": [
       "ege9/9-180.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1056"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1056",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-180.csv"
       }
     ]
@@ -8687,17 +7377,12 @@
     "files": [
       "ege9/9-182.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6887"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6887",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-182.csv"
       }
     ]
@@ -8718,17 +7403,12 @@
     "files": [
       "ege9/9-183.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "74"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "74",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-183.csv"
       }
     ]
@@ -8749,17 +7429,12 @@
     "files": [
       "ege9/9-183.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "12"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "12",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-183.csv"
       }
     ]
@@ -8780,17 +7455,12 @@
     "files": [
       "ege9/9-187.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "326"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "326",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-187.csv"
       }
     ]
@@ -8811,17 +7481,12 @@
     "files": [
       "ege9/9-191.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2114"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2114",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-191.csv"
       }
     ]
@@ -8842,17 +7507,12 @@
     "files": [
       "ege9/9-199.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "862"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "862",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-199.csv"
       }
     ]
@@ -8873,17 +7533,12 @@
     "files": [
       "ege9/9-209.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "2914"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "2914",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-209.csv"
       }
     ]
@@ -8904,17 +7559,12 @@
     "files": [
       "ege9/9-210.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "22"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "22",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-210.csv"
       }
     ]
@@ -8935,17 +7585,12 @@
     "files": [
       "ege9/9-214.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "3"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "3",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-214.csv"
       }
     ]
@@ -8966,17 +7611,12 @@
     "files": [
       "ege9/9-218.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "276"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "276",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-218.csv"
       }
     ]
@@ -8997,17 +7637,12 @@
     "files": [
       "ege9/9-227.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "125"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "125",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-227.csv"
       }
     ]
@@ -9028,17 +7663,12 @@
     "files": [
       "ege9/9-228.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6615"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6615",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-228.csv"
       }
     ]
@@ -9059,17 +7689,12 @@
     "files": [
       "ege9/9-228.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "46324"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "46324",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-228.txt"
       }
     ]
@@ -9090,17 +7715,12 @@
     "files": [
       "ege9/9-243.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1700"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1700",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-243.csv"
       }
     ]
@@ -9121,17 +7741,12 @@
     "files": [
       "ege9/9-251.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "354"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "354",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-251.csv"
       }
     ]
@@ -9152,17 +7767,12 @@
     "files": [
       "ege9/9-255.csv"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-255.csv"
       }
     ]
@@ -9183,17 +7793,12 @@
     "files": [
       "ege9/9-258.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "1780"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "1780",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-258.txt"
       }
     ]
@@ -9214,17 +7819,12 @@
     "files": [
       "ege9/9-259.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "967"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "967",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-259.txt"
       }
     ]
@@ -9245,18 +7845,1982 @@
     "files": [
       "ege9/9-259.txt"
     ],
-    "examples": [
-      {
-        "stdin": "",
-        "stdout": "6"
-      }
-    ],
+    "examples": [],
     "tests": [
       {
         "stdin": "",
         "stdout": "6",
-        "hidden": false,
+        "hidden": true,
         "file": "ege9/9-259.txt"
+      }
+    ]
+  },
+  {
+    "id": "ege5-logic-table",
+    "title": "ЕГЭ 5 — логическое выражение",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если выполняется условие X делится на 3 и не делится на 5, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "6",
+        "stdout": "1"
+      },
+      {
+        "stdin": "15",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "6",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "15",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "21",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-9",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-boolean-condition",
+    "title": "ЕГЭ 5 — ровно одно условие",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны два целых числа A и B. Выведи 1, если ровно одно из чисел положительное, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "4 -2",
+        "stdout": "1"
+      },
+      {
+        "stdin": "4 2",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "4 -2",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "4 2",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "0 7",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-3 -8",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "0 0",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-interval",
+    "title": "ЕГЭ 5 — принадлежность отрезку",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X принадлежит отрезку [10; 20] и не равен 15, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "12",
+        "stdout": "1"
+      },
+      {
+        "stdin": "15",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "12",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "15",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "10",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "20",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "9",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "21",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-three-condition",
+    "title": "ЕГЭ 5 — три логических признака",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X нечётное, положительное и делится на 3, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "9",
+        "stdout": "1"
+      },
+      {
+        "stdin": "6",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "9",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "6",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "3",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-3",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "15",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "12",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-exclusive-or",
+    "title": "ЕГЭ 5 — исключающее ИЛИ",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны два целых числа A и B. Выведи 1, если ровно одно из условий A делится на 2 и B делится на 3 истинно, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "4 5",
+        "stdout": "1"
+      },
+      {
+        "stdin": "5 6",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "4 5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "5 6",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "4 6",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "5 5",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "0 0",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-range-exclusions",
+    "title": "ЕГЭ 5 — диапазон и исключения",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X принадлежит отрезку [−5; 12], но не равен 0 и не равен 7, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "-5",
+        "stdout": "1"
+      },
+      {
+        "stdin": "7",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "-5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "12",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "13",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-min-condition",
+    "title": "ЕГЭ 5 — минимальное подходящее число",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X — наименьшее положительное число, которое делится на 4 и не делится на 3, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "4",
+        "stdout": "1"
+      },
+      {
+        "stdin": "8",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "4",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "8",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-4",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "12",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-order",
+    "title": "ЕГЭ 5 — порядок трёх чисел",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны три целых числа A, B и C. Выведи 1, если A меньше B и B меньше C, иначе выведи 0.",
+    "input_format": "В одной строке три целых числа A, B и C.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "1 2 3",
+        "stdout": "1"
+      },
+      {
+        "stdin": "1 3 2",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 2 3",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1 3 2",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "-3 -2 -1",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "1 1 2",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "3 2 1",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-three-divisibility",
+    "title": "ЕГЭ 5 — делимость на два из трёх",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X делится ровно на два из чисел 2, 3 и 5, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "6",
+        "stdout": "1"
+      },
+      {
+        "stdin": "30",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "6",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "30",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "10",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "15",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "7",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-digits-order",
+    "title": "ЕГЭ 5 — цифры по возрастанию",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано трёхзначное число X. Выведи 1, если его цифры идут строго по возрастанию слева направо, иначе выведи 0.",
+    "input_format": "Одно трёхзначное число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "123",
+        "stdout": "1"
+      },
+      {
+        "stdin": "122",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "123",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "122",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "135",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "321",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "111",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-area",
+    "title": "ЕГЭ 5 — точка в области",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны целые координаты X и Y. Выведи 1, если точка лежит в прямоугольнике −2 ≤ X ≤ 4 и 1 ≤ Y ≤ 5, но не лежит на прямой X = 1, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа X и Y.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "0 3",
+        "stdout": "1"
+      },
+      {
+        "stdin": "1 3",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "0 3",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1 3",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "-2 1",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "4 5",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "5 3",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-absolute",
+    "title": "ЕГЭ 5 — модуль и граница",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если |X| ≤ 7 и X не равен 0, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "-7",
+        "stdout": "1"
+      },
+      {
+        "stdin": "0",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "-7",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "8",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-8",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-union",
+    "title": "ЕГЭ 5 — объединение отрезков",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X принадлежит отрезку [−10; −3] или отрезку [5; 9], иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "-5",
+        "stdout": "1"
+      },
+      {
+        "stdin": "0",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "-5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "-10",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "9",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "10",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-exactly-two",
+    "title": "ЕГЭ 5 — ровно два признака",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Проверяются признаки: X положителен, X чётный, X делится на 3. Выведи 1, если истинны ровно два признака, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "2",
+        "stdout": "1"
+      },
+      {
+        "stdin": "12",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "2",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "12",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "2",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-6",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "0",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-between",
+    "title": "ЕГЭ 5 — между двумя числами",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны три целых числа A, B и X. Выведи 1, если X строго между A и B, иначе выведи 0. Числа A и B могут быть записаны в любом порядке.",
+    "input_format": "В одной строке три целых числа A, B и X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "2 8 5",
+        "stdout": "1"
+      },
+      {
+        "stdin": "8 2 5",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "2 8 5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "8 2 5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "2 8 2",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "2 8 9",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-5 -1 -3",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-max-digit",
+    "title": "ЕГЭ 5 — максимальная цифра",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано трёхзначное число X. Выведи 1, если его первая цифра больше каждой из двух остальных, иначе выведи 0.",
+    "input_format": "Одно трёхзначное число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "521",
+        "stdout": "1"
+      },
+      {
+        "stdin": "512",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "521",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "512",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "999",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "901",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "123",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-sum-sign",
+    "title": "ЕГЭ 5 — знак суммы",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны два целых числа A и B. Выведи 1, если их сумма положительна, а произведение отрицательно, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "5 -2",
+        "stdout": "1"
+      },
+      {
+        "stdin": "-5 2",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "5 -2",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "-5 2",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "2 -1",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-2 -1",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "0 4",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-digits-sum",
+    "title": "ЕГЭ 5 — сумма цифр",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано трёхзначное число X. Выведи 1, если сумма его цифр больше 10, иначе выведи 0.",
+    "input_format": "Одно трёхзначное число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "456",
+        "stdout": "1"
+      },
+      {
+        "stdin": "111",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "456",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "111",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "109",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "999",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "190",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-parity-match",
+    "title": "ЕГЭ 5 — одинаковая чётность",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны два целых числа A и B. Выведи 1, если они оба чётные или оба нечётные, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "4 8",
+        "stdout": "1"
+      },
+      {
+        "stdin": "4 7",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "4 8",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "4 7",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "3 9",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "0 -2",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-1 2",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-divisor-choice",
+    "title": "ЕГЭ 5 — одно из условий делимости",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X положительно и делится на 4 или на 7, но не делится одновременно на 4 и 7, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "8",
+        "stdout": "1"
+      },
+      {
+        "stdin": "28",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "8",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "28",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-4",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "9",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "count-words",
+    "title": "Сколько слов",
+    "level": "старт",
+    "topic": "строки",
+    "tags": [
+      "print_once"
+    ],
+    "statement": "Дана строка из слов, разделённых пробелами. Посчитай, сколько в ней слов.",
+    "input_format": "Одна строка со словами через пробелы.",
+    "output_format": "Одно целое число — количество слов.",
+    "examples": [
+      {
+        "stdin": "один два три",
+        "stdout": "3"
+      },
+      {
+        "stdin": "привет",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "один два три",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "привет",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "a b c d e",
+        "stdout": "5",
+        "hidden": true
+      },
+      {
+        "stdin": "   лишние   пробелы   ",
+        "stdout": "2",
+        "hidden": true
+      },
+      {
+        "stdin": "раз два три четыре пять шесть",
+        "stdout": "6",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "reverse-number",
+    "title": "Переверни число",
+    "level": "средне",
+    "topic": "числа",
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "digits"
+    ],
+    "statement": "Дано неотрицательное целое число. Выведи его цифры в обратном порядке как одно число (ведущие нули результата отбрасываются).",
+    "input_format": "Одно неотрицательное целое число.",
+    "output_format": "Одно целое число — перевёрнутое.",
+    "examples": [
+      {
+        "stdin": "123",
+        "stdout": "321"
+      },
+      {
+        "stdin": "120",
+        "stdout": "21"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "123",
+        "stdout": "321",
+        "hidden": false
+      },
+      {
+        "stdin": "120",
+        "stdout": "21",
+        "hidden": false
+      },
+      {
+        "stdin": "5",
+        "stdout": "5",
+        "hidden": true
+      },
+      {
+        "stdin": "100",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "98765",
+        "stdout": "56789",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "max-pair-diff",
+    "title": "Максимальная разность соседей",
+    "level": "средне",
+    "topic": "списки",
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
+    "statement": "Дан список целых чисел. Найди максимальную по модулю разность соседних элементов и выведи её.",
+    "input_format": "В одной строке числа через пробел.",
+    "output_format": "Одно целое число — максимальная по модулю разность соседей.",
+    "examples": [
+      {
+        "stdin": "1 5 2 9",
+        "stdout": "7"
+      },
+      {
+        "stdin": "10 3",
+        "stdout": "7"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 5 2 9",
+        "stdout": "7",
+        "hidden": false
+      },
+      {
+        "stdin": "10 3",
+        "stdout": "7",
+        "hidden": false
+      },
+      {
+        "stdin": "4 4 4",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-1 -5",
+        "stdout": "4",
+        "hidden": true
+      },
+      {
+        "stdin": "0 10 2",
+        "stdout": "10",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "count-divisible-range",
+    "title": "Сколько чисел делятся на k",
+    "level": "средне",
+    "topic": "циклы",
+    "tags": [
+      "closed_range",
+      "single_int_out"
+    ],
+    "statement": "Даны два целых числа A и B (A ≤ B) и число k. Посчитай, сколько чисел на отрезке [A; B] делятся на k без остатка.",
+    "input_format": "В одной строке три целых числа: A, B, k.",
+    "output_format": "Одно целое число — количество.",
+    "examples": [
+      {
+        "stdin": "1 10 3",
+        "stdout": "3"
+      },
+      {
+        "stdin": "5 5 5",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 10 3",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "5 5 5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1 100 7",
+        "stdout": "14",
+        "hidden": true
+      },
+      {
+        "stdin": "-6 6 2",
+        "stdout": "7",
+        "hidden": true
+      },
+      {
+        "stdin": "1 10 1",
+        "stdout": "10",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "leap-year",
+    "title": "Високосный год",
+    "level": "средне",
+    "topic": "условия",
+    "tags": [
+      "yes_no_out"
+    ],
+    "statement": "Дан год. Определи, високосный ли он. Год високосный, если он делится на 4, но не на 100, либо делится на 400.",
+    "input_format": "Одно целое число — год.",
+    "output_format": "YES, если год високосный, иначе NO.",
+    "examples": [
+      {
+        "stdin": "2020",
+        "stdout": "YES"
+      },
+      {
+        "stdin": "1900",
+        "stdout": "NO"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "2020",
+        "stdout": "YES",
+        "hidden": false
+      },
+      {
+        "stdin": "1900",
+        "stdout": "NO",
+        "hidden": false
+      },
+      {
+        "stdin": "2000",
+        "stdout": "YES",
+        "hidden": true
+      },
+      {
+        "stdin": "2023",
+        "stdout": "NO",
+        "hidden": true
+      },
+      {
+        "stdin": "2024",
+        "stdout": "YES",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "second-minimum",
+    "title": "Второй минимум",
+    "level": "сложно",
+    "topic": "поиск",
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
+    "statement": "Дан список целых чисел. Найди второе по величине среди различных чисел значение.",
+    "input_format": "В одной строке числа через пробел.",
+    "output_format": "Одно целое число — второй минимум среди различных.",
+    "examples": [
+      {
+        "stdin": "1 5 3 5 2",
+        "stdout": "3"
+      },
+      {
+        "stdin": "9 8 7",
+        "stdout": "8"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 5 3 5 2",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "9 8 7",
+        "stdout": "8",
+        "hidden": false
+      },
+      {
+        "stdin": "5 5 5 5 5 5 1",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-1 -3 -2",
+        "stdout": "-2",
+        "hidden": true
+      },
+      {
+        "stdin": "4 4 4 1 4 9",
+        "stdout": "4",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege8-word-abc",
+    "title": "ЕГЭ 8 — слово с номером",
+    "level": "средне",
+    "topic": "ЕГЭ 8",
+    "tags": [
+      "ege8"
+    ],
+    "statement": "Все четырёхбуквенные слова, составленные из букв А, Б, В, Г, нумеруются по алфавиту начиная с 1 (буквы можно повторять). Определи слово, которое стоит под номером N.",
+    "input_format": "Одно целое число N.",
+    "output_format": "Слово из четырёх букв.",
+    "examples": [
+      {
+        "stdin": "1",
+        "stdout": "АААА"
+      },
+      {
+        "stdin": "2",
+        "stdout": "АААБ"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1",
+        "stdout": "АААА",
+        "hidden": false
+      },
+      {
+        "stdin": "2",
+        "stdout": "АААБ",
+        "hidden": false
+      },
+      {
+        "stdin": "256",
+        "stdout": "ГГГГ",
+        "hidden": true
+      },
+      {
+        "stdin": "4",
+        "stdout": "АААГ",
+        "hidden": true
+      },
+      {
+        "stdin": "5",
+        "stdout": "ААБА",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege14-sum-base5",
+    "title": "ЕГЭ 14 — сумма цифр в системе 5",
+    "level": "средне",
+    "topic": "ЕГЭ 14",
+    "tags": [
+      "ege14"
+    ],
+    "statement": "Запиши число 125 в пятеричной системе счисления и найди сумму его цифр.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — сумма цифр записи в системе 5.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege16-fmod",
+    "title": "ЕГЭ 16 — последние две цифры F(n)",
+    "level": "средне",
+    "topic": "ЕГЭ 16",
+    "tags": [
+      "ege16"
+    ],
+    "statement": "Алгоритм вычисления функции F(n): F(1)=1, F(2)=1, при n>2: F(n) = F(n-1) + F(n-2). Найди две последние цифры F(50).",
+    "input_format": "Ввода нет.",
+    "output_format": "Двузначное число (с ведущим нулём при необходимости) — F(50) mod 100.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "25",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege23-programs",
+    "title": "ЕГЭ 23 — сколько программ 1 в 8",
+    "level": "средне",
+    "topic": "ЕГЭ 23",
+    "tags": [
+      "ege23"
+    ],
+    "statement": "Исполнитель имеет две команды: +1 и *2. Сколько есть программ, которые переводят число 1 в число 8?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество программ.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "10",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege25-div3-7",
+    "title": "ЕГЭ 25 — ровно 4 делителя",
+    "level": "средне",
+    "topic": "ЕГЭ 25",
+    "tags": [
+      "ege25",
+      "divisors"
+    ],
+    "statement": "Среди целых чисел отрезка [100; 200] найди те, у которых ровно 4 различных делителя. Для каждого выведи само число и наибольший делитель (кроме самого числа) через пробел.",
+    "input_format": "Ввода нет.",
+    "output_format": "По строке: число и его наибольший делитель через пробел.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "106 53\n111 37\n115 23\n118 59\n119 17\n122 61\n123 41\n125 25\n129 43\n133 19\n134 67\n141 47\n142 71\n143 13\n145 29\n146 73\n155 31\n158 79\n159 53\n161 23\n166 83\n177 59\n178 89\n183 61\n185 37\n187 17\n194 97",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-last-digit-div",
+    "title": "ЕГЭ 5 — последняя цифра и делимость",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если последняя цифра X равна 4 или 7 и X делится на 3, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "24",
+        "stdout": "1"
+      },
+      {
+        "stdin": "14",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "24",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "14",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "57",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "47",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-24",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-range-step",
+    "title": "ЕГЭ 5 — числа с шагом",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X принадлежит отрезку [10; 50] и делится на 6, но не делится на 9, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "12",
+        "stdout": "1"
+      },
+      {
+        "stdin": "18",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "12",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "18",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "30",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "48",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "6",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-sum-divisible",
+    "title": "ЕГЭ 5 — сумма делится",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны два целых числа A и B. Выведи 1, если сумма A + B положительна и делится на 5, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "3 7",
+        "stdout": "1"
+      },
+      {
+        "stdin": "-3 7",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "3 7",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "-3 7",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "2 3",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-2 -3",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-5 5",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-not-all",
+    "title": "ЕГЭ 5 — не все условия",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если неверно, что X одновременно положителен, чётный и делится на 4, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "8",
+        "stdout": "0"
+      },
+      {
+        "stdin": "6",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "8",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "6",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "12",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-4",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "0",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-two-digits",
+    "title": "ЕГЭ 5 — двузначное число",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если X — двузначное число (от 10 до 99 или от −99 до −10), иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "42",
+        "stdout": "1"
+      },
+      {
+        "stdin": "5",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "42",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "5",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "-37",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "100",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-5",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-diff-range",
+    "title": "ЕГЭ 5 — разница в диапазоне",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны два целых числа A и B. Выведи 1, если модуль их разницы не меньше 3 и не больше 10, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "1 7",
+        "stdout": "1"
+      },
+      {
+        "stdin": "1 2",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 7",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1 2",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "0 3",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "5 16",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-2 5",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-digit-count",
+    "title": "ЕГЭ 5 — сколько цифр",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если в записи X ровно три цифры (считая без знака), иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "123",
+        "stdout": "1"
+      },
+      {
+        "stdin": "12",
+        "stdout": "0"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "123",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "12",
+        "stdout": "0",
+        "hidden": false
+      },
+      {
+        "stdin": "-456",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "1000",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "0",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-middle-of-three",
+    "title": "ЕГЭ 5 — среднее из трёх",
+    "level": "сложно",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны три различных целых числа A, B и C. Выведи 1, если B лежит строго между A и C, иначе выведи 0.",
+    "input_format": "В одной строке три различных целых числа A, B и C.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "1 5 9",
+        "stdout": "1"
+      },
+      {
+        "stdin": "9 5 1",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 5 9",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "9 5 1",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "5 1 9",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-3 -1 4",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "2 2 5",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-pair-product",
+    "title": "ЕГЭ 5 — произведение пары",
+    "level": "средне",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Даны два целых числа A и B. Выведи 1, если их произведение положительно и больше 10, иначе выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "3 5",
+        "stdout": "1"
+      },
+      {
+        "stdin": "-3 -5",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "3 5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "-3 -5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "2 3",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-2 3",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "0 5",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege5-remainder-check",
+    "title": "ЕГЭ 5 — остаток от деления",
+    "level": "старт",
+    "topic": "ЕГЭ 5",
+    "tags": [
+      "ege5",
+      "single_int_out",
+      "integers_from_input"
+    ],
+    "statement": "Дано целое число X. Выведи 1, если при делении X на 7 остаток равен 2 или 4, иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "Одно число: 1 или 0.",
+    "examples": [
+      {
+        "stdin": "9",
+        "stdout": "1"
+      },
+      {
+        "stdin": "11",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "9",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "11",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "7",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "16",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "-5",
+        "stdout": "1",
+        "hidden": true
       }
     ]
   }

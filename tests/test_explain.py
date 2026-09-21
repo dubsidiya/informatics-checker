@@ -1,12 +1,25 @@
 # -*- coding: utf-8 -*-
 import json
+import os
 import unittest
+
+os.environ.setdefault("CHECKER_ENV", "test")
+os.environ.setdefault("CHECKER_RUNNER", "local")
 
 from checker.grade import grade_solution
 from checker.problems import get_problem
 
 
 class ExplainTests(unittest.TestCase):
+    def test_ok_headline_is_russian(self):
+        result = grade_solution(get_problem("sum-two"), "a, b = map(int, input().split())\nprint(a + b)\n")
+        self.assertEqual(result.status, "ok")
+        self.assertTrue(
+            "Задача сдана" in result.explanation.headline
+            or "сдана" in (result.explanation.headline + result.explanation.what).lower()
+            or "получилось" in result.explanation.headline.lower()
+        )
+
     def test_string_concat_has_what_why_how(self):
         result = grade_solution(
             get_problem("sum-two"),

@@ -9,6 +9,10 @@ from http.server import ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import quote
 
+os.environ["CHECKER_ENV"] = "test"
+os.environ["CHECKER_RUNNER"] = "local"
+os.environ.setdefault("TEACHER_PIN", "test-teacher-pin")
+
 from checker.store import record_attempt, reset_ready
 
 
@@ -37,16 +41,18 @@ class ApiTests(unittest.TestCase):
         for extra in (cls.tmp.name + "-wal", cls.tmp.name + "-shm"):
             Path(extra).unlink(missing_ok=True)
 
-    def _request(self, method, path, body=None, headers=None, cookie=""):
+    def _request(self, method, path, body=None, headers=None, cookie="", csrf=""):
         conn = HTTPConnection("127.0.0.1", self.port, timeout=30)
         extra = dict(headers or {})
         payload = None
         if body is not None:
             payload = json.dumps(body).encode("utf-8")
-            extra["Content-Type"] = "application/json"
+            extra.setdefault("Content-Type", "application/json")
             extra["Content-Length"] = str(len(payload))
         if cookie:
             extra["Cookie"] = cookie
+        if csrf:
+            extra["X-CSRF-Token"] = csrf
         conn.request(method, path, body=payload, headers=extra)
         response = conn.getresponse()
         raw = response.read()
@@ -58,10 +64,30 @@ class ApiTests(unittest.TestCase):
             data = text
         return response.status, response.getheaders(), data
 
+    def _cookie(self, headers, name):
+        for key, value in headers:
+            if key.lower() == "set-cookie" and value.startswith(name + "="):
+                return value.split(";", 1)[0]
+        return ""
+
+    def _student(self, name):
+        status, headers, data = self._request("POST", "/api/student/session", {"student": name})
+        self.assertEqual(status, 200)
+        cookie = self._cookie(headers, "student")
+        self.assertTrue(cookie)
+        return cookie, data["csrf"]
+
     def test_health(self):
         status, _, data = self._request("GET", "/health")
         self.assertEqual(status, 200)
         self.assertTrue(data.get("ok"))
+
+    def test_livez_readyz(self):
+        status, _, data = self._request("GET", "/livez")
+        self.assertEqual(status, 200)
+        status, _, data = self._request("GET", "/readyz")
+        self.assertEqual(status, 200)
+        self.assertIn("counters", data)
 
     def test_problems_catalog(self):
         status, _, data = self._request("GET", "/api/problems")
@@ -69,50 +95,76 @@ class ApiTests(unittest.TestCase):
         self.assertGreaterEqual(len(data), 30)
         self.assertIn("id", data[0])
 
+    def test_head_unknown_is_404(self):
+        status, _, _ = self._request("HEAD", "/no-such-page")
+        self.assertEqual(status, 404)
+
     def test_check_requires_name(self):
         status, _, data = self._request(
             "POST",
             "/api/check",
-            {"problem_id": "sum-two", "code": "print(1)", "student": "  "},
+            {"problem_id": "sum-two", "code": "print(1)"},
         )
-        self.assertEqual(status, 400)
+        self.assertEqual(status, 401)
         self.assertIn("\u0438\u043c\u044f", data["detail"].lower())
 
     def test_check_accepts_correct_sum(self):
+        cookie, csrf = self._student("Api User")
         status, _, data = self._request(
             "POST",
             "/api/check",
             {
                 "problem_id": "sum-two",
                 "code": "a, b = map(int, input().split())\nprint(a + b)\n",
-                "student": "Api User",
             },
+            cookie=cookie,
+            csrf=csrf,
         )
         self.assertEqual(status, 200)
         self.assertEqual(data["status"], "ok")
 
     def test_progress_after_solve(self):
-        name = "Progress Katya"
+        cookie, csrf = self._student("Progress Katya")
         status, _, data = self._request(
             "POST",
             "/api/check",
             {
                 "problem_id": "sum-two",
                 "code": "a, b = map(int, input().split())\nprint(a + b)\n",
-                "student": name,
             },
+            cookie=cookie,
+            csrf=csrf,
         )
         self.assertEqual(status, 200)
         self.assertEqual(data["status"], "ok")
-        status, _, progress = self._request("GET", f"/api/progress?student={quote(name)}")
+        status, _, progress = self._request("GET", "/api/progress", cookie=cookie)
         self.assertEqual(status, 200)
         self.assertIn("sum-two", progress.get("solved", []))
 
+    def test_progress_ignores_query_name(self):
+        cookie, csrf = self._student("Real Student")
+        self._request(
+            "POST",
+            "/api/check",
+            {
+                "problem_id": "sum-two",
+                "code": "a, b = map(int, input().split())\nprint(a + b)\n",
+            },
+            cookie=cookie,
+            csrf=csrf,
+        )
+        status, _, progress = self._request("GET", f"/api/progress?student={quote('Other')}", cookie=cookie)
+        self.assertEqual(status, 200)
+        self.assertEqual(progress["student"], "Real Student")
+
     def test_hidden_answer_not_in_http(self):
+        cookie, csrf = self._student("Hidden User")
         status, _, data = self._request(
             "POST",
             "/api/check",
-            {"problem_id": "ege17-271", "code": "print(2, -13)\n", "student": "Hidden User"},
+            {"problem_id": "ege17-271", "code": "print(2, -13)\n"},
+            cookie=cookie,
+            csrf=csrf,
         )
         self.assertEqual(status, 200)
         blob = json.dumps(data, ensure_ascii=False)
@@ -128,16 +180,18 @@ class ApiTests(unittest.TestCase):
         status, headers, data = self._request("POST", "/api/teacher/login", {"pin": self.pin})
         self.assertEqual(status, 200)
         self.assertTrue(data.get("ok"))
-        cookie = ""
-        for key, value in headers:
-            if key.lower() == "set-cookie" and value.startswith("teacher="):
-                cookie = value.split(";", 1)[0]
-                break
+        cookie = self._cookie(headers, "teacher")
         self.assertTrue(cookie)
         status, _, summary = self._request("GET", "/api/teacher/summary", cookie=cookie)
         self.assertEqual(status, 200)
         self.assertGreaterEqual(summary["total_students"], 1)
-        status, _, body = self._request("GET", "/api/teacher/export.csv", cookie=cookie)
+        status, _, body = self._request(
+            "POST",
+            "/api/teacher/export.csv",
+            {},
+            cookie=cookie,
+            csrf=data["csrf"],
+        )
         self.assertEqual(status, 200)
         self.assertIn("Export User", body)
 

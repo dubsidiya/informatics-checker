@@ -40,19 +40,45 @@ def _tags(item: dict) -> list[str]:
     return tags
 
 
+def _hide_oracle_examples(examples: list[dict], oracle: str) -> list[dict]:
+    clean = []
+    oracle_out = (oracle or "").strip()
+    for item in examples:
+        stdout = str(item.get("stdout") or "").strip()
+        if oracle_out and stdout == oracle_out:
+            continue
+        clean.append(item)
+    return clean
+
+
 def _problem(item: dict, old: dict | None) -> dict:
     files = list(item.get("files") or [])
     stdout = item["stdout"]
-    test: dict = {"stdin": "", "stdout": stdout, "hidden": False}
+    test: dict = {"stdin": "", "stdout": stdout, "hidden": True}
     if files:
         test["file"] = files[0]
     tests = [test]
-    examples = [{"stdin": "", "stdout": stdout}]
+    examples: list[dict] = []
     if old:
-        if len(old.get("tests") or []) > 1:
-            tests = old["tests"]
-        if old.get("examples"):
-            examples = old["examples"]
+        old_tests = list(old.get("tests") or [])
+        if len(old_tests) > 1:
+            tests = []
+            for case in old_tests:
+                row = dict(case)
+                same_oracle = str(row.get("stdout") or "").strip() == str(stdout or "").strip()
+                oracle_file = files[0] if files else None
+                if same_oracle and (not row.get("file") or row.get("file") == oracle_file):
+                    row["hidden"] = True
+                tests.append(row)
+            if not any(case.get("hidden") for case in tests):
+                tests[-1]["hidden"] = True
+        elif old_tests:
+            row = dict(old_tests[0])
+            row["hidden"] = True
+            if files and not row.get("file"):
+                row["file"] = files[0]
+            tests = [row]
+        examples = _hide_oracle_examples(list(old.get("examples") or []), stdout)
     default_in = "No input." if not files else f"open('{Path(files[0]).name}')"
     return {
         "id": item["id"],
@@ -101,11 +127,29 @@ def main() -> None:
         raise SystemExit(f"need 30 per topic, got {short}")
 
     out = school + ege
+    for item in out:
+        tests = item.get("tests") or []
+        if str(item.get("id", "")).startswith("ege") and len(tests) == 1:
+            tests[0]["hidden"] = True
+            oracle = str(tests[0].get("stdout") or "").strip()
+            item["examples"] = [
+                example
+                for example in (item.get("examples") or [])
+                if str(example.get("stdout") or "").strip() != oracle
+            ]
+        item["tests"] = tests
     (DATA / "problems.json").write_text(
         json.dumps(out, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
     print("wrote", len(out), "problems", "school", len(school), "ege", len(ege))
+    from checker.catalog import validate_catalog
+    from checker.problems import all_problems
+
+    all_problems.cache_clear()
+    errors = validate_catalog()
+    if errors:
+        raise SystemExit("\n".join(errors[:20]))
 
 
 if __name__ == "__main__":

@@ -1,0 +1,431 @@
+[
+  {
+    "id": "count-words",
+    "title": "Сколько слов",
+    "level": "старт",
+    "topic": "строки",
+    "tags": [
+      "print_once"
+    ],
+    "statement": "Дана строка из слов, разделённых пробелами. Посчитай, сколько в ней слов.",
+    "input_format": "Одна строка со словами через пробелы.",
+    "output_format": "Одно целое число — количество слов.",
+    "examples": [
+      {
+        "stdin": "один два три",
+        "stdout": "3"
+      },
+      {
+        "stdin": "привет",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "один два три",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "привет",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "a b c d e",
+        "stdout": "5",
+        "hidden": true
+      },
+      {
+        "stdin": "   лишние   пробелы   ",
+        "stdout": "2",
+        "hidden": true
+      },
+      {
+        "stdin": "",
+        "stdout": "0",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "reverse-number",
+    "title": "Переверни число",
+    "level": "средне",
+    "topic": "числа",
+    "tags": [
+      "integers_from_input",
+      "single_int_out",
+      "digits"
+    ],
+    "statement": "Дано неотрицательное целое число. Выведи его цифры в обратном порядке как одно число (ведущие нули результата отбрасываются).",
+    "input_format": "Одно неотрицательное целое число.",
+    "output_format": "Одно целое число — перевёрнутое.",
+    "examples": [
+      {
+        "stdin": "123",
+        "stdout": "321"
+      },
+      {
+        "stdin": "120",
+        "stdout": "21"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "123",
+        "stdout": "321",
+        "hidden": false
+      },
+      {
+        "stdin": "120",
+        "stdout": "21",
+        "hidden": false
+      },
+      {
+        "stdin": "5",
+        "stdout": "5",
+        "hidden": true
+      },
+      {
+        "stdin": "100",
+        "stdout": "1",
+        "hidden": true
+      },
+      {
+        "stdin": "98765",
+        "stdout": "56789",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "max-pair-diff",
+    "title": "Максимальная разность соседей",
+    "level": "средне",
+    "topic": "списки",
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
+    "statement": "Дан список целых чисел. Найди максимальную по модулю разность соседних элементов и выведи её.",
+    "input_format": "В одной строке числа через пробел.",
+    "output_format": "Одно целое число — максимальная по модулю разность соседей.",
+    "examples": [
+      {
+        "stdin": "1 5 2 9",
+        "stdout": "7"
+      },
+      {
+        "stdin": "10 3",
+        "stdout": "7"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 5 2 9",
+        "stdout": "7",
+        "hidden": false
+      },
+      {
+        "stdin": "10 3",
+        "stdout": "7",
+        "hidden": false
+      },
+      {
+        "stdin": "4 4 4",
+        "stdout": "0",
+        "hidden": true
+      },
+      {
+        "stdin": "-1 -5",
+        "stdout": "4",
+        "hidden": true
+      },
+      {
+        "stdin": "0 10 2",
+        "stdout": "10",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "count-divisible-range",
+    "title": "Сколько чисел делятся на k",
+    "level": "средне",
+    "topic": "циклы",
+    "tags": [
+      "closed_range",
+      "single_int_out"
+    ],
+    "statement": "Даны два целых числа A и B (A ≤ B) и число k. Посчитай, сколько чисел на отрезке [A; B] делятся на k без остатка.",
+    "input_format": "В одной строке три целых числа: A, B, k.",
+    "output_format": "Одно целое число — количество.",
+    "examples": [
+      {
+        "stdin": "1 10 3",
+        "stdout": "3"
+      },
+      {
+        "stdin": "5 5 5",
+        "stdout": "1"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 10 3",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "5 5 5",
+        "stdout": "1",
+        "hidden": false
+      },
+      {
+        "stdin": "1 100 7",
+        "stdout": "14",
+        "hidden": true
+      },
+      {
+        "stdin": "-6 6 2",
+        "stdout": "7",
+        "hidden": true
+      },
+      {
+        "stdin": "1 10 1",
+        "stdout": "10",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "leap-year",
+    "title": "Високосный год",
+    "level": "средне",
+    "topic": "условия",
+    "tags": [
+      "yes_no_out"
+    ],
+    "statement": "Дан год. Определи, високосный ли он. Год високосный, если он делится на 4, но не на 100, либо делится на 400.",
+    "input_format": "Одно целое число — год.",
+    "output_format": "YES, если год високосный, иначе NO.",
+    "examples": [
+      {
+        "stdin": "2020",
+        "stdout": "YES"
+      },
+      {
+        "stdin": "1900",
+        "stdout": "NO"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "2020",
+        "stdout": "YES",
+        "hidden": false
+      },
+      {
+        "stdin": "1900",
+        "stdout": "NO",
+        "hidden": false
+      },
+      {
+        "stdin": "2000",
+        "stdout": "YES",
+        "hidden": true
+      },
+      {
+        "stdin": "2023",
+        "stdout": "NO",
+        "hidden": true
+      },
+      {
+        "stdin": "2024",
+        "stdout": "YES",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "second-minimum",
+    "title": "Второй минимум",
+    "level": "сложно",
+    "topic": "поиск",
+    "tags": [
+      "integers_from_input",
+      "single_int_out"
+    ],
+    "statement": "Дан список целых чисел. Найди второе по величине среди различных чисел значение.",
+    "input_format": "В одной строке числа через пробел.",
+    "output_format": "Одно целое число — второй минимум среди различных.",
+    "examples": [
+      {
+        "stdin": "1 5 3 5 2",
+        "stdout": "3"
+      },
+      {
+        "stdin": "7 7",
+        "stdout": "7"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1 5 3 5 2",
+        "stdout": "3",
+        "hidden": false
+      },
+      {
+        "stdin": "7 7",
+        "stdout": "7",
+        "hidden": false
+      },
+      {
+        "stdin": "9 8 7",
+        "stdout": "8",
+        "hidden": true
+      },
+      {
+        "stdin": "-1 -3 -2",
+        "stdout": "-2",
+        "hidden": true
+      },
+      {
+        "stdin": "4 4 4 1 4",
+        "stdout": "4",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege8-word-abc",
+    "title": "ЕГЭ 8 — слово с номером",
+    "level": "средне",
+    "topic": "ЕГЭ 8",
+    "tags": [
+      "ege8"
+    ],
+    "statement": "Все четырёхбуквенные слова, составленные из букв А, Б, В, Г, нумеруются по алфавиту начиная с 1 (буквы можно повторять). Определи слово, которое стоит под номером N.",
+    "input_format": "Одно целое число N.",
+    "output_format": "Слово из четырёх букв.",
+    "examples": [
+      {
+        "stdin": "1",
+        "stdout": "АААА"
+      },
+      {
+        "stdin": "2",
+        "stdout": "АААБ"
+      }
+    ],
+    "tests": [
+      {
+        "stdin": "1",
+        "stdout": "АААА",
+        "hidden": false
+      },
+      {
+        "stdin": "2",
+        "stdout": "АААБ",
+        "hidden": false
+      },
+      {
+        "stdin": "256",
+        "stdout": "ГГГГ",
+        "hidden": true
+      },
+      {
+        "stdin": "4",
+        "stdout": "АААГ",
+        "hidden": true
+      },
+      {
+        "stdin": "5",
+        "stdout": "ААБА",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege14-sum-base5",
+    "title": "ЕГЭ 14 — сумма цифр в системе 5",
+    "level": "средне",
+    "topic": "ЕГЭ 14",
+    "tags": [
+      "ege14"
+    ],
+    "statement": "Запиши число 125 в пятеричной системе счисления и найди сумму его цифр.",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — сумма цифр записи в системе 5.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "1",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege16-fmod",
+    "title": "ЕГЭ 16 — последние две цифры F(n)",
+    "level": "средне",
+    "topic": "ЕГЭ 16",
+    "tags": [
+      "ege16"
+    ],
+    "statement": "Алгоритм вычисления функции F(n): F(1)=1, F(2)=1, при n>2: F(n) = F(n-1) + F(n-2). Найди две последние цифры F(50).",
+    "input_format": "Ввода нет.",
+    "output_format": "Двузначное число (с ведущим нулём при необходимости) — F(50) mod 100.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "25",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege23-programs",
+    "title": "ЕГЭ 23 — сколько программ 1 в 8",
+    "level": "средне",
+    "topic": "ЕГЭ 23",
+    "tags": [
+      "ege23"
+    ],
+    "statement": "Исполнитель имеет две команды: +1 и *2. Сколько есть программ, которые переводят число 1 в число 8?",
+    "input_format": "Ввода нет.",
+    "output_format": "Одно целое число — количество программ.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "10",
+        "hidden": true
+      }
+    ]
+  },
+  {
+    "id": "ege25-div3-7",
+    "title": "ЕГЭ 25 — ровно 4 делителя",
+    "level": "средне",
+    "topic": "ЕГЭ 25",
+    "tags": [
+      "ege25",
+      "divisors"
+    ],
+    "statement": "Среди целых чисел отрезка [100; 200] найди те, у которых ровно 4 различных делителя. Для каждого выведи само число и наибольший делитель (кроме самого числа) через пробел.",
+    "input_format": "Ввода нет.",
+    "output_format": "По строке: число и его наибольший делитель через пробел.",
+    "examples": [],
+    "tests": [
+      {
+        "stdin": "",
+        "stdout": "106 53\n111 37\n115 23\n118 59\n119 17\n122 61\n123 41\n125 25\n129 43\n133 19\n134 67\n141 47\n142 71\n143 13\n145 29\n146 73\n155 31\n158 79\n159 53\n161 23\n166 83\n177 59\n178 89\n183 61\n185 37\n187 17\n194 97",
+        "hidden": true
+      }
+    ]
+  }
+]
