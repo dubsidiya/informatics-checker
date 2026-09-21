@@ -106,6 +106,7 @@ class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, _release=None, **kwargs):
         self._release = _release
         self._headers_sent = False
+        self._status = 0
         self.request_id = new_request_id()
         super().__init__(*args, directory=str(WEB), **kwargs)
 
@@ -204,6 +205,7 @@ class Handler(SimpleHTTPRequestHandler):
                 request_id=self.request_id,
                 method=method,
                 path=urlparse(self.path).path,
+                status=self._status,
                 ms=int((time.monotonic() - start) * 1000),
             )
 
@@ -636,9 +638,10 @@ class Handler(SimpleHTTPRequestHandler):
         except KeyError:
             self._send_json({"detail": "Задача не найдена"}, 404)
             return
-        except RunnerError:
+        except RunnerError as exc:
             bump("runner_fail")
             bump("http_503")
+            log_event("runner_fail", request_id=self.request_id, problem_id=problem_id, reason=str(exc))
             self._send_json({"detail": "Проверяльщик временно недоступен. Попробуй ещё раз через минуту."}, 503)
             return
         except (json.JSONDecodeError, TypeError, ValueError, UnicodeDecodeError):
@@ -646,6 +649,7 @@ class Handler(SimpleHTTPRequestHandler):
             return
         except Exception:
             traceback.print_exc()
+            log_event("grade_crash", request_id=self.request_id, problem_id=problem_id)
             self._send_json({"detail": "Проверяльщик не смог запустить эту программу. Попробуй ещё раз."}, 500)
             return
         try:
@@ -664,6 +668,7 @@ class Handler(SimpleHTTPRequestHandler):
             traceback.print_exc()
             bump("store_fail")
             bump("http_503")
+            log_event("store_fail", request_id=self.request_id, problem_id=problem_id, status=result.status)
             self._send_json({"detail": "Решение проверено, но журнал не записался. Попробуй ещё раз."}, 503)
             return
         bump("grade_ok" if result.status == "ok" else "grade_fail")
@@ -704,6 +709,7 @@ class Handler(SimpleHTTPRequestHandler):
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
         self.send_response(status)
         self._headers_sent = True
+        self._status = status
         self._security_headers()
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
@@ -720,6 +726,7 @@ class Handler(SimpleHTTPRequestHandler):
     def _send_bytes(self, body: bytes, content_type: str, filename: str) -> None:
         self.send_response(200)
         self._headers_sent = True
+        self._status = 200
         self._security_headers()
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
@@ -731,6 +738,7 @@ class Handler(SimpleHTTPRequestHandler):
         data = path.read_bytes()
         self.send_response(200)
         self._headers_sent = True
+        self._status = 200
         self._security_headers()
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(data)))
