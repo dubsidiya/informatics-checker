@@ -5,7 +5,8 @@ services:
     plan: starter
     buildCommand: "true"
     startCommand: python app.py
-    healthCheckPath: /readyz
+    healthCheckPath: /livez
+    autoDeploy: false
     disk:
       name: checker-data
       mountPath: /var/data
