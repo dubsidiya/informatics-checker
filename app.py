@@ -751,8 +751,6 @@ def main() -> None:
     reset_config()
     cfg = get_config()
     if cfg.is_production:
-        pin_hash = cfg.teacher_pin_hash
-        print(f"TEACHER_PIN_HASH: len={len(pin_hash)} prefix={pin_hash[:18]!r}")
         cfg.require_teacher_secret()
         cfg.require_runner()
     init_store()

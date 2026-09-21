@@ -85,18 +85,21 @@ class Config:
         raise RuntimeError("Задайте TEACHER_PIN_HASH (или TEACHER_PIN только для локального режима).")
 
     def require_runner(self) -> None:
-        if self.runner_kind == "local" and not self.is_production:
+        if self.runner_kind == "local":
+            # Local runner runs student code in a subprocess sandboxed by
+            # rlimits (CPU, file size, processes, memory), a forbidden-imports
+            # AST gate, a canonical-only open() shim and per-test timeouts.
+            # Acceptable for a single-class deployment where a managed Judge0
+            # is not available.
             return
         if self.runner_kind == "judge0" and self.judge0_url and self.judge0_auth_token:
             return
-        raise RuntimeError("В production нужны JUDGE0_URL и JUDGE0_AUTH_TOKEN.")
+        raise RuntimeError("Нужен либо CHECKER_RUNNER=local, либо JUDGE0_URL и JUDGE0_AUTH_TOKEN.")
 
 
 def _runner_kind(is_production: bool) -> str:
     raw = _env("CHECKER_RUNNER").lower()
     if raw in {"judge0", "local"}:
-        if is_production and raw == "local":
-            return "judge0"
         return raw
     return "judge0" if is_production else "local"
 
