@@ -2,14 +2,34 @@ services:
   - type: web
     name: informatics-checker
     runtime: python
-    plan: free
+    plan: starter
     buildCommand: "true"
     startCommand: python app.py
-    healthCheckPath: /health
+    healthCheckPath: /readyz
+    disk:
+      name: checker-data
+      mountPath: /var/data
+      sizeGB: 5
     envVars:
       - key: HOST
         value: 0.0.0.0
       - key: PYTHONUNBUFFERED
         value: "1"
-      - key: TEACHER_PIN
-        value: 159753pupil
+      - key: PYTHON_VERSION
+        value: "3.13.2"
+      - key: CHECKER_ENV
+        value: production
+      - key: CHECKER_RUNNER
+        value: judge0
+      - key: CHECKER_DB
+        value: /var/data/checker.sqlite3
+      - key: TRUSTED_PROXY_CIDRS
+        value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+      - key: TEACHER_PIN_HASH
+        sync: false
+      - key: JUDGE0_URL
+        sync: false
+      - key: JUDGE0_AUTH_TOKEN
+        sync: false
+      - key: PUBLIC_ORIGIN
+        sync: false

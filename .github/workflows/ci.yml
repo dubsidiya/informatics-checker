@@ -1,0 +1,49 @@
+name: checker
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CHECKER_ENV: test
+      CHECKER_RUNNER: local
+      TEACHER_PIN: test-teacher-pin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.2"
+      - name: Compile
+        run: python -m compileall -q .
+      - name: Catalog
+        run: python -m checker.catalog
+      - name: Unittest
+        run: python -m unittest discover -s tests -v
+      - name: Frontend smoke
+        run: python tools/frontend_smoke.py
+      - name: Catalog quality gate
+        run: python tools/catalog_audit.py
+      - name: Docker readiness
+        run: |
+          docker build -t informatics-checker .
+          docker run -d --name checker-ready -p 8765:8765 \
+            -e CHECKER_ENV=test \
+            -e CHECKER_RUNNER=local \
+            -e TEACHER_PIN=test-teacher-pin \
+            -e CHECKER_DB=/tmp/checker.sqlite3 \
+            informatics-checker
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:8765/readyz >/tmp/ready.json; then
+              break
+            fi
+            sleep 1
+          done
+          python - <<'PY'
+          import json
+          payload = json.load(open("/tmp/ready.json", encoding="utf-8"))
+          assert payload.get("ok") is True, payload
+          PY
+          docker rm -f checker-ready
