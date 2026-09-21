@@ -66,11 +66,12 @@ def collect_trace(source: str, source_path: str) -> list[dict]:
 
 
 def main() -> None:
-    if len(sys.argv) != 2:
+    path = sys.argv[1] if len(sys.argv) >= 2 else "student.py"
+    try:
+        source = Path(path).read_text(encoding="utf-8")
+    except OSError:
         print("[]")
         return
-    path = sys.argv[1]
-    source = Path(path).read_text(encoding="utf-8")
     print(json.dumps(collect_trace(source, path), ensure_ascii=False))
 
 

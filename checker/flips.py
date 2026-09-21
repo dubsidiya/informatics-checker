@@ -170,6 +170,8 @@ def _compare_flips(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list
 def _two_number_facts(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     if len(outcome.got_tokens) != 2 or len(outcome.exp_tokens) != 2:
         return []
+    if outcome.first.hidden:
+        return []
     if outcome.got_tokens == [outcome.exp_tokens[1], outcome.exp_tokens[0]]:
         return []
     g0, e0 = outcome.got_tokens[0], outcome.exp_tokens[0]
@@ -210,6 +212,8 @@ def _two_number_facts(facts: CodeFacts, problem: Problem, outcome: Outcome) -> l
 
 def _one_number_facts(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     if len(outcome.got_tokens) != 1 or len(outcome.exp_tokens) != 1:
+        return []
+    if outcome.first.hidden:
         return []
     try:
         got_n = float(outcome.got_tokens[0])

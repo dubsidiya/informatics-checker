@@ -70,9 +70,9 @@ def build_hints(
     elif first.verdict == "RE" and first.error_type:
         detail = RUNTIME_HINTS.get(
             first.error_type,
-            first.error or "Программа упала во время выполнения.",
+            "Программа упала во время выполнения.",
         )
-        if first.error and first.error_type in RUNTIME_HINTS:
+        if first.error and first.error_type in RUNTIME_HINTS and not first.hidden:
             detail = f"{detail} Сообщение Python: {first.error}"
         hints.append(
             Hint(

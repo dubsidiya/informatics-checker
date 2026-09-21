@@ -32,6 +32,15 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
     findings.extend(diagnose_ege(facts, problem, outcome))
     findings.extend(extra_findings(facts, problem, outcome))
 
+    if outcome.first.hidden and outcome.first.verdict == "WA" and "two_int_out" in problem.tags:
+        findings.append(
+            hint(
+                "В условии два числа",
+                "Нужно напечатать два числа через пробел, как просят в задании, а не одно.",
+                weight=82,
+            )
+        )
+
     if outcome.first.verdict == "WA" and not any(weight >= 80 for weight, _ in findings):
         if outcome.first.hidden:
             findings.append(
@@ -152,6 +161,47 @@ def _yes_no_words(outcome: Outcome) -> list[tuple[int, Hint]]:
     return []
 
 
+def _ege5_logic(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    source = facts.source.replace(" ", "")
+    found: list[tuple[int, Hint]] = []
+    if problem.id == "ege5-logic-table":
+        if "and" not in facts.source:
+            found.append(hint("Нужны оба условия", "Здесь одновременно нужны две проверки: x делится на 3 и x не делится на 5. Соедини их через and.", weight=94))
+        elif "or" in facts.source:
+            found.append(hint("Получилось «хотя бы одно», а нужно «оба»", "or пропускает число, которое подходит только по одному признаку. Для этой задачи нужен and.", weight=95))
+        if "%3" not in source:
+            found.append(hint("Не проверяется делимость на 3", "Число делится на 3, если x % 3 == 0.", weight=90))
+        if "%5" not in source:
+            found.append(hint("Не проверяется исключение по 5", "Нужно отдельно проверить x % 5 != 0: числа, кратные 5, не подходят.", weight=90))
+    elif problem.id == "ege5-boolean-condition":
+        if "!=" not in facts.source and "!=" not in source:
+            found.append(hint("Нужно ровно одно положительное", "Проверь признаки (a > 0) и (b > 0). Результат должен быть 1, когда они различаются.", weight=94))
+        if "and" in facts.source:
+            found.append(hint("and требует два положительных", "and даёт 1, когда оба числа положительные. Для «ровно одно» признаки должны быть разными.", weight=94))
+        if "or" in facts.source:
+            found.append(hint("or пропускает два положительных", "or означает «хотя бы одно». Здесь случай, когда положительны оба числа, должен дать 0.", weight=94))
+    elif problem.id == "ege5-interval":
+        if "<=" not in source:
+            found.append(hint("Границы отрезка не включены", "Отрезок [10; 20] включает 10 и 20. Проверь условия 10 <= x и x <= 20.", weight=94))
+        if "15" not in source:
+            found.append(hint("Забыто исключение 15", "Даже внутри отрезка число 15 не подходит: добавь проверку x != 15.", weight=92))
+        if "or" in facts.source:
+            found.append(hint("Условия отрезка соединены неверно", "Для принадлежности отрезку нужны обе границы одновременно — используй and, не or.", weight=94))
+    elif problem.id == "ege5-three-condition":
+        missing = []
+        if ">0" not in source and ">0" not in facts.source.replace(" ", ""):
+            missing.append("положительность x > 0")
+        if "%2" not in source:
+            missing.append("нечётность x % 2 != 0")
+        if "%3" not in source:
+            missing.append("делимость x % 3 == 0")
+        if missing:
+            found.append(hint("Не проверены все признаки", "В условии одновременно нужны: " + ", ".join(missing) + ".", weight=94))
+        if "or" in facts.source:
+            found.append(hint("Нужно выполнить все три условия", "or пропускает число, подходящее только по одному признаку. Соедини проверки через and.", weight=95))
+    return found
+
+
 def _sum_two(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found = []
     if facts.has_split and not facts.has_int and not facts.has_map:
@@ -208,6 +258,8 @@ def _school_grade(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[
         return [hint("Не все границы оценки", "По условию: меньше 50 -> 2, от 50 до 69 -> 3, от 70 до 89 -> 4, от 90 -> 5. В коде нет границы " + ", ".join(str(item) for item in missing) + ".", weight=93)]
     if "51" in facts.source or "<= 50" in facts.source or "<=50" in facts.source:
         return [hint("Граница 50 сдвинута", "50 баллов — это уже 3, не 2. Пиши if n < 50.", weight=90)]
+    if outcome.first.hidden:
+        return [hint("Оценка не совпала на скрытом тесте", "Сверь пороги 50, 70, 90: меньше 50 — это 2, 50 уже 3.", weight=70)]
     return [hint("Оценка не совпала на этом балле", f"На вводе `{_preview(outcome.first.stdin)}` ждали {outcome.expected.strip()}, получилось {outcome.got.strip()}. Сверь пороги 50, 70, 90.", weight=70)]
 
 
@@ -468,6 +520,10 @@ def _count_uses_average(facts: CodeFacts) -> bool:
 
 
 HANDLERS = {
+    "ege5-logic-table": _ege5_logic,
+    "ege5-boolean-condition": _ege5_logic,
+    "ege5-interval": _ege5_logic,
+    "ege5-three-condition": _ege5_logic,
     "sum-two": _sum_two,
     "sum-1-n": _sum_1_n,
     "max-three": _max_three,

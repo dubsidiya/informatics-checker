@@ -154,8 +154,12 @@ def extract_outcome(tests: list[TestResult]) -> Outcome | None:
     if not failing:
         return None
     first = failing[0]
-    got = first.got or ""
-    expected = first.expected or ""
+    if first.hidden:
+        expected = ""
+        got = "" if not (first.got or "").strip() else "x"
+    else:
+        got = first.got or ""
+        expected = first.expected or ""
     got_tokens = _tokens(got)
     exp_tokens = _tokens(expected)
     outcome = Outcome(

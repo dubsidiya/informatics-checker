@@ -3,11 +3,14 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+
+from checker.runner import clip_output, cpu_limit, normalize_stdin, parse_traceback
 
 ROOT = Path(__file__).resolve().parent
 DATA_ROOT = ROOT.parent / "data"
@@ -21,8 +24,6 @@ LIMITED_ENV = {
     "HOME": tempfile.gettempdir(),
     "TMPDIR": tempfile.gettempdir(),
 }
-
-MAX_OUTPUT = 80_000
 
 LAUNCHER = """\
 import builtins
@@ -41,6 +42,25 @@ builtins.open = open
 runpy.run_path("student.py", run_name="__main__")
 """
 
+LIMIT_WRAPPER = """\
+import os
+import sys
+
+try:
+    import resource
+    cpu = int(sys.argv[1])
+    resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu))
+    resource.setrlimit(resource.RLIMIT_FSIZE, (2_000_000, 2_000_000))
+    resource.setrlimit(resource.RLIMIT_NPROC, (8, 8))
+    try:
+        resource.setrlimit(resource.RLIMIT_AS, (256 * 1024 * 1024, 256 * 1024 * 1024))
+    except (ValueError, OSError):
+        pass
+except Exception:
+    pass
+os.execv(sys.executable, [sys.executable, "-I", sys.argv[2]])
+"""
+
 
 @dataclass
 class RunResult:
@@ -51,29 +71,6 @@ class RunResult:
     error_type: str = ""
     error_line: int | None = None
     error_message: str = ""
-
-
-def _clip_output(text: str | None) -> str:
-    raw = text or ""
-    if len(raw) <= MAX_OUTPUT:
-        return raw
-    return raw[:MAX_OUTPUT] + "\n…"
-
-
-def _apply_limits(cpu_seconds: int = 2) -> None:
-    try:
-        import resource
-
-        cpu = max(2, int(cpu_seconds))
-        resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu))
-        resource.setrlimit(resource.RLIMIT_FSIZE, (2_000_000, 2_000_000))
-        resource.setrlimit(resource.RLIMIT_NPROC, (64, 64))
-        try:
-            resource.setrlimit(resource.RLIMIT_AS, (256 * 1024 * 1024, 256 * 1024 * 1024))
-        except (ValueError, OSError):
-            pass
-    except Exception:
-        return
 
 
 def _write_source(source: str, directory: Path | None = None) -> str:
@@ -109,13 +106,62 @@ def _prepare_files(work: Path, files: list[str]) -> str | None:
     return canonical
 
 
-def _limits_fn(timeout: float):
-    cpu = max(2, int(timeout) + 1)
+def _kill_group(proc: subprocess.Popen) -> None:
+    if proc.poll() is not None:
+        return
+    try:
+        if os.name == "posix":
+            os.killpg(proc.pid, signal.SIGKILL)
+        else:
+            proc.kill()
+    except ProcessLookupError:
+        return
+    except OSError:
+        try:
+            proc.kill()
+        except OSError:
+            return
 
-    def inner() -> None:
-        _apply_limits(cpu)
 
-    return inner if os.name == "posix" else None
+def _run_command(command: list[str], stdin: str, timeout: float, cwd: str) -> RunResult:
+    kwargs: dict = {
+        "input": stdin.encode("utf-8"),
+        "stdout": subprocess.PIPE,
+        "stderr": subprocess.PIPE,
+        "cwd": cwd,
+        "env": LIMITED_ENV,
+    }
+    if os.name == "posix":
+        kwargs["start_new_session"] = True
+    try:
+        completed = subprocess.run(command, timeout=timeout, **kwargs)
+        stdout = clip_output(completed.stdout.decode("utf-8", errors="replace"))
+        stderr = clip_output(completed.stderr.decode("utf-8", errors="replace"))
+        error_type, error_line, error_message = parse_traceback(stderr)
+        return RunResult(
+            stdout=stdout,
+            stderr=stderr,
+            returncode=completed.returncode,
+            timed_out=False,
+            error_type=error_type,
+            error_line=error_line,
+            error_message=error_message,
+        )
+    except subprocess.TimeoutExpired as exc:
+        stdout = exc.stdout or b""
+        stderr = exc.stderr or b""
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode("utf-8", errors="replace")
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode("utf-8", errors="replace")
+        return RunResult(
+            stdout=clip_output(stdout),
+            stderr=clip_output(stderr),
+            returncode=-1,
+            timed_out=True,
+            error_type="TimeoutError",
+            error_message="Программа не уложилась во время — возможно, бесконечный цикл или слишком тяжёлый перебор.",
+        )
 
 
 def run_student(
@@ -128,50 +174,16 @@ def run_student(
     try:
         student = work / "student.py"
         student.write_text(source if source.endswith("\n") else source + "\n", encoding="utf-8")
+        wrapper = work / "_limits.py"
+        wrapper.write_text(LIMIT_WRAPPER, encoding="utf-8")
         canonical = _prepare_files(work, files or [])
         if canonical:
             (work / "_launcher.py").write_text(LAUNCHER.format(canonical=canonical), encoding="utf-8")
-            command = [sys.executable, "-I", str(work / "_launcher.py")]
+            target = str(work / "_launcher.py")
         else:
-            command = [sys.executable, "-I", str(student)]
-        payload = stdin if stdin.endswith("\n") or stdin == "" else stdin + "\n"
-        completed = subprocess.run(
-            command,
-            input=payload,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=timeout,
-            env=LIMITED_ENV,
-            cwd=str(work),
-            preexec_fn=_limits_fn(timeout),
-        )
-        error_type, error_line, error_message = parse_traceback(completed.stderr)
-        return RunResult(
-            stdout=_clip_output(completed.stdout),
-            stderr=_clip_output(completed.stderr),
-            returncode=completed.returncode,
-            timed_out=False,
-            error_type=error_type,
-            error_line=error_line,
-            error_message=error_message,
-        )
-    except subprocess.TimeoutExpired as exc:
-        stdout = exc.stdout or ""
-        stderr = exc.stderr or ""
-        if isinstance(stdout, bytes):
-            stdout = stdout.decode("utf-8", errors="replace")
-        if isinstance(stderr, bytes):
-            stderr = stderr.decode("utf-8", errors="replace")
-        return RunResult(
-            stdout=_clip_output(stdout),
-            stderr=_clip_output(stderr),
-            returncode=-1,
-            timed_out=True,
-            error_type="TimeoutError",
-            error_message="Программа не уложилась во время — возможно, бесконечный цикл или слишком тяжёлый перебор.",
-        )
+            target = str(student)
+        command = [sys.executable, str(wrapper), str(cpu_limit(timeout)), target]
+        return _run_command(command, normalize_stdin(stdin), timeout, str(work))
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
@@ -179,67 +191,20 @@ def run_student(
 def run_trace(source: str, stdin: str, timeout: float = 1.5, files: list[str] | None = None) -> list[dict]:
     if files:
         return []
-    path = _write_source(source)
+    work = Path(tempfile.mkdtemp(prefix="trc_"))
     try:
-        completed = subprocess.run(
-            [sys.executable, "-I", str(TRACER), path],
-            input=stdin if stdin.endswith("\n") or stdin == "" else stdin + "\n",
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            timeout=timeout,
-            env=LIMITED_ENV,
-            cwd=tempfile.gettempdir(),
-            preexec_fn=_limits_fn(timeout),
-        )
-        if completed.returncode != 0:
+        student = work / "student.py"
+        student.write_text(source if source.endswith("\n") else source + "\n", encoding="utf-8")
+        wrapper = work / "_limits.py"
+        wrapper.write_text(LIMIT_WRAPPER, encoding="utf-8")
+        command = [sys.executable, str(wrapper), str(cpu_limit(timeout)), str(TRACER)]
+        completed = _run_command(command, normalize_stdin(stdin), timeout, str(work))
+        if completed.returncode != 0 or completed.timed_out:
             return []
         try:
             payload = json.loads(completed.stdout or "[]")
         except json.JSONDecodeError:
             return []
-        if isinstance(payload, list):
-            return payload
-        return []
-    except subprocess.TimeoutExpired:
-        return []
+        return payload if isinstance(payload, list) else []
     finally:
-        Path(path).unlink(missing_ok=True)
-
-
-def parse_traceback(stderr: str) -> tuple[str, int | None, str]:
-    if not stderr.strip():
-        return "", None, ""
-
-    lines = [line.rstrip("\n") for line in stderr.splitlines()]
-    error_type = ""
-    error_line: int | None = None
-    message = ""
-
-    for line in lines:
-        stripped = line.strip()
-        if stripped.startswith("File ") and ", line " in stripped and "student.py" in stripped:
-            try:
-                after = stripped.split(", line ", 1)[1]
-                number = after.split(",", 1)[0].split()[0]
-                error_line = int(number)
-            except (IndexError, ValueError):
-                pass
-        elif stripped.startswith("File ") and ", line " in stripped and error_line is None:
-            try:
-                after = stripped.split(", line ", 1)[1]
-                number = after.split(",", 1)[0].split()[0]
-                error_line = int(number)
-            except (IndexError, ValueError):
-                pass
-        if ":" in stripped and stripped.split(":", 1)[0].endswith("Error"):
-            error_type, _, rest = stripped.partition(":")
-            error_type = error_type.strip()
-            message = rest.strip()
-        elif stripped.endswith("Error") and " " not in stripped:
-            error_type = stripped
-
-    if not message:
-        message = lines[-1].strip()
-    return error_type, error_line, message
+        shutil.rmtree(work, ignore_errors=True)

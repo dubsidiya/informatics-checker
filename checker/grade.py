@@ -3,12 +3,12 @@ from __future__ import annotations
 from checker.explain import attach_explanation
 from checker.logic import build_hints, same_answer, to_trace_steps
 from checker.models import GradeResult, Problem, TestResult
-from checker.sandbox import run_student, run_trace
+from checker.runner import ExecutionRequest, RunnerError, get_runner
 from checker.safety import find_forbidden
 from checker.syntax import explain_syntax
 
 
-def grade_solution(problem: Problem, source: str) -> GradeResult:
+def grade_solution(problem: Problem, source: str, *, runner=None) -> GradeResult:
     source = source.replace("\r\n", "\n")
     if not source.strip():
         return attach_explanation(
@@ -51,23 +51,71 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
             source,
         )
 
+    active = runner or get_runner()
+    requests = []
+    for case in problem.tests:
+        files = tuple(problem.files_for(case))
+        timeout = 4.0 if files else 1.5
+        if any(tag in problem.tags for tag in ("ege8", "ege16", "ege23", "ege25")):
+            timeout = max(timeout, 3.0)
+        if "ege9" in problem.tags:
+            timeout = max(timeout, 4.0)
+        requests.append(
+            ExecutionRequest(
+                source=source,
+                stdin=case.stdin,
+                timeout_seconds=timeout,
+                files=files,
+            )
+        )
+    runs = active.run_many(requests)
+    if len(runs) != len(problem.tests):
+        raise RunnerError("Проверяющая система вернула неполный набор тестов.")
+
     tests = []
-    for index, case in enumerate(problem.tests):
-        try:
-            tests.append(_run_test(source, index, case, problem))
-        except Exception as exc:
+    for index, (case, run) in enumerate(zip(problem.tests, runs)):
+        files = problem.files_for(case)
+        shown_in = f"[файл {files[0].rsplit('/', 1)[-1]}]" if files else case.stdin
+        if run.timed_out:
+            tests.append(
+                TestResult(
+                    index=index,
+                    hidden=case.hidden,
+                    verdict="TLE",
+                    stdin=shown_in,
+                    expected=case.stdout,
+                    got=run.stdout,
+                    error=run.error_message,
+                    error_type="TimeoutError",
+                )
+            )
+            continue
+        if run.returncode != 0:
             tests.append(
                 TestResult(
                     index=index,
                     hidden=case.hidden,
                     verdict="RE",
-                    stdin="",
-                    expected="",
-                    got="",
-                    error="внутренний сбой проверки",
-                    error_type=type(exc).__name__,
+                    stdin=shown_in,
+                    expected=case.stdout,
+                    got=run.stdout,
+                    error=run.error_message or run.stderr.strip(),
+                    error_type=run.error_type or "RuntimeError",
+                    error_line=run.error_line,
                 )
             )
+            continue
+        verdict = "OK" if same_answer(run.stdout, case.stdout) else "WA"
+        tests.append(
+            TestResult(
+                index=index,
+                hidden=case.hidden,
+                verdict=verdict,
+                stdin=shown_in,
+                expected=case.stdout,
+                got=run.stdout,
+            )
+        )
     passed = sum(1 for item in tests if item.verdict == "OK")
     first_fail = next((item for item in tests if item.verdict != "OK"), None)
 
@@ -84,13 +132,24 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
             source,
         )
 
-    hints = build_hints(source, problem, tests)
+    hint_tests = _student_hint_tests(tests)
+    hints = build_hints(source, problem, hint_tests)
     trace = []
-    if first_fail.verdict in {"WA", "RE"}:
+    if first_fail.verdict in {"WA", "RE"} and not first_fail.hidden:
         fail_case = problem.tests[first_fail.index]
         fail_files = problem.files_for(fail_case)
         if not fail_files:
-            trace = to_trace_steps(run_trace(source, first_fail.stdin))
+            try:
+                events = active.trace(
+                    ExecutionRequest(
+                        source=source,
+                        stdin=first_fail.stdin,
+                        timeout_seconds=1.5,
+                    )
+                )
+            except RunnerError:
+                events = []
+            trace = to_trace_steps(events)
 
     if first_fail.verdict == "RE":
         message = f"Программа упала на тесте {first_fail.index + 1}."
@@ -115,44 +174,23 @@ def grade_solution(problem: Problem, source: str) -> GradeResult:
     )
 
 
-def _run_test(source: str, index: int, case, problem: Problem) -> TestResult:
-    files = problem.files_for(case)
-    timeout = 4.0 if files else 1.5
-    if any(tag in problem.tags for tag in ("ege8", "ege16", "ege23", "ege25")):
-        timeout = max(timeout, 3.0)
-    if "ege9" in problem.tags:
-        timeout = max(timeout, 4.0)
-    shown_in = f"[файл {files[0].rsplit('/', 1)[-1]}]" if files else case.stdin
-    result = run_student(source, case.stdin, timeout=timeout, files=files)
-    if result.timed_out:
-        return TestResult(
-            index=index,
-            hidden=case.hidden,
-            verdict="TLE",
-            stdin=shown_in,
-            expected=case.stdout,
-            got=result.stdout,
-            error=result.error_message,
-            error_type="TimeoutError",
+def _student_hint_tests(tests: list[TestResult]) -> list[TestResult]:
+    cleaned: list[TestResult] = []
+    for item in tests:
+        if not item.hidden:
+            cleaned.append(item)
+            continue
+        cleaned.append(
+            TestResult(
+                index=item.index,
+                hidden=True,
+                verdict=item.verdict,
+                stdin="",
+                expected="",
+                got="" if not (item.got or "").strip() else "[скрытый вывод]",
+                error="",
+                error_type=item.error_type if item.verdict == "RE" else "",
+                error_line=item.error_line if item.verdict == "RE" else None,
+            )
         )
-    if result.returncode != 0:
-        return TestResult(
-            index=index,
-            hidden=case.hidden,
-            verdict="RE",
-            stdin=shown_in,
-            expected=case.stdout,
-            got=result.stdout,
-            error=result.error_message or result.stderr.strip(),
-            error_type=result.error_type or "RuntimeError",
-            error_line=result.error_line,
-        )
-    verdict = "OK" if same_answer(result.stdout, case.stdout) else "WA"
-    return TestResult(
-        index=index,
-        hidden=case.hidden,
-        verdict=verdict,
-        stdin=shown_in,
-        expected=case.stdout,
-        got=result.stdout,
-    )
+    return cleaned

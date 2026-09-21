@@ -126,8 +126,9 @@ class GradeResult:
                 payload["stdin"] = ""
                 payload["expected"] = ""
                 payload["got"] = ""
-                if item.verdict != "OK":
-                    payload["error"] = item.error_type or "скрытый тест не пройден"
+                payload["error"] = "" if item.verdict == "OK" else "скрытый тест не пройден"
+                payload["error_type"] = ""
+                payload["error_line"] = None
             tests.append(payload)
         hints = [asdict(item) for item in self.hints]
         explain = asdict(self.explanation) if self.explanation else None
@@ -166,7 +167,8 @@ class GradeResult:
         for item in self.tests:
             if not item.hidden:
                 continue
-            found.extend(self._secret_pieces(item.expected))
+            for field in (item.expected, item.got, item.stdin, item.error):
+                found.extend(self._secret_pieces(field))
         uniq: list[str] = []
         seen: set[str] = set()
         for secret in sorted(found, key=len, reverse=True):
@@ -183,7 +185,6 @@ class GradeResult:
         pieces: list[str] = []
         if raw:
             pieces.append(f"`{raw}`")
-        if len(raw) >= 2:
             pieces.append(raw)
         compact = " ".join(raw.split())
         if compact != raw and len(compact) >= 2:
