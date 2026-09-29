@@ -47,3 +47,14 @@ jobs:
           assert payload.get("ok") is True, payload
           PY
           docker rm -f checker-ready
+      - name: Docker end-to-end smoke
+        run: |
+          docker build -t informatics-checker .
+          docker run -d --name checker-e2e -p 8765:8765 \
+            -e CHECKER_ENV=test \
+            -e CHECKER_RUNNER=local \
+            -e TEACHER_PIN=test-teacher-pin \
+            -e CHECKER_DB=/tmp/checker-e2e.sqlite3 \
+            informatics-checker
+          python tools/e2e_smoke.py http://127.0.0.1:8765
+          docker rm -f checker-e2e

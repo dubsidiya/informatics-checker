@@ -2,6 +2,7 @@
 import io
 import json
 import os
+import sqlite3
 import tempfile
 import threading
 import unittest
@@ -27,6 +28,7 @@ from checker.store import (
     export_backup_json,
     get_student_session,
     init_store,
+    list_attempts,
     record_attempt,
     reset_ready,
     restore_backup_json,
@@ -94,6 +96,49 @@ class BackupTests(unittest.TestCase):
         sqlite_backup(dest)
         restore_sqlite(dest)
         dest.unlink(missing_ok=True)
+
+    def test_restore_rejects_wrong_schema_version(self):
+        record_attempt("Vera", "sum-two", "ok", 5, 5, "ok", "print(2)")
+        bad = Path(self.tmp.name + ".bad")
+        conn = sqlite3.connect(str(bad))
+        try:
+            conn.execute(
+                "CREATE TABLE attempts (id INTEGER PRIMARY KEY, ts REAL, student TEXT,"
+                " problem_id TEXT, status TEXT, passed INT, total INT, message TEXT, code TEXT)"
+            )
+            conn.execute("PRAGMA user_version = 1")
+            conn.commit()
+        finally:
+            conn.close()
+        with self.assertRaises(RuntimeError):
+            restore_sqlite(bad)
+        bad.unlink(missing_ok=True)
+        # Live journal must survive the failed restore.
+        self.assertGreaterEqual(len(list_attempts(student="Vera")), 1)
+
+    def test_restore_rejects_broken_foreign_keys(self):
+        record_attempt("Gleb", "sum-two", "ok", 5, 5, "ok", "print(3)")
+        bad = Path(self.tmp.name + ".fk")
+        sqlite_backup(bad)
+        # Point an attempt at a student row that does not exist.
+        conn = sqlite3.connect(str(bad))
+        try:
+            conn.execute("PRAGMA foreign_keys=OFF")
+            conn.execute("UPDATE attempts SET student_id = 'ghost-student' WHERE student_id IS NOT NULL")
+            conn.commit()
+        finally:
+            conn.close()
+        with self.assertRaises(RuntimeError):
+            restore_sqlite(bad)
+        bad.unlink(missing_ok=True)
+        self.assertGreaterEqual(len(list_attempts(student="Gleb")), 1)
+
+    def test_restore_rejects_non_sqlite_file(self):
+        junk = Path(self.tmp.name + ".junk")
+        junk.write_bytes(b"not a database at all")
+        with self.assertRaises(RuntimeError):
+            restore_sqlite(junk)
+        junk.unlink(missing_ok=True)
 
 
 class RunnerContractTests(unittest.TestCase):
