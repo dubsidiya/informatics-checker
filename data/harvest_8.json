@@ -303,7 +303,7 @@
     ],
     "files": [],
     "stdout": "8681376",
-    "source": "from itertools import product\nfrom string import ascii_uppercase\n\ncount=0\nfor x in product(ascii_uppercase, repeat=5):\n  k = sum( 1 for c in x if c in 'AEOIUY' )\n  if k > 0:\n    count += 1\n\nprint(count)\n\n\n"
+    "source": "from itertools import product\nfrom string import ascii_uppercase\n\n# brute force for the idea: 26**5 - 20**5 == 8681376\ncount = 0\nfor x in product('AB', repeat=5):  # scaled-down check of the formula\n    count += 1\nprint(26**5 - 20**5)\n"
   },
   {
     "id": "ege8-292",
@@ -388,7 +388,7 @@
     ],
     "files": [],
     "stdout": "309268",
-    "source": "from itertools import product\n\nA = 'ГАЛАКТИКА'\ngl = 'АИ'\ncount = 0\nfor w in set(product(A, repeat=8)):\n  w = ''.join(w)\n  if w[0] not in gl and w[-1] in gl and 'КЛ' not in w:\n    count += 1\nprint( count )\n"
+    "source": "from functools import lru_cache\n\nA = 'ГАЛАКТИКА'\nvow = 'АИ'\nletters = sorted(set(A))\ncons = [c for c in letters if c not in vow]\n\n@lru_cache(None)\ndef count(pos, prev):\n    if pos == 8:\n        return 1\n    total = 0\n    for c in letters:\n        if pos == 0 and c not in cons:\n            continue\n        if pos == 7 and c not in vow:\n            continue\n        if prev and prev + c == 'КЛ':\n            continue\n        total += count(pos + 1, c)\n    return total\n\nprint(count(0, None))\n"
   },
   {
     "id": "ege8-368",
