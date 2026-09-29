@@ -171,7 +171,12 @@ def main():
     req = urllib.request.Request(
         BASE + "/api/teacher/export.csv",
         data=b"{}",
-        headers={"Content-Type": "application/json", "Cookie": teacher_cookie, "X-CSRF-Token": teacher_csrf},
+        headers={
+            "Content-Type": "application/json",
+            "Origin": BASE,
+            "Cookie": teacher_cookie,
+            "X-CSRF-Token": teacher_csrf,
+        },
         method="POST",
     )
     with urllib.request.urlopen(req, timeout=30) as resp:
