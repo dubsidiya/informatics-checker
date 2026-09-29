@@ -61,8 +61,9 @@ def wait_ready(timeout=60.0):
             if status == 200 and payload.get("ok"):
                 return
             last = payload
-        except urllib.error.URLError as exc:
-            last = str(exc)
+        except (urllib.error.URLError, OSError) as exc:
+            # The container port can reset while the app is still booting.
+            last = f"{type(exc).__name__}: {exc}"
         time.sleep(1.0)
     raise SystemExit(f"instance not ready within {timeout}s: {last}")
 
