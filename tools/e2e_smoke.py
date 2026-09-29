@@ -25,11 +25,13 @@ PIN = "test-teacher-pin"
 
 def request(method, path, body=None, cookie="", csrf=""):
     data = json.dumps(body).encode("utf-8") if body is not None else None
-    headers = {"Content-Type": "application/json"} if data else {}
+    headers = {}
+    if data:
+        headers["Content-Type"] = "application/json"
     # Act like the site's own browser: cross-origin POSTs are rejected by
     # design, and inside Docker the client address is the bridge IP, not
     # loopback, so no-Origin requests would be (correctly) refused.
-    if data:
+    if method == "POST":
         headers["Origin"] = BASE
     if cookie:
         headers["Cookie"] = cookie
