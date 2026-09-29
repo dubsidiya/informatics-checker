@@ -422,7 +422,7 @@
     ],
     "files": [],
     "stdout": "2930",
-    "source": "f = [0]*10**7\ng = [0]*10**7\nfor n in range(10**7-1, 0, -1):\n  f[n] = n if n > 1000000 else \\\n         n + f[4*n]\n  g[n] = f[n] // n\n\nprint( len([ n for n in range(10**7) if g[n] == g[2000] ]) )\n"
+    "source": "from array import array\nN = 10_000_000\nf = array('i', bytes(4 * N))\nfor n in range(N - 1, 0, -1):\n    f[n] = n if n > 1_000_000 else n + f[4 * n]\ntarget = f[2000] // 2000\nprint(sum(1 for n in range(1, N) if f[n] // n == target))\n"
   },
   {
     "id": "ege16-180",
