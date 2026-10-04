@@ -8,6 +8,12 @@ from checker.models import Hint, Problem
 
 def diagnose_ege(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     tags = set(problem.tags)
+    if "ege5" in tags:
+        return _ege5(facts, problem, outcome)
+    if "games" in tags:
+        return _games(facts, problem, outcome)
+    if "ege24" in tags:
+        return _ege24(facts, problem, outcome)
     if "ege8" in tags:
         return _ege8(facts, problem, outcome)
     if "ege9" in tags:
@@ -41,6 +47,160 @@ def _tokens(text: str) -> list[str]:
 
 def _lines(text: str) -> list[str]:
     return [line.strip() for line in (text or "").splitlines() if line.strip()]
+
+
+def _ege5(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    """Hints shared by the small Boolean-expression exercises in EGE task 5."""
+    src = facts.source.replace(" ", "")
+    statement = problem.statement.lower()
+    found: list[tuple[int, Hint]] = []
+    got, expected = outcome.got.strip(), outcome.expected.strip()
+
+    if got.lower() in {"true", "false"} and expected in {"0", "1"}:
+        found.append(hint(
+            "Нужны 1 или 0, не True/False",
+            "Логическое выражение в Python печатается как True или False. Оберни его в int(...), чтобы получить 1 или 0, как требует условие.",
+            kind="format",
+            weight=96,
+        ))
+    if "ровно одно" in statement and "!=" not in src and "^" not in src and "sum(" not in src:
+        found.append(hint(
+            "«Ровно одно» — не обычное or",
+            "or истинно и когда подходят оба признака. Для ровно одного используй `(условие1) != (условие2)` или посчитай число истинных условий.",
+            weight=92,
+        ))
+    if "ровно два" in statement and "==2" not in src.replace(" ", "") and "sum(" not in src:
+        found.append(hint(
+            "Нужно ровно два признака",
+            "Сложи логические значения: `sum((условие1, условие2, условие3)) == 2`. Обычный and требует все признаки, а or — хотя бы один.",
+            weight=92,
+        ))
+    if "или отрезку" in statement and " or " not in facts.source:
+        found.append(hint(
+            "Отрезки объединяются через or",
+            "Число должно попасть хотя бы в один из двух отрезков. Между проверками границ нужен `or`, а внутри каждого отрезка — `and`.",
+            weight=92,
+        ))
+    if "в любом порядке" in statement and not (facts.uses_min and facts.uses_max):
+        found.append(hint(
+            "Границы могут быть переставлены",
+            "A может быть больше B. Сначала возьми `min(A, B)` и `max(A, B)`, затем проверь, что X строго между ними.",
+            weight=92,
+        ))
+    if ("модуль" in statement or "|x|" in statement or "без знака" in statement or "от −" in statement or "от -" in statement) and not facts.uses_abs and "lstrip" not in facts.source:
+        found.append(hint(
+            "Нужно учесть модуль числа",
+            "В условии знак не важен. Для числа используй `abs(x)`, а для записи строки убери минус: `s.lstrip('-')`.",
+            weight=90,
+        ))
+    if "неверно, что" in statement and "not" not in facts.source:
+        found.append(hint(
+            "Нужно отрицание всего условия",
+            "«Неверно, что A и B и C» — это `not (A and B and C)`. Не меняй только один признак: отрицание относится ко всей скобке.",
+            weight=94,
+        ))
+    if "остаток равен" in statement and "in" not in facts.source and "==" not in facts.source:
+        found.append(hint(
+            "Проверь остаток от деления",
+            "Нужен остаток `% 7`, а затем сравнение с допустимыми значениями: `x % 7 in (2, 4)`.",
+            weight=90,
+        ))
+    if "цифр" in statement and not (facts.last_digit_mod or facts.has_split or "str(" in facts.source):
+        found.append(hint(
+            "Цифры числа не разобраны",
+            "Для последней цифры используй `abs(x) % 10`. Для нескольких цифр можно работать со строкой или выделять цифры через % 10 и // 10.",
+            weight=88,
+        ))
+    return _ensure(
+        found,
+        "Логическое условие сработало иначе",
+        "Разбей условие на простые признаки в скобках. «И» — and, «или» — or, «ровно одно» — !=. В конце напечатай `int(условие)`, чтобы получить 1 или 0.",
+    )
+
+
+def _ege24(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    src = facts.source
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_open:
+        found.append(hint(
+            "Строка из файла не прочитана",
+            "Данные лежат в файле задачи. Начни с `s = open('24.txt').read().strip()` — проверяльщик сам подставит нужный файл.",
+            weight=94,
+        ))
+    if "longest_run" in problem.tags and not facts.has_loop:
+        found.append(hint(
+            "Нужно пройти строку посимвольно",
+            "Заведи `cur` и `best`: на C увеличивай cur, на другом символе сбрасывай cur. После каждого шага обновляй best.",
+            weight=92,
+        ))
+    if "sliding_window" in problem.tags and not facts.has_loop:
+        found.append(hint(
+            "Нужно двигать границы цепочки",
+            "Ищи запрещённую пару `AA` в строке. После неё следующая подходящая цепочка начинается с последнего A этой пары.",
+            weight=92,
+        ))
+    if "pattern" in problem.tags and "BAFE" not in src:
+        found.append(hint(
+            "Проверяется не тот фрагмент",
+            "Цепочка строится строго по циклу B → A → F → E. Удобно сравнивать символ с `pattern[index % 4]`, где `pattern = 'BAFE'`.",
+            weight=92,
+        ))
+    if "pattern" in problem.tags and "BAFE" in src and not facts.has_loop:
+        found.append(hint(
+            "Повтор фрагмента нужно проверять по всей строке",
+            "`s.count('BAFE')` считает только полные непересекающиеся куски. Пройди строку и поддерживай длину текущей цепочки BAFEBAFE...",
+            weight=90,
+        ))
+    return _ensure(
+        found,
+        "Длина цепочки в строке найдена неверно",
+        "Прочитай весь файл, проходи строку слева направо и храни длину текущего подходящего непрерывного фрагмента вместе с максимумом.",
+    )
+
+
+def _games(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    src = facts.source
+    statement = problem.statement.lower()
+    found: list[tuple[int, Hint]] = []
+    if facts.constant_prints and not facts.has_loop and "def " not in src:
+        found.append(hint(
+            "Ответ напечатан, но стратегия не проверяется",
+            "В задачах 19–21 нужно перебрать все S и ходы. Напечатанное число может совпасть с примером, но не доказывает стратегию.",
+            weight=94,
+        ))
+    if "def " not in src and "@cache" not in src and "lru_cache" not in src:
+        found.append(hint(
+            "Нужно разобрать позиции игры",
+            "Сделай функцию game(a, b): терминальная позиция даёт 0; если есть ход в неположительный код — это выигрыш, иначе позиция проигрышная. Сохраняй результаты через @cache или @lru_cache.",
+            weight=90,
+        ))
+    if "неудачного первого хода" in statement and ("all(" in src or "all (" in src):
+        found.append(hint(
+            "Для неудачного хода нужен хотя бы один вариант",
+            "В условии сказано, что Петя мог ошибиться: достаточно существования одного его хода, после которого Ваня выигрывает сразу. Используй any(...), не all(...).",
+            weight=94,
+        ))
+    if "не может выиграть первым" in statement and "== 2" not in src and "==2" not in src and "r == 2" not in src:
+        found.append(hint(
+            "Нужна победа именно вторым ходом",
+            "Для №20 не подходят позиции, где Петя выигрывает сразу. В кодировке позиций ищи +2: есть стратегия второго хода, но нет выигрыша первым.",
+            weight=92,
+        ))
+    if "Ваня имеет выигрышную стратегию" in problem.statement and "-2" not in src and "== -2" not in src:
+        found.append(hint(
+            "Для №21 ищут позицию −2",
+            "Ваня должен выиграть первым или вторым ходом, но не гарантированно сразу. В кодировке игры это −2; не путай с −1, где Ваня выигрывает первым при любом ходе Пети.",
+            weight=92,
+        ))
+    if "min(" not in src and "минималь" in statement:
+        found.append(hint("Нужен минимальный S", "После перебора подходящих S возьми min(ответы), а не первое случайно напечатанное значение.", weight=86))
+    if "max(" not in src and "наибольшее" in statement:
+        found.append(hint("Нужен наибольший S", "После перебора подходящих S возьми max(ответы), а не min или первое найденное значение.", weight=86))
+    return _ensure(
+        found,
+        "Выигрышная стратегия определена неверно",
+        "Отдели терминал от ходов. Для №19 проверяй, может ли Петя сделать ход, после которого Ваня выигрывает сразу; для №20 ищи +2, для №21 — −2.",
+    )
 
 
 def _ege8(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:

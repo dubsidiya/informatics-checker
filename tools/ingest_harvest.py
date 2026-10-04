@@ -95,6 +95,11 @@ def _problem(item: dict, old: dict | None) -> dict:
     }
 
 
+def _sort_key(problem_id: str) -> tuple:
+    tail = str(problem_id).rsplit("-", 1)[-1]
+    return (0, int(tail)) if tail.isdigit() else (1, str(problem_id))
+
+
 def main() -> None:
     catalog = json.loads((DATA / "problems.json").read_text(encoding="utf-8"))
     old_ege = {item["id"]: item for item in catalog if str(item["id"]).startswith("ege")}
@@ -116,13 +121,20 @@ def main() -> None:
         print("dropped forbidden", dropped)
 
     ege = [_problem(item, old_ege.get(item["id"])) for item in harvested.values()]
-    ege.sort(key=lambda item: (item["topic"], int(item["id"].split("-")[-1])))
+    kept = [item for item in old_ege.values() if item["id"] not in harvested]
+    ege.extend(kept)
+    ege.sort(key=lambda item: (item["topic"], _sort_key(item["id"])))
 
     counts: dict[str, int] = {}
     for item in ege:
         counts[item["topic"]] = counts.get(item["topic"], 0) + 1
     print("ege counts", counts)
-    short = {topic: n for topic, n in counts.items() if n < 30}
+    harvested_topics = {TOPIC[item["type"]] for item in harvested.values()}
+    short = {
+        topic: counts.get(topic, 0)
+        for topic in harvested_topics
+        if counts.get(topic, 0) < 30
+    }
     if short:
         raise SystemExit(f"need 30 per topic, got {short}")
 

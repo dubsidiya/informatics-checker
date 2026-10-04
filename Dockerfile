@@ -13,7 +13,7 @@ ENV HOST=0.0.0.0 \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     CHECKER_ENV=production \
-    CHECKER_RUNNER=judge0 \
+    CHECKER_RUNNER=local \
     CHECKER_DB=/var/data/checker.sqlite3
 
 EXPOSE 8765

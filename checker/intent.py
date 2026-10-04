@@ -125,6 +125,20 @@ def _plan(facts, problem: Problem, tags: set[str], blob: str) -> str:
     if facts.has_input and not facts.has_int and facts.has_print:
         return "Ты хотел прочитать ввод и что-то с ним сделать. Сейчас input() остаётся строкой."
 
+    if "games" in tags:
+        if "def " in src and ("cache" in src or "lru_cache" in src):
+            return "Ты описываешь позиции игры рекурсией и запоминаешь уже посчитанные ходы. Для №19–21 это правильный подход."
+        if facts.has_loop:
+            return "Ты перебираешь значения S и пытаешься проверить позиции игры. Теперь важно различить выигрыш первым и вторым ходом."
+        return "В №19–21 нужно проверить все возможные ходы из каждой позиции и понять, кто выигрывает раньше."
+
+    if "ege24" in tags:
+        if facts.has_open and facts.has_loop:
+            return "Ты читаешь строку из файла и проходишь по ней слева направо. Это основной приём для №24."
+        if facts.has_open:
+            return "Ты прочитал строку из файла. Теперь нужно пройти её и обновлять длину текущей цепочки."
+        return "В №24 строка лежит в файле: сначала прочитай её, затем ищи максимальный непрерывный фрагмент."
+
     if "ege8" in tags:
         if "permutations" in src and "product" not in src:
             return "Ты перебираешь слова через permutations — каждая буква один раз."

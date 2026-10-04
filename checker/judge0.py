@@ -50,12 +50,14 @@ class Judge0Runner:
     def run_many(self, requests: Sequence[ExecutionRequest]) -> list[ExecutionResult]:
         if not requests:
             return []
-        if len(requests) > 6:
-            raise RunnerError("Слишком много тестов в одном запуске.")
-        payload = [self._submission(item) for item in requests]
-        tokens = self._create_batch(payload)
-        raw = self._poll_batch(tokens)
-        return [self._to_result(item) for item in raw]
+        results: list[ExecutionResult] = []
+        for start in range(0, len(requests), 6):
+            chunk = list(requests[start : start + 6])
+            payload = [self._submission(item) for item in chunk]
+            tokens = self._create_batch(payload)
+            raw = self._poll_batch(tokens)
+            results.extend(self._to_result(item) for item in raw)
+        return results
 
     def trace(self, request: ExecutionRequest) -> list[dict]:
         if request.files:
@@ -103,7 +105,7 @@ class Judge0Runner:
             names = _fixture_names(item.files)
             extra["student.py"] = source.encode("utf-8")
             extra.update(names)
-            code = LAUNCHER.format(canonical=next(iter(names)))
+            code = LAUNCHER.format(allowed=list(names))
         archive = _zip_bytes(extra) if extra else None
         return self._base_submission(code, item.stdin, item.timeout_seconds, additional_files=archive)
 
@@ -275,8 +277,9 @@ def _zip_bytes(files: dict[str, bytes]) -> bytes:
 
 
 def _fixture_names(files: Sequence[str]) -> dict[str, bytes]:
+    from checker.sandbox import _fixture_aliases
+
     mapping: dict[str, bytes] = {}
-    canonical = None
     for rel in files:
         src = (DATA_ROOT / rel).resolve()
         if DATA_ROOT.resolve() not in src.parents and src != DATA_ROOT.resolve():
@@ -284,11 +287,8 @@ def _fixture_names(files: Sequence[str]) -> dict[str, bytes]:
         if not src.is_file():
             raise RunnerError("Файл задачи не найден.")
         data = src.read_bytes()
-        mapping[src.name] = data
-        mapping["17.txt"] = data
-        mapping["9.txt"] = data
-        mapping[src.stem + ".txt"] = data
-        canonical = src.name
-    if not canonical:
+        for name in _fixture_aliases(src):
+            mapping[name] = data
+    if not mapping:
         raise RunnerError("У задачи нет файла.")
     return mapping

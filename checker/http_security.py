@@ -3,6 +3,7 @@ from __future__ import annotations
 import ipaddress
 import time
 from collections import OrderedDict, deque
+from threading import Lock
 from typing import Iterable
 
 
@@ -11,8 +12,13 @@ class RateLimiter:
         self.window = window
         self.max_keys = max_keys
         self._hits: OrderedDict[str, deque[float]] = OrderedDict()
+        self._lock = Lock()
 
     def allow(self, key: str, limit: int, now: float | None = None) -> bool:
+        with self._lock:
+            return self._allow(key, limit, now)
+
+    def _allow(self, key: str, limit: int, now: float | None = None) -> bool:
         stamp = time.monotonic() if now is None else now
         bucket = self._hits.get(key)
         if bucket is None:

@@ -120,6 +120,57 @@ SOLUTIONS = {
     "ege5-middle-of-three": "a, b, c = map(int, input().split())\nprint(int(a < b < c or c < b < a))\n",
     "ege5-pair-product": "a, b = map(int, input().split())\nprint(int(a * b > 10))\n",
     "ege5-remainder-check": "x = int(input())\nprint(int(x % 7 in (2, 4)))\n",
+    "ege24-long-c": (
+        "s = open('long-c-1.txt').read().strip()\n"
+        "cur = best = 0\n"
+        "for ch in s:\n"
+        "    cur = cur + 1 if ch == 'C' else 0\n"
+        "    best = max(best, cur)\n"
+        "print(best)\n"
+    ),
+    "ege24-pattern-bafe": (
+        "s = open('pattern-bafe-29.txt').read().strip()\n"
+        "pattern = 'BAFE'\n"
+        "cur = best = 0\n"
+        "for ch in s:\n"
+        "    cur = cur + 1 if ch == pattern[cur % 4] else (1 if ch == 'B' else 0)\n"
+        "    best = max(best, cur)\n"
+        "print(best)\n"
+    ),
+    "ege24-no-aa": (
+        "s = open('no-aa.txt').read().strip()\n"
+        "start = best = 0\n"
+        "for i in range(1, len(s)):\n"
+        "    if s[i - 1:i + 1] == 'AA': start = i\n"
+        "    best = max(best, i - start + 1)\n"
+        "print(max(best, 1))\n"
+    ),
+    "ege19-vanya-first": (
+        "def can_win(a, b):\n"
+        "    return any(x + y >= 62 for x, y in ((a + 2, b), (a * 2, b), (a, b + 2), (a, b * 2)))\n"
+        "ans = [s for s in range(1, 55) if any(a + b < 62 and can_win(a, b) for a, b in ((9, s), (14, s), (7, s + 2), (7, 2 * s)))]\n"
+        "print(min(ans))\n"
+    ),
+    "ege20-petya-second": (
+        "from functools import cache\n"
+        "@cache\n"
+        "def game(a, b):\n"
+        "    if a + b >= 62: return 0\n"
+        "    codes = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n"
+        "    bad = [x for x in codes if x <= 0]\n"
+        "    return -max(bad) + 1 if bad else -max(codes)\n"
+        "print(max(s for s in range(1, 55) if game(7, s) == 2))\n"
+    ),
+    "ege21-vanya-second": (
+        "from functools import cache\n"
+        "@cache\n"
+        "def game(a, b):\n"
+        "    if a + b >= 62: return 0\n"
+        "    codes = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n"
+        "    bad = [x for x in codes if x <= 0]\n"
+        "    return -max(bad) + 1 if bad else -max(codes)\n"
+        "print(max(s for s in range(1, 55) if game(7, s) == -2))\n"
+    ),
     "ege17-1": (
         "xs = [x for x in range(1012, 9639) if x % 3 == 0 and all(x % p != 0 for p in (11, 13, 17, 19))]\n"
         "print(len(xs), max(xs))\n"
@@ -480,6 +531,8 @@ class HiddenPayloadTests(unittest.TestCase):
         )
         blob = json.dumps(result.to_dict(), ensure_ascii=False)
         self.assertNotIn("`8`", blob)
+        self.assertNotIn("Ожидалось 8", blob)
+        self.assertNotIn("получилось 7", blob)
         self.assertIn("скрытый ответ", blob)
 
 

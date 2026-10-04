@@ -759,7 +759,10 @@ function pythonHint(cm, options) {
     const names = (currentProblem && currentProblem.files || []).map((file) => file.name);
     prefix = line.split(/['"]/).pop() || "";
     start = cursor.ch - prefix.length;
-    for (const name of names.concat(["9.txt", "17.txt"])) add(name, "hint-file");
+    const extras = [];
+    const alias = fileAlias(currentProblem);
+    if (alias) extras.push(alias);
+    for (const name of names.concat(extras)) add(name, "hint-file");
     if (!list.length) return;
     return { list, from: CodeMirror.Pos(cursor.line, start), to: cursor };
   }
@@ -1161,8 +1164,12 @@ async function openProblem(id, updateHash) {
     if (problem.files && problem.files[0]) {
       const name = problem.files[0].name;
       els.fileBox.classList.remove("hidden");
-      const alias = (problem.tags || []).includes("ege9") ? "9.txt" : "17.txt";
-      els.fileBox.innerHTML = `К задаче приложен <a href="/api/problems/${encodeURIComponent(problem.id)}/file">${escapeHtml(name)}</a>. <code>open('${escapeHtml(name)}')</code> или <code>open('${alias}')</code> его откроет.`;
+      const alias = fileAlias(problem);
+      const same = !alias || alias === name;
+      const how = same
+        ? `<code>open('${escapeHtml(name)}')</code>`
+        : `<code>open('${escapeHtml(name)}')</code> или <code>open('${escapeHtml(alias)}')</code>`;
+      els.fileBox.innerHTML = `К задаче приложен <a href="/api/problems/${encodeURIComponent(problem.id)}/file">${escapeHtml(name)}</a>. ${how} его откроет.`;
     } else if (els.fileBox) {
       els.fileBox.classList.add("hidden");
       els.fileBox.innerHTML = "";
@@ -1389,7 +1396,13 @@ function examFooter(data) {
   return `<p>В зачёте сдано ${done} из ${items.length}. <button type="button" class="ghost-link" data-next="1">Дальше по теме</button>${skipBit}</p>`;
 }
 
-function preview(text) {
+function fileAlias(problem) {
+  const tags = (problem && problem.tags) || [];
+  if (tags.includes("ege9")) return "9.txt";
+  if (tags.includes("ege17")) return "17.txt";
+  if (tags.includes("ege24")) return "24.txt";
+  return "";
+}
   return String(text || "").replaceAll("\n", " ↵ ").trim() || "—";
 }
 
@@ -1526,6 +1539,14 @@ function openNextUnsolved() {
   if (!items.length) return;
   const idx = items.findIndex((item) => item.id === currentId);
   const wanted = (item) => !solved.has(item.id) && (!examMode || !examSkip.has(item.id));
+  if (examMode) {
+    const later = items.slice(idx + 1);
+    const next = later.find(wanted)
+      || items.find((item) => wanted(item) && item.id !== currentId)
+      || later[0];
+    if (next) openProblem(next.id, true);
+    return;
+  }
   const candidates = items.filter((item) => wanted(item) && item.id !== currentId);
   if (!candidates.length) {
     const fallback = items.slice(idx + 1)[0];

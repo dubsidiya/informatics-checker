@@ -19,6 +19,9 @@ REQUIRED = {"id", "title", "level", "topic", "statement", "input_format", "outpu
 LEVELS = {"\u0441\u0442\u0430\u0440\u0442", "\u0441\u0440\u0435\u0434\u043d\u0435", "\u0441\u043b\u043e\u0436\u043d\u043e"}
 EGE_MIN = 30
 EGE_MAX = 40
+# Hand-built topics that are not a full exam set yet. They stay in the
+# catalog for practice, but they are not held to the 30–40 harvest bar.
+EGE_DRAFTS = {"ЕГЭ 24", "ЕГЭ 19–21"}
 
 
 def main() -> int:
@@ -68,8 +71,11 @@ def main() -> int:
     print(f"catalog: {len(problems)} problems, {len(topics)} topics")
     for topic, items in sorted(topics.items()):
         marker = ""
-        if topic.startswith("\u0415\u0413\u042d ") and not (EGE_MIN <= len(items) <= EGE_MAX):
+        if topic in EGE_DRAFTS:
+            marker = "  [draft]"
+        elif topic.startswith("ЕГЭ ") and not (EGE_MIN <= len(items) <= EGE_MAX):
             marker = f"  [target {EGE_MIN}-{EGE_MAX}]"
+            errors.append(f"{topic}: {len(items)} problems, expected {EGE_MIN}-{EGE_MAX}")
         print(f"  {topic}: {len(items)}{marker}")
 
     if errors:

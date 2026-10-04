@@ -38,6 +38,7 @@ BANNED_MODULES = {
     "posix",
     "nt",
     "sysconfig",
+    "io",
 }
 
 BANNED_FUNCS = {
@@ -83,6 +84,9 @@ def find_forbidden(source: str, allow_open: bool = False) -> SyntaxIssue | None:
         elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             if node.func.id in BANNED_FUNCS and not (allow_open and node.func.id == "open"):
                 return _issue(node, f"Функция {node.func.id}() на проверяльщике запрещена.")
+        elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+            if node.func.attr == "open" and not allow_open:
+                return _issue(node, "Функция open() на проверяльщике запрещена.")
         elif isinstance(node, ast.Attribute) and node.attr in BANNED_ATTRS:
             return _issue(node, "Такой приём Python здесь нельзя использовать.")
         elif isinstance(node, ast.Name) and node.id in BANNED_FUNCS and not (allow_open and node.id == "open"):

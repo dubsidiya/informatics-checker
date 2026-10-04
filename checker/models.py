@@ -193,7 +193,7 @@ class GradeResult:
             bare = token.lstrip("-")
             if len(token) >= 4 or "." in token:
                 pieces.append(token)
-            elif bare.isdigit() and len(bare) >= 3:
+            elif bare.isdigit() and len(bare) >= 1:
                 pieces.append(token)
         return pieces
 

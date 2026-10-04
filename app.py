@@ -631,7 +631,8 @@ class Handler(SimpleHTTPRequestHandler):
                 self._send_json({"detail": "Проверяльщик сейчас занят. Подожди несколько секунд."}, 503)
                 return
             try:
-                result = grade_solution(problem, code)
+                wall = self._cfg().grade_wall_seconds
+                result = grade_solution(problem, code, deadline=time.monotonic() + wall)
             finally:
                 _gate().release()
             deepen_explanation(problem, result, tries)

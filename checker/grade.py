@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 from checker.explain import attach_explanation
 from checker.logic import build_hints, same_answer, to_trace_steps
 from checker.models import GradeResult, Problem, TestResult
@@ -8,7 +10,13 @@ from checker.safety import find_forbidden
 from checker.syntax import explain_syntax
 
 
-def grade_solution(problem: Problem, source: str, *, runner=None) -> GradeResult:
+def grade_solution(
+    problem: Problem,
+    source: str,
+    *,
+    runner=None,
+    deadline: float | None = None,
+) -> GradeResult:
     source = source.replace("\r\n", "\n")
     if not source.strip():
         return attach_explanation(
@@ -58,8 +66,10 @@ def grade_solution(problem: Problem, source: str, *, runner=None) -> GradeResult
         timeout = 4.0 if files else 1.5
         if any(tag in problem.tags for tag in ("ege8", "ege16", "ege23", "ege25")):
             timeout = max(timeout, 3.0)
-        if "ege9" in problem.tags:
+        if "ege9" in problem.tags or "ege24" in problem.tags:
             timeout = max(timeout, 4.0)
+        if deadline is not None:
+            timeout = min(timeout, max(0.2, deadline - time.monotonic()))
         requests.append(
             ExecutionRequest(
                 source=source,

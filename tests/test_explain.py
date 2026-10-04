@@ -61,6 +61,28 @@ class ExplainTests(unittest.TestCase):
         self.assertNotIn(hidden, payload)
         self.assertNotIn("-587", payload)
 
+    def test_ege5_how_explains_boolean_operators(self):
+        result = grade_solution(
+            get_problem("ege5-exclusive-or"),
+            "a, b = map(int, input().split())\nprint(int(a % 2 == 0 or b % 3 == 0))\n",
+        )
+        how = (result.explanation.how or "").lower()
+        self.assertTrue("ровно одно" in how or "!=" in how)
+        self.assertTrue("int" in how or "1" in how)
+
+    def test_ege24_how_explains_string_scan(self):
+        result = grade_solution(get_problem("ege24-long-c"), "print(4)\n")
+        how = (result.explanation.how or "").lower()
+        self.assertIn("файл", how)
+        self.assertIn("24.txt", result.explanation.how)
+        self.assertTrue("строк" in how or "цепоч" in how)
+
+    def test_game_how_explains_position_codes(self):
+        result = grade_solution(get_problem("ege20-petya-second"), "print(24)\n")
+        how = (result.explanation.how or "").lower()
+        self.assertTrue("стратег" in how or "переб" in how)
+        self.assertNotIn("сосед", how)
+
     def test_ege17_range_how_is_not_about_pairs(self):
         result = grade_solution(get_problem("ege17-1"), "print(1)\n")
         how = (result.explanation.how or "").lower()

@@ -272,6 +272,48 @@ CASES = [
         ["сочетания", "хотя бы одно"],
     ),
     (
+        "ege5-exclusive-or",
+        "a, b = map(int, input().split())\nprint(int(a % 2 == 0 or b % 3 == 0))\n",
+        ["ровно одно", "or"],
+        ["пары", "сочетания"],
+    ),
+    (
+        "ege5-between",
+        "a, b, x = map(int, input().split())\nprint(int(a < x < b))\n",
+        ["границ", "min"],
+        ["пары", "сочетания"],
+    ),
+    (
+        "ege5-not-all",
+        "x = int(input())\nprint(int(x > 0 and x % 2 == 0 and x % 4 == 0))\n",
+        ["отрицан", "not"],
+        ["пары", "сочетания"],
+    ),
+    (
+        "ege24-long-c",
+        "print(4)\n",
+        ["файл", "строк"],
+        ["сочетания", "сосед"],
+    ),
+    (
+        "ege24-pattern-bafe",
+        "s = open('pattern-bafe-29.txt').read()\nprint(s.count('BAFE'))\n",
+        ["цепоч", "фрагмент", "строк"],
+        ["сочетания", "сосед"],
+    ),
+    (
+        "ege20-petya-second",
+        "print(24)\n",
+        ["стратег", "втор"],
+        ["сочетания", "сосед"],
+    ),
+    (
+        "ege21-vanya-second",
+        "print(26)\n",
+        ["стратег", "−2", "-2"],
+        ["сочетания", "сосед"],
+    ),
+    (
         "ege8-10",
         "from itertools import permutations\nprint(len(list(permutations('АОУ', 5))))\n",
         ["повтор", "product"],

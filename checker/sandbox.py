@@ -27,18 +27,30 @@ LIMITED_ENV = {
 
 LAUNCHER = """\
 import builtins
+import io
 import runpy
 
 _real_open = builtins.open
-CANON = {canonical!r}
+ALLOWED = {allowed!r}
+_READ = frozenset("rbtU")
 
-def open(file, mode="r", *args, **kwargs):
+
+def _safe_open(file, mode="r", *args, **kwargs):
     mode = mode or "r"
-    if any(flag in str(mode) for flag in "wa+"):
+    flags = str(mode)
+    if any(flag not in _READ for flag in flags):
         raise PermissionError("запись в файл на проверяльщике запрещена")
-    return _real_open(CANON, mode, *args, **kwargs)
+    name = file if isinstance(file, (str, bytes)) else getattr(file, "name", None)
+    if isinstance(name, bytes):
+        name = name.decode("utf-8", "replace")
+    # Any read path is the task file. Students often paste a desktop path
+    # or a short alias; both should see the fixture, never the real disk.
+    target = name if isinstance(name, str) and name in ALLOWED else ALLOWED[0]
+    return _real_open(target, flags, *args, **kwargs)
 
-builtins.open = open
+
+builtins.open = _safe_open
+io.open = _safe_open
 runpy.run_path("student.py", run_name="__main__")
 """
 
@@ -89,21 +101,41 @@ def _write_source(source: str, directory: Path | None = None) -> str:
     return handle.name
 
 
-def _prepare_files(work: Path, files: list[str]) -> str | None:
-    canonical = None
+def _fixture_aliases(src: Path) -> list[str]:
+    """Names a student may pass to open() for one fixture file.
+
+    The real filename always works. Topic shortcuts are added beside it:
+    17.txt for ЕГЭ 17, 9.txt for ЕГЭ 9, 24.txt for ЕГЭ 24.
+    """
+    names = [src.name]
+    if src.suffix == ".txt" and src.stem != "24":
+        names.append(src.stem + ".txt")
+    parent = src.parent.name
+    alias = {"ege17": "17.txt", "ege9": "9.txt", "ege24": "24.txt"}.get(parent)
+    if alias:
+        names.append(alias)
+    unique: list[str] = []
+    for name in names:
+        if name not in unique:
+            unique.append(name)
+    return unique
+
+
+def _prepare_files(work: Path, files: list[str]) -> list[str]:
+    allowed: list[str] = []
+    seen: set[Path] = set()
     for rel in files:
         src = (DATA_ROOT / rel).resolve()
         if DATA_ROOT.resolve() not in src.parents and src != DATA_ROOT.resolve():
             continue
-        if not src.is_file():
+        if not src.is_file() or src in seen:
             continue
-        dest = work / src.name
-        shutil.copyfile(src, dest)
-        shutil.copyfile(src, work / "17.txt")
-        shutil.copyfile(src, work / "9.txt")
-        shutil.copyfile(src, work / (src.stem + ".txt"))
-        canonical = src.name
-    return canonical
+        seen.add(src)
+        for name in _fixture_aliases(src):
+            shutil.copyfile(src, work / name)
+            if name not in allowed:
+                allowed.append(name)
+    return allowed
 
 
 def _kill_group(proc: subprocess.Popen) -> None:
@@ -125,7 +157,7 @@ def _kill_group(proc: subprocess.Popen) -> None:
 
 def _run_command(command: list[str], stdin: str, timeout: float, cwd: str) -> RunResult:
     kwargs: dict = {
-        "input": stdin.encode("utf-8"),
+        "stdin": subprocess.PIPE,
         "stdout": subprocess.PIPE,
         "stderr": subprocess.PIPE,
         "cwd": cwd,
@@ -133,35 +165,38 @@ def _run_command(command: list[str], stdin: str, timeout: float, cwd: str) -> Ru
     }
     if os.name == "posix":
         kwargs["start_new_session"] = True
+    proc = subprocess.Popen(command, **kwargs)
     try:
-        completed = subprocess.run(command, timeout=timeout, **kwargs)
-        stdout = clip_output(completed.stdout.decode("utf-8", errors="replace"))
-        stderr = clip_output(completed.stderr.decode("utf-8", errors="replace"))
-        error_type, error_line, error_message = parse_traceback(stderr)
+        stdout_b, stderr_b = proc.communicate(stdin.encode("utf-8"), timeout=timeout)
+    except subprocess.TimeoutExpired:
+        _kill_group(proc)
+        try:
+            stdout_b, stderr_b = proc.communicate(timeout=1)
+        except subprocess.TimeoutExpired:
+            proc.kill()
+            stdout_b, stderr_b = proc.communicate()
+        stdout = clip_output((stdout_b or b"").decode("utf-8", errors="replace"))
+        stderr = clip_output((stderr_b or b"").decode("utf-8", errors="replace"))
         return RunResult(
             stdout=stdout,
             stderr=stderr,
-            returncode=completed.returncode,
-            timed_out=False,
-            error_type=error_type,
-            error_line=error_line,
-            error_message=error_message,
-        )
-    except subprocess.TimeoutExpired as exc:
-        stdout = exc.stdout or b""
-        stderr = exc.stderr or b""
-        if isinstance(stdout, bytes):
-            stdout = stdout.decode("utf-8", errors="replace")
-        if isinstance(stderr, bytes):
-            stderr = stderr.decode("utf-8", errors="replace")
-        return RunResult(
-            stdout=clip_output(stdout),
-            stderr=clip_output(stderr),
             returncode=-1,
             timed_out=True,
             error_type="TimeoutError",
             error_message="Программа не уложилась во время — возможно, бесконечный цикл или слишком тяжёлый перебор.",
         )
+    stdout = clip_output((stdout_b or b"").decode("utf-8", errors="replace"))
+    stderr = clip_output((stderr_b or b"").decode("utf-8", errors="replace"))
+    error_type, error_line, error_message = parse_traceback(stderr)
+    return RunResult(
+        stdout=stdout,
+        stderr=stderr,
+        returncode=proc.returncode if proc.returncode is not None else -1,
+        timed_out=False,
+        error_type=error_type,
+        error_line=error_line,
+        error_message=error_message,
+    )
 
 
 def run_student(
@@ -176,9 +211,9 @@ def run_student(
         student.write_text(source if source.endswith("\n") else source + "\n", encoding="utf-8")
         wrapper = work / "_limits.py"
         wrapper.write_text(LIMIT_WRAPPER, encoding="utf-8")
-        canonical = _prepare_files(work, files or [])
-        if canonical:
-            (work / "_launcher.py").write_text(LAUNCHER.format(canonical=canonical), encoding="utf-8")
+        allowed = _prepare_files(work, files or [])
+        if allowed:
+            (work / "_launcher.py").write_text(LAUNCHER.format(allowed=allowed), encoding="utf-8")
             target = str(work / "_launcher.py")
         else:
             target = str(student)
