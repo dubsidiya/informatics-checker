@@ -9,7 +9,7 @@ os.environ.setdefault("CHECKER_ENV", "test")
 os.environ.setdefault("CHECKER_RUNNER", "local")
 
 from checker.grade import grade_solution
-from checker.models import GradeResult, Hint, TestResult
+from checker.models import Explanation, GradeResult, Hint, TestResult
 from checker.problems import all_problems, get_problem, list_summaries
 from checker.store import (
     clean_student_name,
@@ -534,6 +534,28 @@ class HiddenPayloadTests(unittest.TestCase):
         self.assertNotIn("Ожидалось 8", blob)
         self.assertNotIn("получилось 7", blob)
         self.assertIn("скрытый ответ", blob)
+
+    def test_hidden_answer_is_scrubbed_from_coach_fields(self):
+        result = GradeResult(
+            status="fail",
+            message="нет",
+            passed=0,
+            total=1,
+            tests=[TestResult(index=0, hidden=True, verdict="WA", stdin="", expected="42", got="41")],
+            explanation=Explanation(
+                headline="нет",
+                what="42",
+                why="42",
+                how="42",
+                intent="42",
+                thought="42",
+                question="42",
+                self_check="42",
+            ),
+            first_fail_index=0,
+        )
+        blob = json.dumps(result.to_dict(), ensure_ascii=False)
+        self.assertNotIn("42", blob)
 
 
 if __name__ == "__main__":

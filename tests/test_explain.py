@@ -33,6 +33,10 @@ class ExplainTests(unittest.TestCase):
         self.assertIn("what", result.to_dict()["explanation"])
         self.assertTrue(exp.how.strip())
         self.assertTrue((exp.intent or "").strip())
+        self.assertTrue((exp.thought or "").strip())
+        self.assertTrue((exp.question or "").strip())
+        self.assertTrue((exp.self_check or "").strip())
+        self.assertIn("'2' + '3'", exp.question)
         self.assertTrue(
             "\u0441\u043b\u043e\u0436" in exp.intent.lower()
             or "\u0447\u0438\u0441" in exp.intent.lower()

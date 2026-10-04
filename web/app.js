@@ -1361,16 +1361,28 @@ function explanationCard(data) {
     <li><b>${escapeHtml(hint.title)}</b><span>${escapeHtml(hint.detail)}</span></li>
   `).join("");
   const intent = exp.intent
-    ? `<div class="explain-block intent"><span>Что ты хотел</span><p>${escapeHtml(exp.intent)}</p></div>`
+    ? `<div class="explain-block intent"><span>Как я прочитал твой замысел</span><p>${escapeHtml(exp.intent)}</p></div>`
+    : "";
+  const thought = exp.thought
+    ? `<div class="explain-block thought"><span>Возможная мысль, которая подвела</span><p>${escapeHtml(exp.thought)}</p></div>`
+    : "";
+  const question = exp.question
+    ? `<div class="coach-question"><span>Вопрос преподавателя</span><p>${escapeHtml(exp.question)}</p></div>`
+    : "";
+  const selfCheck = exp.self_check
+    ? `<div class="explain-block self-check-step"><span>Самопроверка перед запуском</span><p>${escapeHtml(exp.self_check)}</p></div>`
     : "";
   return `
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
       <p class="explain-kicker">${exp.intent ? "Понял твой код" : "Разбор для ученика"}${tries}</p>
-      <h3>${escapeHtml(exp.headline)}</h3>
-      ${intent}
-      <div class="explain-block"><span>Что случилось</span><p>${escapeHtml(exp.what)}</p></div>
-      <div class="explain-block"><span>Почему так</span><p>${escapeHtml(exp.why)}</p></div>
-      <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how)}</p></div>
+       <h3>${escapeHtml(exp.headline)}</h3>
+       ${intent}
+       ${thought}
+       <div class="explain-block"><span>Что случилось</span><p>${escapeHtml(exp.what)}</p></div>
+       <div class="explain-block"><span>Почему так</span><p>${escapeHtml(exp.why)}</p></div>
+       ${question}
+       <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how)}</p></div>
+       ${selfCheck}
       ${counterexample}
       ${checks ? `<div class="self-check"><h4>Проверь перед следующей попыткой</h4><ul>${checks}</ul></div>` : ""}
       ${line}

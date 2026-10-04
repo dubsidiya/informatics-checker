@@ -6,6 +6,8 @@ import re
 
 
 def apply_intent(problem: Problem, result: GradeResult, source: str = "") -> GradeResult:
+    from checker.coach import add_coach_turn
+
     exp = result.explanation
     if not exp:
         return result
@@ -13,7 +15,7 @@ def apply_intent(problem: Problem, result: GradeResult, source: str = "") -> Gra
     if plan:
         exp.intent = plan
     exp.headline = soften_headline(exp.headline, exp.kind, result.status)
-    return result
+    return add_coach_turn(problem, result, source)
 
 
 def infer_intent(problem: Problem, source: str, result: GradeResult) -> str:
