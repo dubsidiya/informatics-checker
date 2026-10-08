@@ -36,6 +36,11 @@ class Problem:
     topic: str = "общее"
     tags: list[str] = field(default_factory=list)
     files: list[str] = field(default_factory=list)
+    provenance: str = ""
+    author_created: bool = False
+    mistake_hints: list[dict[str, str]] = field(default_factory=list)
+    fast_path: str = ""
+    archive_ref: str = ""
 
     def public_dict(self) -> dict[str, Any]:
         return {
@@ -47,6 +52,11 @@ class Problem:
             "input_format": self.input_format,
             "output_format": self.output_format,
             "tags": self.tags,
+            "provenance": self.provenance,
+            "author_created": self.author_created,
+            "mistake_hints": self.mistake_hints,
+            "fast_path": self.fast_path,
+            "archive_ref": self.archive_ref,
             "examples": [asdict(item) for item in self.examples],
             "files": [{"name": item.rsplit("/", 1)[-1]} for item in self.files],
         }
@@ -84,6 +94,7 @@ class Explanation:
     thought: str = ""
     question: str = ""
     self_check: str = ""
+    next_step: str = ""
     line: int | None = None
     kind: str = "logic"
 
@@ -141,7 +152,7 @@ class GradeResult:
                 hint["title"] = self._scrub(hint.get("title", ""), secrets)
                 hint["detail"] = self._scrub(hint.get("detail", ""), secrets)
             if explain:
-                for key in ("headline", "what", "why", "how", "intent", "thought", "question", "self_check"):
+                for key in ("headline", "what", "why", "how", "intent", "thought", "question", "self_check", "next_step"):
                     explain[key] = self._scrub(explain.get(key, "") or "", secrets)
         return {
             "status": self.status,
@@ -167,8 +178,11 @@ class GradeResult:
 
     def _hidden_secrets(self) -> list[str]:
         found: list[str] = []
+        public_tokens: set[str] = set()
         for item in self.tests:
             if not item.hidden:
+                for field in (item.expected, item.got, item.stdin, item.error):
+                    public_tokens.update(self._public_tokens(field))
                 continue
             for field in (item.expected, item.got, item.stdin, item.error):
                 found.extend(self._secret_pieces(field))
@@ -178,7 +192,27 @@ class GradeResult:
             if secret not in seen:
                 seen.add(secret)
                 uniq.append(secret)
-        return uniq
+        safe: list[str] = []
+        for secret in uniq:
+            bare = secret[1:-1] if secret.startswith("`") and secret.endswith("`") else secret
+            # A short value such as 0, 3, YES or ODD is not useful as a secret
+            # when the same token is already present in a visible test.  Do
+            # not let it corrupt the public counterexample or its explanation.
+            if len(bare) <= 3 and bare in public_tokens:
+                continue
+            safe.append(secret)
+        return safe
+
+    @staticmethod
+    def _public_tokens(text: str) -> set[str]:
+        raw = (text or "").strip()
+        if not raw:
+            return set()
+        return {
+            token.strip("`'\"()[]{}.,;:")
+            for token in re.split(r"\s+", raw)
+            if token.strip("`'\"()[]{}.,;:")
+        }
 
     @staticmethod
     def _secret_pieces(text: str) -> list[str]:
@@ -196,7 +230,12 @@ class GradeResult:
             bare = token.lstrip("-")
             if len(token) >= 4 or "." in token:
                 pieces.append(token)
-            elif bare.isdigit() and len(bare) >= 1:
+            # Do not scrub one- to three-digit fragments globally.  Those
+            # values routinely occur in public examples and replacing every
+            # matching digit destroys useful feedback without protecting a
+            # meaningful secret.  The complete hidden answer/string above is
+            # still always redacted.
+            elif bare.isdigit() and len(bare) >= 4:
                 pieces.append(token)
         return pieces
 
@@ -204,5 +243,20 @@ class GradeResult:
     def _scrub(text: str, secrets: list[str]) -> str:
         out = text or ""
         for secret in secrets:
+            if not secret:
+                continue
+            # Long answers can be replaced wherever they occur.  Very short
+            # values (especially 0/1/2/3) are common in public examples, so
+            # replace them only as a complete field or as an explicitly
+            # quoted/backticked value.  Otherwise a public counterexample
+            # such as `1 3 6 7 12` would be mangled merely because a hidden
+            # test also contains the number 3.
+            bare = secret[1:-1] if secret.startswith("`") and secret.endswith("`") else secret
+            if len(bare) < 4 and bare.lstrip("-").isdigit():
+                if secret.startswith("`") and secret.endswith("`"):
+                    out = out.replace(secret, "скрытый ответ")
+                elif out.strip() == bare:
+                    out = "скрытый ответ"
+                continue
             out = out.replace(secret, "скрытый ответ")
         return out

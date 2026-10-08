@@ -8,7 +8,7 @@ os.environ.setdefault("CHECKER_RUNNER", "local")
 from checker.grade import grade_solution
 from checker.problems import get_problem
 from checker.safety import find_forbidden
-from checker.sandbox import run_student
+from checker.sandbox import run_playground, run_student
 
 
 class SandboxTests(unittest.TestCase):
@@ -67,6 +67,50 @@ class SandboxTests(unittest.TestCase):
     def test_io_import_is_forbidden_even_with_a_file(self):
         blocked = find_forbidden("import io\nprint(io.open('24.txt').read())\n", allow_open=True)
         self.assertIsNotNone(blocked)
+
+    def test_indirect_builtin_escape_is_forbidden(self):
+        for source in (
+            "print(globals()['__builtins__']['open']('/etc/passwd').read())\n",
+            "print(getattr(object, '__subclasses__'))\n",
+            "print(__builtins__.__dict__['eval']('2+2'))\n",
+        ):
+            self.assertIsNotNone(find_forbidden(source), source)
+
+    def test_harmless_text_is_not_blocked(self):
+        self.assertIsNone(find_forbidden("print('open')\n"))
+
+    def test_playground_reads_only_uploaded_file(self):
+        result = run_playground(
+            "print(open('anything.txt').read().strip())\n",
+            "",
+            "input.txt",
+            "hello",
+            timeout=2,
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(result.stdout.strip(), "hello")
+
+    def test_playground_cannot_write_uploaded_file(self):
+        result = run_playground(
+            "open('input.txt', 'w').write('bad')\n",
+            "",
+            "input.txt",
+            "hello",
+            timeout=2,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("PermissionError", result.stderr)
+
+    def test_playground_can_read_empty_uploaded_file(self):
+        result = run_playground(
+            "print(repr(open('empty.txt').read()))\n",
+            "",
+            "empty.txt",
+            "",
+            timeout=2,
+        )
+        self.assertEqual(result.returncode, 0)
+        self.assertEqual(result.stdout.strip(), "''")
 
 
 if __name__ == "__main__":

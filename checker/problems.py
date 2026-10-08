@@ -22,6 +22,15 @@ def _load_problem(raw: dict) -> Problem:
         examples=[Example(**item) for item in raw.get("examples", [])],
         tests=[TestCase(**item) for item in raw.get("tests", [])],
         files=list(raw.get("files", [])),
+        provenance=str(raw.get("provenance", "")),
+        author_created=bool(raw.get("author_created", False)),
+        mistake_hints=[
+            {str(key): str(value) for key, value in item.items()}
+            for item in raw.get("mistake_hints", [])
+            if isinstance(item, dict)
+        ],
+        fast_path=str(raw.get("fast_path", "")),
+        archive_ref=str(raw.get("archive_ref", "")),
     )
 
 
@@ -38,6 +47,7 @@ def list_summaries() -> list[dict]:
             "title": problem.title,
             "level": problem.level,
             "topic": problem.topic,
+            "author_created": problem.author_created,
         }
         for problem in all_problems()
     ]

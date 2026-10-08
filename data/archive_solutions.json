@@ -1,0 +1,1442 @@
+[
+  {
+    "id": "archive-ege1-01",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nv=int(input())\nprint(len(g[v]))\n"
+  },
+  {
+    "id": "archive-ege1-02",
+    "source": "n,m=map(int,input().split())\nfor _ in range(m): input()\nprint(m)\n"
+  },
+  {
+    "id": "archive-ege1-03",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nseen=set();ans=0\nfor s in range(1,n+1):\n if s in seen: continue\n ans+=1;seen.add(s);q=[s]\n for v in q:\n  for u in g[v]:\n   if u not in seen: seen.add(u);q.append(u)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-04",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nprint(max(d))\n"
+  },
+  {
+    "id": "archive-ege1-05",
+    "source": "n,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());seen={s};q=[s]\nfor v in q:\n for u in g[v]:\n  if u not in seen: seen.add(u);q.append(u)\nprint('YES' if t in seen else 'NO')\n"
+  },
+  {
+    "id": "archive-ege1-06",
+    "source": "from collections import deque\nn,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());d=[-1]*(n+1);d[s]=0;q=deque([s])\nwhile q:\n v=q.popleft()\n for u in g[v]:\n  if d[u]<0: d[u]=d[v]+1;q.append(u)\nprint(d[t])\n"
+  },
+  {
+    "id": "archive-ege1-07",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nk=int(input());print(sum(x>=k for x in d[1:]))\n"
+  },
+  {
+    "id": "archive-ege1-08",
+    "source": "n,m=map(int,input().split());e=set()\nfor _ in range(m):\n a,b=sorted(map(int,input().split()));e.add((a,b))\nans=0\nfor a in range(1,n+1):\n for b in range(a+1,n+1):\n  for c in range(b+1,n+1): ans+=(a,b) in e and (a,c) in e and (b,c) in e\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-09",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nv=int(input())\nprint(len(g[v]))\n"
+  },
+  {
+    "id": "archive-ege1-10",
+    "source": "n,m=map(int,input().split())\nfor _ in range(m): input()\nprint(m)\n"
+  },
+  {
+    "id": "archive-ege1-11",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nseen=set();ans=0\nfor s in range(1,n+1):\n if s in seen: continue\n ans+=1;seen.add(s);q=[s]\n for v in q:\n  for u in g[v]:\n   if u not in seen: seen.add(u);q.append(u)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-12",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nprint(max(d))\n"
+  },
+  {
+    "id": "archive-ege1-13",
+    "source": "n,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());seen={s};q=[s]\nfor v in q:\n for u in g[v]:\n  if u not in seen: seen.add(u);q.append(u)\nprint('YES' if t in seen else 'NO')\n"
+  },
+  {
+    "id": "archive-ege1-14",
+    "source": "from collections import deque\nn,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());d=[-1]*(n+1);d[s]=0;q=deque([s])\nwhile q:\n v=q.popleft()\n for u in g[v]:\n  if d[u]<0: d[u]=d[v]+1;q.append(u)\nprint(d[t])\n"
+  },
+  {
+    "id": "archive-ege1-15",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nk=int(input());print(sum(x>=k for x in d[1:]))\n"
+  },
+  {
+    "id": "archive-ege1-16",
+    "source": "n,m=map(int,input().split());e=set()\nfor _ in range(m):\n a,b=sorted(map(int,input().split()));e.add((a,b))\nans=0\nfor a in range(1,n+1):\n for b in range(a+1,n+1):\n  for c in range(b+1,n+1): ans+=(a,b) in e and (a,c) in e and (b,c) in e\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-17",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nv=int(input())\nprint(len(g[v]))\n"
+  },
+  {
+    "id": "archive-ege1-18",
+    "source": "n,m=map(int,input().split())\nfor _ in range(m): input()\nprint(m)\n"
+  },
+  {
+    "id": "archive-ege1-19",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nseen=set();ans=0\nfor s in range(1,n+1):\n if s in seen: continue\n ans+=1;seen.add(s);q=[s]\n for v in q:\n  for u in g[v]:\n   if u not in seen: seen.add(u);q.append(u)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-20",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nprint(max(d))\n"
+  },
+  {
+    "id": "archive-ege1-21",
+    "source": "n,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());seen={s};q=[s]\nfor v in q:\n for u in g[v]:\n  if u not in seen: seen.add(u);q.append(u)\nprint('YES' if t in seen else 'NO')\n"
+  },
+  {
+    "id": "archive-ege1-22",
+    "source": "from collections import deque\nn,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());d=[-1]*(n+1);d[s]=0;q=deque([s])\nwhile q:\n v=q.popleft()\n for u in g[v]:\n  if d[u]<0: d[u]=d[v]+1;q.append(u)\nprint(d[t])\n"
+  },
+  {
+    "id": "archive-ege1-23",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nk=int(input());print(sum(x>=k for x in d[1:]))\n"
+  },
+  {
+    "id": "archive-ege1-24",
+    "source": "n,m=map(int,input().split());e=set()\nfor _ in range(m):\n a,b=sorted(map(int,input().split()));e.add((a,b))\nans=0\nfor a in range(1,n+1):\n for b in range(a+1,n+1):\n  for c in range(b+1,n+1): ans+=(a,b) in e and (a,c) in e and (b,c) in e\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-25",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nv=int(input())\nprint(len(g[v]))\n"
+  },
+  {
+    "id": "archive-ege1-26",
+    "source": "n,m=map(int,input().split())\nfor _ in range(m): input()\nprint(m)\n"
+  },
+  {
+    "id": "archive-ege1-27",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nseen=set();ans=0\nfor s in range(1,n+1):\n if s in seen: continue\n ans+=1;seen.add(s);q=[s]\n for v in q:\n  for u in g[v]:\n   if u not in seen: seen.add(u);q.append(u)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-28",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nprint(max(d))\n"
+  },
+  {
+    "id": "archive-ege1-29",
+    "source": "n,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());seen={s};q=[s]\nfor v in q:\n for u in g[v]:\n  if u not in seen: seen.add(u);q.append(u)\nprint('YES' if t in seen else 'NO')\n"
+  },
+  {
+    "id": "archive-ege1-30",
+    "source": "from collections import deque\nn,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());d=[-1]*(n+1);d[s]=0;q=deque([s])\nwhile q:\n v=q.popleft()\n for u in g[v]:\n  if d[u]<0: d[u]=d[v]+1;q.append(u)\nprint(d[t])\n"
+  },
+  {
+    "id": "archive-ege1-31",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nk=int(input());print(sum(x>=k for x in d[1:]))\n"
+  },
+  {
+    "id": "archive-ege1-32",
+    "source": "n,m=map(int,input().split());e=set()\nfor _ in range(m):\n a,b=sorted(map(int,input().split()));e.add((a,b))\nans=0\nfor a in range(1,n+1):\n for b in range(a+1,n+1):\n  for c in range(b+1,n+1): ans+=(a,b) in e and (a,c) in e and (b,c) in e\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-33",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nv=int(input())\nprint(len(g[v]))\n"
+  },
+  {
+    "id": "archive-ege1-34",
+    "source": "n,m=map(int,input().split())\nfor _ in range(m): input()\nprint(m)\n"
+  },
+  {
+    "id": "archive-ege1-35",
+    "source": "n,m=map(int,input().split())\ng=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\nseen=set();ans=0\nfor s in range(1,n+1):\n if s in seen: continue\n ans+=1;seen.add(s);q=[s]\n for v in q:\n  for u in g[v]:\n   if u not in seen: seen.add(u);q.append(u)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege1-36",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nprint(max(d))\n"
+  },
+  {
+    "id": "archive-ege1-37",
+    "source": "n,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());seen={s};q=[s]\nfor v in q:\n for u in g[v]:\n  if u not in seen: seen.add(u);q.append(u)\nprint('YES' if t in seen else 'NO')\n"
+  },
+  {
+    "id": "archive-ege1-38",
+    "source": "from collections import deque\nn,m=map(int,input().split());g=[[] for _ in range(n+1)]\nfor _ in range(m):\n a,b=map(int,input().split());g[a].append(b);g[b].append(a)\ns,t=map(int,input().split());d=[-1]*(n+1);d[s]=0;q=deque([s])\nwhile q:\n v=q.popleft()\n for u in g[v]:\n  if d[u]<0: d[u]=d[v]+1;q.append(u)\nprint(d[t])\n"
+  },
+  {
+    "id": "archive-ege1-39",
+    "source": "n,m=map(int,input().split());d=[0]*(n+1)\nfor _ in range(m):\n a,b=map(int,input().split());d[a]+=1;d[b]+=1\nk=int(input());print(sum(x>=k for x in d[1:]))\n"
+  },
+  {
+    "id": "archive-ege1-40",
+    "source": "n,m=map(int,input().split());e=set()\nfor _ in range(m):\n a,b=sorted(map(int,input().split()));e.add((a,b))\nans=0\nfor a in range(1,n+1):\n for b in range(a+1,n+1):\n  for c in range(b+1,n+1): ans+=(a,b) in e and (a,c) in e and (b,c) in e\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege3-01",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if n=='Иванов' and k=='in'))\n"
+  },
+  {
+    "id": "archive-ege3-02",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\na=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='in')\nb=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='out')\nprint(abs(a-b))\n"
+  },
+  {
+    "id": "archive-ege3-03",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c)>1900 for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-04",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(max(int(c) for n,c,k,r in rows if k=='out'))\n"
+  },
+  {
+    "id": "archive-ege3-05",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if int(c)>=2300}))\n"
+  },
+  {
+    "id": "archive-ege3-06",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(r=='Запад' for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-07",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if r=='Север'))\n"
+  },
+  {
+    "id": "archive-ege3-08",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if r=='Юг'}))\n"
+  },
+  {
+    "id": "archive-ege3-09",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if n=='Иванов' and k=='in'))\n"
+  },
+  {
+    "id": "archive-ege3-10",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\na=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='in')\nb=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='out')\nprint(abs(a-b))\n"
+  },
+  {
+    "id": "archive-ege3-11",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c)>1900 for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-12",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(max(int(c) for n,c,k,r in rows if k=='out'))\n"
+  },
+  {
+    "id": "archive-ege3-13",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if int(c)>=2300}))\n"
+  },
+  {
+    "id": "archive-ege3-14",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(r=='Юг' for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-15",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if r=='Запад'))\n"
+  },
+  {
+    "id": "archive-ege3-16",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if r=='Север'}))\n"
+  },
+  {
+    "id": "archive-ege3-17",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if n=='Иванов' and k=='in'))\n"
+  },
+  {
+    "id": "archive-ege3-18",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\na=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='in')\nb=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='out')\nprint(abs(a-b))\n"
+  },
+  {
+    "id": "archive-ege3-19",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c)>1900 for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-20",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(max(int(c) for n,c,k,r in rows if k=='out'))\n"
+  },
+  {
+    "id": "archive-ege3-21",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if int(c)>=2300}))\n"
+  },
+  {
+    "id": "archive-ege3-22",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(r=='Север' for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-23",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if r=='Юг'))\n"
+  },
+  {
+    "id": "archive-ege3-24",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if r=='Запад'}))\n"
+  },
+  {
+    "id": "archive-ege3-25",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if n=='Иванов' and k=='in'))\n"
+  },
+  {
+    "id": "archive-ege3-26",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\na=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='in')\nb=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='out')\nprint(abs(a-b))\n"
+  },
+  {
+    "id": "archive-ege3-27",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c)>1900 for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-28",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(max(int(c) for n,c,k,r in rows if k=='out'))\n"
+  },
+  {
+    "id": "archive-ege3-29",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if int(c)>=2300}))\n"
+  },
+  {
+    "id": "archive-ege3-30",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(r=='Запад' for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-31",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if r=='Север'))\n"
+  },
+  {
+    "id": "archive-ege3-32",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if r=='Юг'}))\n"
+  },
+  {
+    "id": "archive-ege3-33",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if n=='Иванов' and k=='in'))\n"
+  },
+  {
+    "id": "archive-ege3-34",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\na=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='in')\nb=sum(int(c) for n,c,k,r in rows if n=='Петров' and k=='out')\nprint(abs(a-b))\n"
+  },
+  {
+    "id": "archive-ege3-35",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c)>1900 for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-36",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(max(int(c) for n,c,k,r in rows if k=='out'))\n"
+  },
+  {
+    "id": "archive-ege3-37",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if int(c)>=2300}))\n"
+  },
+  {
+    "id": "archive-ege3-38",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(r=='Юг' for n,c,k,r in rows))\n"
+  },
+  {
+    "id": "archive-ege3-39",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(sum(int(c) for n,c,k,r in rows if r=='Запад'))\n"
+  },
+  {
+    "id": "archive-ege3-40",
+    "source": "rows=[line.strip().split(';') for line in open('3.txt') if line.strip()]\nprint(len({n for n,c,k,r in rows if r=='Север'}))\n"
+  },
+  {
+    "id": "archive-ege4-01",
+    "source": "word=input().strip();alphabet='ABCD'\nprint(''.join(format(alphabet.index(ch),'02b') for ch in word))\n"
+  },
+  {
+    "id": "archive-ege4-02",
+    "source": "word=input().strip();alphabet='ABCD'\nbits=''.join(format(alphabet.index(ch),'02b') for ch in word)\nprint(format(int(bits,2),'X'))\n"
+  },
+  {
+    "id": "archive-ege4-03",
+    "source": "bits=input().strip();alphabet='ABCD'\nprint(''.join(alphabet[int(bits[i:i+2],2)] for i in range(0,len(bits),2)))\n"
+  },
+  {
+    "id": "archive-ege4-04",
+    "source": "import math\nn=int(input());print(math.ceil(math.log2(n)))\n"
+  },
+  {
+    "id": "archive-ege4-05",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege4-06",
+    "source": "b,l=map(int,input().split());print(b*l)\n"
+  },
+  {
+    "id": "archive-ege4-07",
+    "source": "b,l=map(int,input().split());print((b*l+7)//8)\n"
+  },
+  {
+    "id": "archive-ege4-08",
+    "source": "import math\nn,k=map(int,input().split());print(math.comb(n,k))\n"
+  },
+  {
+    "id": "archive-ege4-09",
+    "source": "word=input().strip();alphabet='ABCD'\nprint(''.join(format(alphabet.index(ch),'02b') for ch in word))\n"
+  },
+  {
+    "id": "archive-ege4-10",
+    "source": "word=input().strip();alphabet='ABCD'\nbits=''.join(format(alphabet.index(ch),'02b') for ch in word)\nprint(format(int(bits,2),'X'))\n"
+  },
+  {
+    "id": "archive-ege4-11",
+    "source": "bits=input().strip();alphabet='ABCD'\nprint(''.join(alphabet[int(bits[i:i+2],2)] for i in range(0,len(bits),2)))\n"
+  },
+  {
+    "id": "archive-ege4-12",
+    "source": "import math\nn=int(input());print(math.ceil(math.log2(n)))\n"
+  },
+  {
+    "id": "archive-ege4-13",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege4-14",
+    "source": "b,l=map(int,input().split());print(b*l)\n"
+  },
+  {
+    "id": "archive-ege4-15",
+    "source": "b,l=map(int,input().split());print((b*l+7)//8)\n"
+  },
+  {
+    "id": "archive-ege4-16",
+    "source": "import math\nn,k=map(int,input().split());print(math.comb(n,k))\n"
+  },
+  {
+    "id": "archive-ege4-17",
+    "source": "word=input().strip();alphabet='ABCD'\nprint(''.join(format(alphabet.index(ch),'02b') for ch in word))\n"
+  },
+  {
+    "id": "archive-ege4-18",
+    "source": "word=input().strip();alphabet='ABCD'\nbits=''.join(format(alphabet.index(ch),'02b') for ch in word)\nprint(format(int(bits,2),'X'))\n"
+  },
+  {
+    "id": "archive-ege4-19",
+    "source": "bits=input().strip();alphabet='ABCD'\nprint(''.join(alphabet[int(bits[i:i+2],2)] for i in range(0,len(bits),2)))\n"
+  },
+  {
+    "id": "archive-ege4-20",
+    "source": "import math\nn=int(input());print(math.ceil(math.log2(n)))\n"
+  },
+  {
+    "id": "archive-ege4-21",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege4-22",
+    "source": "b,l=map(int,input().split());print(b*l)\n"
+  },
+  {
+    "id": "archive-ege4-23",
+    "source": "b,l=map(int,input().split());print((b*l+7)//8)\n"
+  },
+  {
+    "id": "archive-ege4-24",
+    "source": "import math\nn,k=map(int,input().split());print(math.comb(n,k))\n"
+  },
+  {
+    "id": "archive-ege4-25",
+    "source": "word=input().strip();alphabet='ABCD'\nprint(''.join(format(alphabet.index(ch),'02b') for ch in word))\n"
+  },
+  {
+    "id": "archive-ege4-26",
+    "source": "word=input().strip();alphabet='ABCD'\nbits=''.join(format(alphabet.index(ch),'02b') for ch in word)\nprint(format(int(bits,2),'X'))\n"
+  },
+  {
+    "id": "archive-ege4-27",
+    "source": "bits=input().strip();alphabet='ABCD'\nprint(''.join(alphabet[int(bits[i:i+2],2)] for i in range(0,len(bits),2)))\n"
+  },
+  {
+    "id": "archive-ege4-28",
+    "source": "import math\nn=int(input());print(math.ceil(math.log2(n)))\n"
+  },
+  {
+    "id": "archive-ege4-29",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege4-30",
+    "source": "b,l=map(int,input().split());print(b*l)\n"
+  },
+  {
+    "id": "archive-ege4-31",
+    "source": "b,l=map(int,input().split());print((b*l+7)//8)\n"
+  },
+  {
+    "id": "archive-ege4-32",
+    "source": "import math\nn,k=map(int,input().split());print(math.comb(n,k))\n"
+  },
+  {
+    "id": "archive-ege4-33",
+    "source": "word=input().strip();alphabet='ABCD'\nprint(''.join(format(alphabet.index(ch),'02b') for ch in word))\n"
+  },
+  {
+    "id": "archive-ege4-34",
+    "source": "word=input().strip();alphabet='ABCD'\nbits=''.join(format(alphabet.index(ch),'02b') for ch in word)\nprint(format(int(bits,2),'X'))\n"
+  },
+  {
+    "id": "archive-ege4-35",
+    "source": "bits=input().strip();alphabet='ABCD'\nprint(''.join(alphabet[int(bits[i:i+2],2)] for i in range(0,len(bits),2)))\n"
+  },
+  {
+    "id": "archive-ege4-36",
+    "source": "import math\nn=int(input());print(math.ceil(math.log2(n)))\n"
+  },
+  {
+    "id": "archive-ege4-37",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege4-38",
+    "source": "b,l=map(int,input().split());print(b*l)\n"
+  },
+  {
+    "id": "archive-ege4-39",
+    "source": "b,l=map(int,input().split());print((b*l+7)//8)\n"
+  },
+  {
+    "id": "archive-ege4-40",
+    "source": "import math\nn,k=map(int,input().split());print(math.comb(n,k))\n"
+  },
+  {
+    "id": "archive-ege6-01",
+    "source": "w,h=map(int,input().split());print(max(0,w-1)*max(0,h-1))\n"
+  },
+  {
+    "id": "archive-ege6-02",
+    "source": "w,h=map(int,input().split());print(2*(w+h))\n"
+  },
+  {
+    "id": "archive-ege6-03",
+    "source": "w,h=map(int,input().split());print(w*h)\n"
+  },
+  {
+    "id": "archive-ege6-04",
+    "source": "w,h=map(int,input().split());print(2*(w+h)-4)\n"
+  },
+  {
+    "id": "archive-ege6-05",
+    "source": "a,b=map(int,input().split());print(a*b//2)\n"
+  },
+  {
+    "id": "archive-ege6-06",
+    "source": "w,h=map(int,input().split());print((w+1)*(h+1))\n"
+  },
+  {
+    "id": "archive-ege6-07",
+    "source": "import math\nw,h,s=map(int,input().split());print(math.gcd(w,s)+math.gcd(h,s))\n"
+  },
+  {
+    "id": "archive-ege6-08",
+    "source": "w,h=map(int,input().split());print(abs(w-h))\n"
+  },
+  {
+    "id": "archive-ege6-09",
+    "source": "w,h=map(int,input().split());print(max(0,w-1)*max(0,h-1))\n"
+  },
+  {
+    "id": "archive-ege6-10",
+    "source": "w,h=map(int,input().split());print(2*(w+h))\n"
+  },
+  {
+    "id": "archive-ege6-11",
+    "source": "w,h=map(int,input().split());print(w*h)\n"
+  },
+  {
+    "id": "archive-ege6-12",
+    "source": "w,h=map(int,input().split());print(2*(w+h)-4)\n"
+  },
+  {
+    "id": "archive-ege6-13",
+    "source": "a,b=map(int,input().split());print(a*b//2)\n"
+  },
+  {
+    "id": "archive-ege6-14",
+    "source": "w,h=map(int,input().split());print((w+1)*(h+1))\n"
+  },
+  {
+    "id": "archive-ege6-15",
+    "source": "import math\nw,h,s=map(int,input().split());print(math.gcd(w,s)+math.gcd(h,s))\n"
+  },
+  {
+    "id": "archive-ege6-16",
+    "source": "w,h=map(int,input().split());print(abs(w-h))\n"
+  },
+  {
+    "id": "archive-ege6-17",
+    "source": "w,h=map(int,input().split());print(max(0,w-1)*max(0,h-1))\n"
+  },
+  {
+    "id": "archive-ege6-18",
+    "source": "w,h=map(int,input().split());print(2*(w+h))\n"
+  },
+  {
+    "id": "archive-ege6-19",
+    "source": "w,h=map(int,input().split());print(w*h)\n"
+  },
+  {
+    "id": "archive-ege6-20",
+    "source": "w,h=map(int,input().split());print(2*(w+h)-4)\n"
+  },
+  {
+    "id": "archive-ege6-21",
+    "source": "a,b=map(int,input().split());print(a*b//2)\n"
+  },
+  {
+    "id": "archive-ege6-22",
+    "source": "w,h=map(int,input().split());print((w+1)*(h+1))\n"
+  },
+  {
+    "id": "archive-ege6-23",
+    "source": "import math\nw,h,s=map(int,input().split());print(math.gcd(w,s)+math.gcd(h,s))\n"
+  },
+  {
+    "id": "archive-ege6-24",
+    "source": "w,h=map(int,input().split());print(abs(w-h))\n"
+  },
+  {
+    "id": "archive-ege6-25",
+    "source": "w,h=map(int,input().split());print(max(0,w-1)*max(0,h-1))\n"
+  },
+  {
+    "id": "archive-ege6-26",
+    "source": "w,h=map(int,input().split());print(2*(w+h))\n"
+  },
+  {
+    "id": "archive-ege6-27",
+    "source": "w,h=map(int,input().split());print(w*h)\n"
+  },
+  {
+    "id": "archive-ege6-28",
+    "source": "w,h=map(int,input().split());print(2*(w+h)-4)\n"
+  },
+  {
+    "id": "archive-ege6-29",
+    "source": "a,b=map(int,input().split());print(a*b//2)\n"
+  },
+  {
+    "id": "archive-ege6-30",
+    "source": "w,h=map(int,input().split());print((w+1)*(h+1))\n"
+  },
+  {
+    "id": "archive-ege6-31",
+    "source": "import math\nw,h,s=map(int,input().split());print(math.gcd(w,s)+math.gcd(h,s))\n"
+  },
+  {
+    "id": "archive-ege6-32",
+    "source": "w,h=map(int,input().split());print(abs(w-h))\n"
+  },
+  {
+    "id": "archive-ege6-33",
+    "source": "w,h=map(int,input().split());print(max(0,w-1)*max(0,h-1))\n"
+  },
+  {
+    "id": "archive-ege6-34",
+    "source": "w,h=map(int,input().split());print(2*(w+h))\n"
+  },
+  {
+    "id": "archive-ege6-35",
+    "source": "w,h=map(int,input().split());print(w*h)\n"
+  },
+  {
+    "id": "archive-ege6-36",
+    "source": "w,h=map(int,input().split());print(2*(w+h)-4)\n"
+  },
+  {
+    "id": "archive-ege6-37",
+    "source": "a,b=map(int,input().split());print(a*b//2)\n"
+  },
+  {
+    "id": "archive-ege6-38",
+    "source": "w,h=map(int,input().split());print((w+1)*(h+1))\n"
+  },
+  {
+    "id": "archive-ege6-39",
+    "source": "import math\nw,h,s=map(int,input().split());print(math.gcd(w,s)+math.gcd(h,s))\n"
+  },
+  {
+    "id": "archive-ege6-40",
+    "source": "w,h=map(int,input().split());print(abs(w-h))\n"
+  },
+  {
+    "id": "archive-ege7-01",
+    "source": "import math\nw,h,c=map(int,input().split());print((w*h*math.ceil(math.log2(c))+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-02",
+    "source": "f,b,c,t=map(int,input().split());print(f*b*c*t)\n"
+  },
+  {
+    "id": "archive-ege7-03",
+    "source": "r,b=map(int,input().split());print(r*b)\n"
+  },
+  {
+    "id": "archive-ege7-04",
+    "source": "s,v=map(int,input().split());print((s+v-1)//v)\n"
+  },
+  {
+    "id": "archive-ege7-05",
+    "source": "b,n=map(int,input().split());print((b*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-06",
+    "source": "import math\nc,p=map(int,input().split());print(math.ceil(math.log2(c))*p)\n"
+  },
+  {
+    "id": "archive-ege7-07",
+    "source": "s,k=map(int,input().split());print((s+k-1)//k)\n"
+  },
+  {
+    "id": "archive-ege7-08",
+    "source": "import math\na,b=map(int,input().split());print(a*b//math.gcd(a,b))\n"
+  },
+  {
+    "id": "archive-ege7-09",
+    "source": "import math\nw,h,c=map(int,input().split());print((w*h*math.ceil(math.log2(c))+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-10",
+    "source": "f,b,c,t=map(int,input().split());print(f*b*c*t)\n"
+  },
+  {
+    "id": "archive-ege7-11",
+    "source": "r,b=map(int,input().split());print(r*b)\n"
+  },
+  {
+    "id": "archive-ege7-12",
+    "source": "s,v=map(int,input().split());print((s+v-1)//v)\n"
+  },
+  {
+    "id": "archive-ege7-13",
+    "source": "b,n=map(int,input().split());print((b*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-14",
+    "source": "import math\nc,p=map(int,input().split());print(math.ceil(math.log2(c))*p)\n"
+  },
+  {
+    "id": "archive-ege7-15",
+    "source": "s,k=map(int,input().split());print((s+k-1)//k)\n"
+  },
+  {
+    "id": "archive-ege7-16",
+    "source": "import math\na,b=map(int,input().split());print(a*b//math.gcd(a,b))\n"
+  },
+  {
+    "id": "archive-ege7-17",
+    "source": "import math\nw,h,c=map(int,input().split());print((w*h*math.ceil(math.log2(c))+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-18",
+    "source": "f,b,c,t=map(int,input().split());print(f*b*c*t)\n"
+  },
+  {
+    "id": "archive-ege7-19",
+    "source": "r,b=map(int,input().split());print(r*b)\n"
+  },
+  {
+    "id": "archive-ege7-20",
+    "source": "s,v=map(int,input().split());print((s+v-1)//v)\n"
+  },
+  {
+    "id": "archive-ege7-21",
+    "source": "b,n=map(int,input().split());print((b*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-22",
+    "source": "import math\nc,p=map(int,input().split());print(math.ceil(math.log2(c))*p)\n"
+  },
+  {
+    "id": "archive-ege7-23",
+    "source": "s,k=map(int,input().split());print((s+k-1)//k)\n"
+  },
+  {
+    "id": "archive-ege7-24",
+    "source": "import math\na,b=map(int,input().split());print(a*b//math.gcd(a,b))\n"
+  },
+  {
+    "id": "archive-ege7-25",
+    "source": "import math\nw,h,c=map(int,input().split());print((w*h*math.ceil(math.log2(c))+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-26",
+    "source": "f,b,c,t=map(int,input().split());print(f*b*c*t)\n"
+  },
+  {
+    "id": "archive-ege7-27",
+    "source": "r,b=map(int,input().split());print(r*b)\n"
+  },
+  {
+    "id": "archive-ege7-28",
+    "source": "s,v=map(int,input().split());print((s+v-1)//v)\n"
+  },
+  {
+    "id": "archive-ege7-29",
+    "source": "b,n=map(int,input().split());print((b*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-30",
+    "source": "import math\nc,p=map(int,input().split());print(math.ceil(math.log2(c))*p)\n"
+  },
+  {
+    "id": "archive-ege7-31",
+    "source": "s,k=map(int,input().split());print((s+k-1)//k)\n"
+  },
+  {
+    "id": "archive-ege7-32",
+    "source": "import math\na,b=map(int,input().split());print(a*b//math.gcd(a,b))\n"
+  },
+  {
+    "id": "archive-ege7-33",
+    "source": "import math\nw,h,c=map(int,input().split());print((w*h*math.ceil(math.log2(c))+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-34",
+    "source": "f,b,c,t=map(int,input().split());print(f*b*c*t)\n"
+  },
+  {
+    "id": "archive-ege7-35",
+    "source": "r,b=map(int,input().split());print(r*b)\n"
+  },
+  {
+    "id": "archive-ege7-36",
+    "source": "s,v=map(int,input().split());print((s+v-1)//v)\n"
+  },
+  {
+    "id": "archive-ege7-37",
+    "source": "b,n=map(int,input().split());print((b*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege7-38",
+    "source": "import math\nc,p=map(int,input().split());print(math.ceil(math.log2(c))*p)\n"
+  },
+  {
+    "id": "archive-ege7-39",
+    "source": "s,k=map(int,input().split());print((s+k-1)//k)\n"
+  },
+  {
+    "id": "archive-ege7-40",
+    "source": "import math\na,b=map(int,input().split());print(a*b//math.gcd(a,b))\n"
+  },
+  {
+    "id": "archive-ege10-01",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(re.findall(r'(?<![а-яё])портрет(?![а-яё])',text)))\n"
+  },
+  {
+    "id": "archive-ege10-02",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(word.startswith('поэ') for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-03",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(len(word)>=5 for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-04",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(set(re.findall(r'[а-яё]+',text))))\n"
+  },
+  {
+    "id": "archive-ege10-05",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(max(map(len,words)))\n"
+  },
+  {
+    "id": "archive-ege10-06",
+    "source": "import re\ntext=open('10.txt').read()\nprint(sum(word[0].isupper() for word in re.findall(r'[А-ЯЁ][а-яё]*',text)))\n"
+  },
+  {
+    "id": "archive-ege10-07",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum('р' in word for word in words))\n"
+  },
+  {
+    "id": "archive-ege10-08",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum(word=='роман' and i%2==0 for i,word in enumerate(words)))\n"
+  },
+  {
+    "id": "archive-ege10-09",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(re.findall(r'(?<![а-яё])герой(?![а-яё])',text)))\n"
+  },
+  {
+    "id": "archive-ege10-10",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(word.startswith('сло') for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-11",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(len(word)>=5 for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-12",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(set(re.findall(r'[а-яё]+',text))))\n"
+  },
+  {
+    "id": "archive-ege10-13",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(max(map(len,words)))\n"
+  },
+  {
+    "id": "archive-ege10-14",
+    "source": "import re\ntext=open('10.txt').read()\nprint(sum(word[0].isupper() for word in re.findall(r'[А-ЯЁ][а-яё]*',text)))\n"
+  },
+  {
+    "id": "archive-ege10-15",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum('р' in word for word in words))\n"
+  },
+  {
+    "id": "archive-ege10-16",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum(word=='портрет' and i%2==0 for i,word in enumerate(words)))\n"
+  },
+  {
+    "id": "archive-ege10-17",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(re.findall(r'(?<![а-яё])поэт(?![а-яё])',text)))\n"
+  },
+  {
+    "id": "archive-ege10-18",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(word.startswith('ром') for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-19",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(len(word)>=5 for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-20",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(set(re.findall(r'[а-яё]+',text))))\n"
+  },
+  {
+    "id": "archive-ege10-21",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(max(map(len,words)))\n"
+  },
+  {
+    "id": "archive-ege10-22",
+    "source": "import re\ntext=open('10.txt').read()\nprint(sum(word[0].isupper() for word in re.findall(r'[А-ЯЁ][а-яё]*',text)))\n"
+  },
+  {
+    "id": "archive-ege10-23",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum('р' in word for word in words))\n"
+  },
+  {
+    "id": "archive-ege10-24",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum(word=='герой' and i%2==0 for i,word in enumerate(words)))\n"
+  },
+  {
+    "id": "archive-ege10-25",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(re.findall(r'(?<![а-яё])слово(?![а-яё])',text)))\n"
+  },
+  {
+    "id": "archive-ege10-26",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(word.startswith('пор') for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-27",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(len(word)>=5 for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-28",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(set(re.findall(r'[а-яё]+',text))))\n"
+  },
+  {
+    "id": "archive-ege10-29",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(max(map(len,words)))\n"
+  },
+  {
+    "id": "archive-ege10-30",
+    "source": "import re\ntext=open('10.txt').read()\nprint(sum(word[0].isupper() for word in re.findall(r'[А-ЯЁ][а-яё]*',text)))\n"
+  },
+  {
+    "id": "archive-ege10-31",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum('р' in word for word in words))\n"
+  },
+  {
+    "id": "archive-ege10-32",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum(word=='поэт' and i%2==0 for i,word in enumerate(words)))\n"
+  },
+  {
+    "id": "archive-ege10-33",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(re.findall(r'(?<![а-яё])роман(?![а-яё])',text)))\n"
+  },
+  {
+    "id": "archive-ege10-34",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(word.startswith('гер') for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-35",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(sum(len(word)>=5 for word in re.findall(r'[а-яё]+',text)))\n"
+  },
+  {
+    "id": "archive-ege10-36",
+    "source": "import re\ntext=open('10.txt').read().lower()\nprint(len(set(re.findall(r'[а-яё]+',text))))\n"
+  },
+  {
+    "id": "archive-ege10-37",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(max(map(len,words)))\n"
+  },
+  {
+    "id": "archive-ege10-38",
+    "source": "import re\ntext=open('10.txt').read()\nprint(sum(word[0].isupper() for word in re.findall(r'[А-ЯЁ][а-яё]*',text)))\n"
+  },
+  {
+    "id": "archive-ege10-39",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum('р' in word for word in words))\n"
+  },
+  {
+    "id": "archive-ege10-40",
+    "source": "import re\nwords=re.findall(r'[а-яё]+',open('10.txt').read().lower())\nprint(sum(word=='слово' and i%2==0 for i,word in enumerate(words)))\n"
+  },
+  {
+    "id": "archive-ege11-01",
+    "source": "import math\nv,n=map(int,input().split());print(math.ceil(math.log2(v))*n)\n"
+  },
+  {
+    "id": "archive-ege11-02",
+    "source": "import math\ns,n=map(int,input().split());print((math.ceil(math.log2(s))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-03",
+    "source": "import math\na,l,n=map(int,input().split());print((math.ceil(math.log2(a))*l*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-04",
+    "source": "v,b=map(int,input().split());print('YES' if 2**b>=v else 'NO')\n"
+  },
+  {
+    "id": "archive-ege11-05",
+    "source": "n,b=map(int,input().split());print(n*b)\n"
+  },
+  {
+    "id": "archive-ege11-06",
+    "source": "b,n=map(int,input().split());print(b*8//n)\n"
+  },
+  {
+    "id": "archive-ege11-07",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege11-08",
+    "source": "import math\na,n=map(int,input().split());print((math.ceil(math.log2(a))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-09",
+    "source": "import math\nv,n=map(int,input().split());print(math.ceil(math.log2(v))*n)\n"
+  },
+  {
+    "id": "archive-ege11-10",
+    "source": "import math\ns,n=map(int,input().split());print((math.ceil(math.log2(s))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-11",
+    "source": "import math\na,l,n=map(int,input().split());print((math.ceil(math.log2(a))*l*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-12",
+    "source": "v,b=map(int,input().split());print('YES' if 2**b>=v else 'NO')\n"
+  },
+  {
+    "id": "archive-ege11-13",
+    "source": "n,b=map(int,input().split());print(n*b)\n"
+  },
+  {
+    "id": "archive-ege11-14",
+    "source": "b,n=map(int,input().split());print(b*8//n)\n"
+  },
+  {
+    "id": "archive-ege11-15",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege11-16",
+    "source": "import math\na,n=map(int,input().split());print((math.ceil(math.log2(a))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-17",
+    "source": "import math\nv,n=map(int,input().split());print(math.ceil(math.log2(v))*n)\n"
+  },
+  {
+    "id": "archive-ege11-18",
+    "source": "import math\ns,n=map(int,input().split());print((math.ceil(math.log2(s))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-19",
+    "source": "import math\na,l,n=map(int,input().split());print((math.ceil(math.log2(a))*l*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-20",
+    "source": "v,b=map(int,input().split());print('YES' if 2**b>=v else 'NO')\n"
+  },
+  {
+    "id": "archive-ege11-21",
+    "source": "n,b=map(int,input().split());print(n*b)\n"
+  },
+  {
+    "id": "archive-ege11-22",
+    "source": "b,n=map(int,input().split());print(b*8//n)\n"
+  },
+  {
+    "id": "archive-ege11-23",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege11-24",
+    "source": "import math\na,n=map(int,input().split());print((math.ceil(math.log2(a))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-25",
+    "source": "import math\nv,n=map(int,input().split());print(math.ceil(math.log2(v))*n)\n"
+  },
+  {
+    "id": "archive-ege11-26",
+    "source": "import math\ns,n=map(int,input().split());print((math.ceil(math.log2(s))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-27",
+    "source": "import math\na,l,n=map(int,input().split());print((math.ceil(math.log2(a))*l*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-28",
+    "source": "v,b=map(int,input().split());print('YES' if 2**b>=v else 'NO')\n"
+  },
+  {
+    "id": "archive-ege11-29",
+    "source": "n,b=map(int,input().split());print(n*b)\n"
+  },
+  {
+    "id": "archive-ege11-30",
+    "source": "b,n=map(int,input().split());print(b*8//n)\n"
+  },
+  {
+    "id": "archive-ege11-31",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege11-32",
+    "source": "import math\na,n=map(int,input().split());print((math.ceil(math.log2(a))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-33",
+    "source": "import math\nv,n=map(int,input().split());print(math.ceil(math.log2(v))*n)\n"
+  },
+  {
+    "id": "archive-ege11-34",
+    "source": "import math\ns,n=map(int,input().split());print((math.ceil(math.log2(s))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-35",
+    "source": "import math\na,l,n=map(int,input().split());print((math.ceil(math.log2(a))*l*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege11-36",
+    "source": "v,b=map(int,input().split());print('YES' if 2**b>=v else 'NO')\n"
+  },
+  {
+    "id": "archive-ege11-37",
+    "source": "n,b=map(int,input().split());print(n*b)\n"
+  },
+  {
+    "id": "archive-ege11-38",
+    "source": "b,n=map(int,input().split());print(b*8//n)\n"
+  },
+  {
+    "id": "archive-ege11-39",
+    "source": "a,l=map(int,input().split());print(a**l)\n"
+  },
+  {
+    "id": "archive-ege11-40",
+    "source": "import math\na,n=map(int,input().split());print((math.ceil(math.log2(a))*n+7)//8)\n"
+  },
+  {
+    "id": "archive-ege12-01",
+    "source": "s=input().strip()\nwhile 'AB' in s:\n    s=s.replace('AB','C',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-02",
+    "source": "s=input().strip()\nwhile '11' in s:\n    s=s.replace('11','0',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-03",
+    "source": "s=input().strip()\nwhile 'XYZ' in s:\n    s=s.replace('XYZ','Q',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-04",
+    "source": "s=input().strip()\nwhile 'aa' in s:\n    s=s.replace('aa','b',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-05",
+    "source": "s=input().strip()\nwhile '101' in s:\n    s=s.replace('101','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-06",
+    "source": "s=input().strip()\nwhile 'BC' in s:\n    s=s.replace('BC','A',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-07",
+    "source": "s=input().strip()\nwhile '00' in s:\n    s=s.replace('00','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-08",
+    "source": "s=input().strip()\nwhile 'cat' in s:\n    s=s.replace('cat','dog',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-09",
+    "source": "s=input().strip()\nwhile 'AB' in s:\n    s=s.replace('AB','C',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-10",
+    "source": "s=input().strip()\nwhile '11' in s:\n    s=s.replace('11','0',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-11",
+    "source": "s=input().strip()\nwhile 'XYZ' in s:\n    s=s.replace('XYZ','Q',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-12",
+    "source": "s=input().strip()\nwhile 'aa' in s:\n    s=s.replace('aa','b',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-13",
+    "source": "s=input().strip()\nwhile '101' in s:\n    s=s.replace('101','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-14",
+    "source": "s=input().strip()\nwhile 'BC' in s:\n    s=s.replace('BC','A',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-15",
+    "source": "s=input().strip()\nwhile '00' in s:\n    s=s.replace('00','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-16",
+    "source": "s=input().strip()\nwhile 'cat' in s:\n    s=s.replace('cat','dog',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-17",
+    "source": "s=input().strip()\nwhile 'AB' in s:\n    s=s.replace('AB','C',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-18",
+    "source": "s=input().strip()\nwhile '11' in s:\n    s=s.replace('11','0',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-19",
+    "source": "s=input().strip()\nwhile 'XYZ' in s:\n    s=s.replace('XYZ','Q',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-20",
+    "source": "s=input().strip()\nwhile 'aa' in s:\n    s=s.replace('aa','b',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-21",
+    "source": "s=input().strip()\nwhile '101' in s:\n    s=s.replace('101','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-22",
+    "source": "s=input().strip()\nwhile 'BC' in s:\n    s=s.replace('BC','A',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-23",
+    "source": "s=input().strip()\nwhile '00' in s:\n    s=s.replace('00','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-24",
+    "source": "s=input().strip()\nwhile 'cat' in s:\n    s=s.replace('cat','dog',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-25",
+    "source": "s=input().strip()\nwhile 'AB' in s:\n    s=s.replace('AB','C',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-26",
+    "source": "s=input().strip()\nwhile '11' in s:\n    s=s.replace('11','0',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-27",
+    "source": "s=input().strip()\nwhile 'XYZ' in s:\n    s=s.replace('XYZ','Q',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-28",
+    "source": "s=input().strip()\nwhile 'aa' in s:\n    s=s.replace('aa','b',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-29",
+    "source": "s=input().strip()\nwhile '101' in s:\n    s=s.replace('101','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-30",
+    "source": "s=input().strip()\nwhile 'BC' in s:\n    s=s.replace('BC','A',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-31",
+    "source": "s=input().strip()\nwhile '00' in s:\n    s=s.replace('00','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-32",
+    "source": "s=input().strip()\nwhile 'cat' in s:\n    s=s.replace('cat','dog',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-33",
+    "source": "s=input().strip()\nwhile 'AB' in s:\n    s=s.replace('AB','C',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-34",
+    "source": "s=input().strip()\nwhile '11' in s:\n    s=s.replace('11','0',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-35",
+    "source": "s=input().strip()\nwhile 'XYZ' in s:\n    s=s.replace('XYZ','Q',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-36",
+    "source": "s=input().strip()\nwhile 'aa' in s:\n    s=s.replace('aa','b',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-37",
+    "source": "s=input().strip()\nwhile '101' in s:\n    s=s.replace('101','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-38",
+    "source": "s=input().strip()\nwhile 'BC' in s:\n    s=s.replace('BC','A',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-39",
+    "source": "s=input().strip()\nwhile '00' in s:\n    s=s.replace('00','1',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege12-40",
+    "source": "s=input().strip()\nwhile 'cat' in s:\n    s=s.replace('cat','dog',1)\nprint(s)\n"
+  },
+  {
+    "id": "archive-ege22-01",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();deps=[] if rest==['0'] else list(map(int,rest[0].split(';')));rows[int(p)]=(int(t),deps)\nfrom functools import lru_cache\n@lru_cache(None)\ndef finish(p):\n t,d=rows[p];return t+max((finish(x) for x in d),default=0)\nprint(max(finish(p) for p in rows))\n"
+  },
+  {
+    "id": "archive-ege22-02",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,int(t))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-03",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t) if rest==['0'] else 0\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-04",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=rest!=['0']\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-05",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,0 if rest==['0'] else len(rest[0].split(';')))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-06",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-07",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split()\n if rest==['0']: best=max(best,int(p))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-08",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();rows[int(p)]=(int(t),[] if rest==['0'] else list(map(int,rest[0].split(';'))))\nfrom functools import lru_cache\n@lru_cache(None)\ndef f(p):\n t,d=rows[p];return t+max((f(x) for x in d),default=0)\ncritical=max(f(p) for p in rows);print(critical-max(t for t,d in rows.values()))\n"
+  },
+  {
+    "id": "archive-ege22-09",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();deps=[] if rest==['0'] else list(map(int,rest[0].split(';')));rows[int(p)]=(int(t),deps)\nfrom functools import lru_cache\n@lru_cache(None)\ndef finish(p):\n t,d=rows[p];return t+max((finish(x) for x in d),default=0)\nprint(max(finish(p) for p in rows))\n"
+  },
+  {
+    "id": "archive-ege22-10",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,int(t))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-11",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t) if rest==['0'] else 0\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-12",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=rest!=['0']\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-13",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,0 if rest==['0'] else len(rest[0].split(';')))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-14",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-15",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split()\n if rest==['0']: best=max(best,int(p))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-16",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();rows[int(p)]=(int(t),[] if rest==['0'] else list(map(int,rest[0].split(';'))))\nfrom functools import lru_cache\n@lru_cache(None)\ndef f(p):\n t,d=rows[p];return t+max((f(x) for x in d),default=0)\ncritical=max(f(p) for p in rows);print(critical-max(t for t,d in rows.values()))\n"
+  },
+  {
+    "id": "archive-ege22-17",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();deps=[] if rest==['0'] else list(map(int,rest[0].split(';')));rows[int(p)]=(int(t),deps)\nfrom functools import lru_cache\n@lru_cache(None)\ndef finish(p):\n t,d=rows[p];return t+max((finish(x) for x in d),default=0)\nprint(max(finish(p) for p in rows))\n"
+  },
+  {
+    "id": "archive-ege22-18",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,int(t))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-19",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t) if rest==['0'] else 0\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-20",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=rest!=['0']\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-21",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,0 if rest==['0'] else len(rest[0].split(';')))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-22",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-23",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split()\n if rest==['0']: best=max(best,int(p))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-24",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();rows[int(p)]=(int(t),[] if rest==['0'] else list(map(int,rest[0].split(';'))))\nfrom functools import lru_cache\n@lru_cache(None)\ndef f(p):\n t,d=rows[p];return t+max((f(x) for x in d),default=0)\ncritical=max(f(p) for p in rows);print(critical-max(t for t,d in rows.values()))\n"
+  },
+  {
+    "id": "archive-ege22-25",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();deps=[] if rest==['0'] else list(map(int,rest[0].split(';')));rows[int(p)]=(int(t),deps)\nfrom functools import lru_cache\n@lru_cache(None)\ndef finish(p):\n t,d=rows[p];return t+max((finish(x) for x in d),default=0)\nprint(max(finish(p) for p in rows))\n"
+  },
+  {
+    "id": "archive-ege22-26",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,int(t))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-27",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t) if rest==['0'] else 0\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-28",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=rest!=['0']\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-29",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,0 if rest==['0'] else len(rest[0].split(';')))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-30",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-31",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split()\n if rest==['0']: best=max(best,int(p))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-32",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();rows[int(p)]=(int(t),[] if rest==['0'] else list(map(int,rest[0].split(';'))))\nfrom functools import lru_cache\n@lru_cache(None)\ndef f(p):\n t,d=rows[p];return t+max((f(x) for x in d),default=0)\ncritical=max(f(p) for p in rows);print(critical-max(t for t,d in rows.values()))\n"
+  },
+  {
+    "id": "archive-ege22-33",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();deps=[] if rest==['0'] else list(map(int,rest[0].split(';')));rows[int(p)]=(int(t),deps)\nfrom functools import lru_cache\n@lru_cache(None)\ndef finish(p):\n t,d=rows[p];return t+max((finish(x) for x in d),default=0)\nprint(max(finish(p) for p in rows))\n"
+  },
+  {
+    "id": "archive-ege22-34",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,int(t))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-35",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t) if rest==['0'] else 0\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-36",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=rest!=['0']\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-37",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split();best=max(best,0 if rest==['0'] else len(rest[0].split(';')))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-38",
+    "source": "n=int(input());ans=0\nfor _ in range(n):\n p,t,*rest=input().split();ans+=int(t)\nprint(ans)\n"
+  },
+  {
+    "id": "archive-ege22-39",
+    "source": "n=int(input());best=0\nfor _ in range(n):\n p,t,*rest=input().split()\n if rest==['0']: best=max(best,int(p))\nprint(best)\n"
+  },
+  {
+    "id": "archive-ege22-40",
+    "source": "n=int(input());rows={}\nfor _ in range(n):\n p,t,*rest=input().split();rows[int(p)]=(int(t),[] if rest==['0'] else list(map(int,rest[0].split(';'))))\nfrom functools import lru_cache\n@lru_cache(None)\ndef f(p):\n t,d=rows[p];return t+max((f(x) for x in d),default=0)\ncritical=max(f(p) for p in rows);print(critical-max(t for t,d in rows.values()))\n"
+  }
+]

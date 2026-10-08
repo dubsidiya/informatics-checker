@@ -25,8 +25,8 @@
     document.querySelectorAll("#theme-toggle").forEach((btn) => {
       const icon = btn.querySelector(".icon");
       const label = btn.querySelector(".label");
-      if (icon) icon.textContent = mode === "dark" ? "?" : "?";
-      if (label) label.textContent = mode === "dark" ? "Светлая" : "Тёмная";
+      if (icon) icon.textContent = mode === "dark" ? "вѕ" : "вЂ";
+      if (label) label.textContent = mode === "dark" ? "РўС‘РјРЅР°СЏ" : "РЎРІРµС‚Р»Р°СЏ";
       btn.setAttribute("aria-pressed", String(mode === "dark"));
     });
   }

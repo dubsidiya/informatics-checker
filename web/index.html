@@ -7,7 +7,7 @@
   <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20260918d">
+  <link rel="stylesheet" href="/static/style.css?v=20261007c">
   <link rel="stylesheet" href="/vendor/codemirror/lib/codemirror.min.css">
   <link rel="stylesheet" href="/vendor/codemirror/theme/material.min.css">
   <link rel="stylesheet" href="/vendor/codemirror/addon/hint/show-hint.min.css">
@@ -27,6 +27,7 @@
           <span>Имя ученика</span>
           <input id="student" type="text" maxlength="80" placeholder="Как подписать работу" autocomplete="name">
         </label>
+        <a class="ghost-link practice-only" href="/playground">Песочница</a>
         <a class="ghost-link practice-only" href="/teacher">Кабинет учителя</a>
         <button id="theme-toggle" type="button" class="theme-toggle" aria-label="Переключить тему">
           <span class="icon" aria-hidden="true"></span><span class="label">Тема</span>
@@ -103,8 +104,10 @@
           <ol id="coach-steps"></ol>
           <p id="coach-watch" class="muted"></p>
         </details>
+        <section id="mistake-guide" class="mistake-guide" aria-labelledby="mistake-guide-title"></section>
         <h2 id="title">Загрузка…</h2>
         <p id="statement"></p>
+        <div id="read-help" class="read-help hidden"></div>
         <div id="file-box" class="file-box hidden"></div>
         <div class="meta">
           <div>
@@ -163,7 +166,7 @@
   <script src="/vendor/codemirror/addon/search/jump-to-line.min.js"></script>
   <script src="/vendor/codemirror/addon/search/match-highlighter.min.js"></script>
   <script src="/vendor/codemirror/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/theme.js?v=20260918d"></script>
-  <script src="/static/app.js?v=20260918d"></script>
+  <script src="/static/theme.js?v=20261007c"></script>
+  <script src="/static/app.js?v=20261007c"></script>
 </body>
 </html>

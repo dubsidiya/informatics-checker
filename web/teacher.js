@@ -16,7 +16,8 @@ const boardRefresh = document.getElementById("board-refresh");
 
 let teacherCsrf = "";
 let problems = [];
-let summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], topics: [], hard_tasks: [], inactive: [], exams: { live: [], recent: [] } };
+let summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], topics: [], hard_tasks: [], inactive: [], exams: { live: [], recent: [] }, solution_views: [] };
+let solutionViews = [];
 let topicFilter = "все";
 let colMode = "attempted";
 let period = "all";
@@ -64,7 +65,7 @@ function csrfHeaders(extra) {
 
 function clearTeacherState() {
   teacherCsrf = "";
-  summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], topics: [], hard_tasks: [], inactive: [], exams: { live: [], recent: [] } };
+  summary = { students: [], total_attempts: 0, total_students: 0, stuck: [], topics: [], hard_tasks: [], inactive: [], exams: { live: [], recent: [] }, solution_views: [] };
   openCell = null;
   query = "";
   if (boardSearch) boardSearch.value = "";
@@ -145,6 +146,7 @@ async function showBoard() {
 
 async function loadSummary() {
   summary = await api("/api/teacher/summary");
+  solutionViews = summary.solution_views || [];
   renderStats();
   renderGrid();
 }
@@ -265,6 +267,10 @@ function renderClassroom() {
   const stuckHtml = stuck.length
     ? `<ul>${stuck.map((item) => `<li><button type="button" class="ghost-link" data-find="${escapeHtml(item.student)}">${escapeHtml(item.student)}</button> · ${escapeHtml(problemTitle(item.problem_id))} · ${item.attempts} попыток, не сдано</li>`).join("")}</ul>`
     : `<p class="muted">Нет учеников с тремя и больше неудачами на одной задаче.</p>`;
+  const views = solutionViews.filter((item) => inPeriod(item.ts)).slice(0, 12);
+  const viewsHtml = views.length
+    ? `<ul>${views.map((item) => `<li><b>${escapeHtml(item.student)}</b> · ${escapeHtml(problemTitle(item.problem_id))} · ${when(item.ts)}</li>`).join("")}</ul>`
+    : `<p class="muted">Пока никто не открывал подробное решение.</p>`;
   const recentHtml = recent.length
     ? `<p class="muted">${recent.slice(0, 6).map((item) => `${escapeHtml(item.student)}: ${item.solved}/${item.total} «${escapeHtml(item.topic)}»`).join(" · ")}</p>`
     : "";
@@ -277,6 +283,10 @@ function renderClassroom() {
     <article class="classroom-card">
       <h3>Кто застрял</h3>
       ${stuckHtml}
+    </article>
+    <article class="classroom-card solution-views-card">
+      <h3>Кто посмотрел решения</h3>
+      ${viewsHtml}
     </article>
   `;
 }
@@ -304,6 +314,11 @@ function renderGrid() {
     return;
   }
   const head = cols.map((problem) => `<th title="${escapeHtml(problem.title)}">${escapeHtml(problem.title)}</th>`).join("");
+  const viewCounts = new Map();
+  for (const item of solutionViews.filter((item) => inPeriod(item.ts))) {
+    const key = `${item.student}\u0000${item.problem_id}`;
+    viewCounts.set(key, (viewCounts.get(key) || 0) + 1);
+  }
   const rows = rowsData.map((student) => {
     const cells = cols.map((problem) => {
       const cell = student.problems[problem.id];
@@ -313,7 +328,9 @@ function renderGrid() {
       const klass = cell.best_status === "ok" ? "ok" : cell.best_status === "syntax" ? "warn" : "bad";
       const label = cell.best_status === "ok" ? "сдано" : `${cell.passed}/${cell.total}`;
       const attemptId = cell.best_attempt_id || cell.attempt_id;
-      return `<td class="cell ${klass}" tabindex="0" role="button" data-student="${escapeHtml(student.name)}" data-problem="${problem.id}" data-id="${attemptId}">${label}<small>${cell.attempts} попыток</small></td>`;
+      const views = viewCounts.get(`${student.name}\u0000${problem.id}`) || 0;
+      const viewMark = views ? `<small class="solution-view-mark">решение ×${views}</small>` : "";
+      return `<td class="cell ${klass}" tabindex="0" role="button" data-student="${escapeHtml(student.name)}" data-problem="${problem.id}" data-id="${attemptId}">${label}<small>${cell.attempts} попыток</small>${viewMark}</td>`;
     }).join("");
     return `<tr>
       <th class="name-col" tabindex="0" data-student="${escapeHtml(student.name)}" title="Нажми, чтобы найти этого ученика">${escapeHtml(student.name)}<small>${topicScore(student)}</small></th>

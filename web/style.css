@@ -597,6 +597,51 @@ body.editor-full .CodeMirror {
 .file-box a { color: var(--info); font-weight: 600; }
 .file-box code { font-family: var(--mono); font-size: 13px; }
 
+.read-help {
+  background: var(--chip);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 0 0 14px;
+}
+.read-help h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+.read-help p { margin: 0 0 8px; line-height: 1.45; }
+.playground {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr);
+  gap: 16px;
+}
+.plain-input, .program-output {
+  width: 100%;
+  min-height: 140px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 10px;
+}
+.program-output { white-space: pre-wrap; overflow: auto; }
+.file-upload { display: block; margin: 12px 0; }
+@media (max-width: 800px) {
+  .playground { grid-template-columns: 1fr; }
+}
+.read-help pre {
+  margin: 0;
+  padding: 8px 10px;
+  overflow-x: auto;
+  border-radius: 8px;
+  background: var(--bg);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
 .brief p { line-height: 1.5; margin: 0 0 12px; }
 #statement {
   white-space: pre-wrap;
@@ -648,6 +693,51 @@ body.editor-full .CodeMirror {
 .hint-key { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
 
 .result { margin-top: 16px; }
+.show-result {
+  display: block;
+  margin: 0 0 10px auto;
+}
+.solution-button {
+  display: block;
+  margin: 12px 0;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  font-weight: 700;
+}
+.solution-button:disabled { opacity: .6; cursor: wait; }
+.solution-card {
+  padding: 18px;
+  border: 2px solid var(--ok);
+  border-radius: 14px;
+  background: var(--ok-bg);
+}
+.solution-card h3 { margin-top: 0; }
+.solution-card h4 { margin: 16px 0 8px; }
+.solution-io { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
+.solution-io > div { padding: 10px; border-radius: 8px; background: var(--surface); }
+.solution-io span { display: block; margin-top: 4px; color: var(--muted); }
+.solution-steps, .solution-mistakes { padding-left: 22px; }
+.solution-steps li, .solution-mistakes li { margin: 8px 0; }
+.solution-steps span, .solution-mistakes span { display: block; color: var(--muted); }
+.solution-code {
+  padding: 10px;
+  border-radius: 9px;
+  background: var(--surface);
+  font-family: var(--mono);
+  overflow-x: auto;
+}
+.solution-line { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .8fr); gap: 14px; padding: 3px 0; }
+.solution-line span { color: var(--muted); font-family: system-ui, sans-serif; }
+.solution-fast { margin-top: 14px; padding: 10px; border-left: 3px solid var(--ok); background: var(--surface); }
+.solution-view-mark { color: var(--warn); font-weight: 700; }
+@media (max-width: 700px) {
+  .solution-line { grid-template-columns: 1fr; gap: 4px; margin-bottom: 9px; }
+  .solution-io { grid-template-columns: 1fr; }
+}
 .hidden { display: none; }
 
 .progress-card {
@@ -825,6 +915,27 @@ body.exam-on .coach { background: var(--info-bg); }
   color: var(--muted);
 }
 .explain-card h3 { margin: 0 0 12px; font-size: 22px; }
+.problem-provenance {
+  margin: -8px 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.coach-fast-path {
+  border-left: 3px solid var(--ok);
+  padding-left: 10px;
+  margin-top: 12px;
+}
+.mistake-guide {
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+.mistake-guide h3 { margin: 0 0 8px; font-size: 15px; }
+.mistake-guide ul { margin: 0; padding-left: 18px; }
+.mistake-guide li { margin: 6px 0; }
+.mistake-guide li span { display: block; color: var(--muted); font-size: 13px; }
 .explain-block { margin-bottom: 12px; }
 .explain-block span {
   display: block;
@@ -841,6 +952,13 @@ body.exam-on .coach { background: var(--info-bg); }
   border: 1px solid var(--line);
 }
 .explain-block.intent span { color: var(--info); }
+.explain-block.next-step {
+  background: color-mix(in srgb, var(--ok-bg) 74%, var(--surface));
+  border-left: 3px solid var(--ok);
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+.explain-block.next-step span { color: var(--ok); }
 
 .more-checks { margin-top: 8px; }
 .more-checks summary {

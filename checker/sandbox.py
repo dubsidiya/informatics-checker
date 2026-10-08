@@ -61,16 +61,17 @@ import sys
 try:
     import resource
     cpu = int(sys.argv[1])
+    memory = int(sys.argv[2]) * 1024 * 1024
     resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu))
-    resource.setrlimit(resource.RLIMIT_FSIZE, (2_000_000, 2_000_000))
+    resource.setrlimit(resource.RLIMIT_FSIZE, (20_000_000, 20_000_000))
     resource.setrlimit(resource.RLIMIT_NPROC, (8, 8))
     try:
-        resource.setrlimit(resource.RLIMIT_AS, (256 * 1024 * 1024, 256 * 1024 * 1024))
+        resource.setrlimit(resource.RLIMIT_AS, (memory, memory))
     except (ValueError, OSError):
         pass
 except Exception:
     pass
-os.execv(sys.executable, [sys.executable, "-I", sys.argv[2]])
+os.execv(sys.executable, [sys.executable, "-I", sys.argv[3]])
 """
 
 
@@ -111,7 +112,11 @@ def _fixture_aliases(src: Path) -> list[str]:
     if src.suffix == ".txt" and src.stem != "24":
         names.append(src.stem + ".txt")
     parent = src.parent.name
-    alias = {"ege17": "17.txt", "ege9": "9.txt", "ege24": "24.txt"}.get(parent)
+    alias = {
+        "ege3": "3.txt", "ege9": "9.txt", "ege10": "10.txt",
+        "ege17": "17.txt", "ege18": "18.txt", "ege22": "22.txt",
+        "ege24": "24.txt", "ege26": "26.txt", "ege27": "27.txt",
+    }.get(parent)
     if alias:
         names.append(alias)
     unique: list[str] = []
@@ -199,6 +204,50 @@ def _run_command(command: list[str], stdin: str, timeout: float, cwd: str) -> Ru
     )
 
 
+def run_playground(
+    source: str,
+    stdin: str,
+    upload_name: str = "",
+    upload_text: str = "",
+    timeout: float = 3.0,
+) -> RunResult:
+    """Run free-form code with one optional uploaded text file.
+
+    The upload is visible only under its sanitized filename. open() can read
+    that file, but every other path and every write mode stays blocked.
+    """
+    work = Path(tempfile.mkdtemp(prefix="play_"))
+    try:
+        student = work / "student.py"
+        student.write_text(source if source.endswith("\n") else source + "\n", encoding="utf-8")
+        wrapper = work / "_limits.py"
+        wrapper.write_text(LIMIT_WRAPPER, encoding="utf-8")
+        allowed: list[str] = []
+        name = _safe_upload_name(upload_name)
+        if name:
+            (work / name).write_text(upload_text, encoding="utf-8")
+            allowed.append(name)
+        if allowed:
+            (work / "_launcher.py").write_text(LAUNCHER.format(allowed=allowed), encoding="utf-8")
+            target = str(work / "_launcher.py")
+        else:
+            target = str(student)
+        command = [sys.executable, str(wrapper), str(cpu_limit(timeout)), "1024", target]
+        return _run_command(command, normalize_stdin(stdin), timeout, str(work))
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+
+def _safe_upload_name(name: str) -> str:
+    raw = Path(str(name or "")).name.strip()
+    if not raw or raw in {".", ".."}:
+        return ""
+    cleaned = "".join(ch for ch in raw if ch.isalnum() or ch in "._-")
+    if not cleaned or cleaned.startswith("."):
+        return ""
+    return cleaned[:80]
+
+
 def run_student(
     source: str,
     stdin: str,
@@ -217,7 +266,7 @@ def run_student(
             target = str(work / "_launcher.py")
         else:
             target = str(student)
-        command = [sys.executable, str(wrapper), str(cpu_limit(timeout)), target]
+        command = [sys.executable, str(wrapper), str(cpu_limit(timeout)), "256", target]
         return _run_command(command, normalize_stdin(stdin), timeout, str(work))
     finally:
         shutil.rmtree(work, ignore_errors=True)
@@ -232,7 +281,7 @@ def run_trace(source: str, stdin: str, timeout: float = 1.5, files: list[str] | 
         student.write_text(source if source.endswith("\n") else source + "\n", encoding="utf-8")
         wrapper = work / "_limits.py"
         wrapper.write_text(LIMIT_WRAPPER, encoding="utf-8")
-        command = [sys.executable, str(wrapper), str(cpu_limit(timeout)), str(TRACER)]
+        command = [sys.executable, str(wrapper), str(cpu_limit(timeout)), "256", str(TRACER)]
         completed = _run_command(command, normalize_stdin(stdin), timeout, str(work))
         if completed.returncode != 0 or completed.timed_out:
             return []

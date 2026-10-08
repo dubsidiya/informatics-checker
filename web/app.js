@@ -10,6 +10,8 @@ const els = {
   output: document.getElementById("output-format"),
   examples: document.getElementById("examples"),
   fileBox: document.getElementById("file-box"),
+  mistakeGuide: document.getElementById("mistake-guide"),
+  readHelp: document.getElementById("read-help"),
   code: document.getElementById("code"),
   run: document.getElementById("run"),
   result: document.getElementById("result"),
@@ -65,6 +67,7 @@ let examTopic = "";
 let examIds = [];
 let examSkip = new Set();
 let problemStats = {};
+let solutionViewsByProblem = {};
 let studentCsrf = "";
 let solvedIds = new Set();
 let sessionName = "";
@@ -209,6 +212,12 @@ function starterFor(problem) {
   }
   const tags = problem.tags || [];
   const name = problem.files && problem.files[0] ? problem.files[0].name : "";
+  if (tags.includes("ege3") && name) {
+    return `# ${problem.title}\nfor line in open('${name}'):\n    fields = line.strip().split(';')\n\n`;
+  }
+  if (tags.includes("ege10") && name) {
+    return `# ${problem.title}\ntext = open('${name}').read()\n\n`;
+  }
   if (tags.includes("ege9") && name) {
     if (name.endsWith(".txt")) {
       return `# ${problem.title}\nfor line in open('${name}'):\n    a = [int(x) for x in line.split()]\n\n`;
@@ -305,6 +314,7 @@ async function ensureSession() {
 function applyProgress(data) {
   solvedIds = new Set(data.solved || []);
   problemStats = data.problems || {};
+  solutionViewsByProblem = data.solution_views || {};
   renderLearningProgress();
 }
 
@@ -633,7 +643,8 @@ function renderList() {
     ].filter(Boolean).join(" ");
     const fails = problemStats[item.id]?.fails || 0;
     const mark = solved.has(item.id) ? "<i>✓</i>" : examSkip.has(item.id) ? "<i>~</i>" : "";
-    const extra = fails && !solved.has(item.id) ? ` · ${fails} попыток` : "";
+    const authorMark = item.author_created ? " · тренировка" : "";
+    const extra = `${authorMark}${fails && !solved.has(item.id) ? ` · ${fails} попыток` : ""}`;
     button.innerHTML = `
       <span class="task-title">${mark}${escapeHtml(item.title)}</span>
       <small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}${extra}</small>
@@ -1161,6 +1172,24 @@ async function openProblem(id, updateHash) {
     renderCoach(problem.topic);
     els.title.textContent = problem.title;
     els.statement.textContent = problem.statement;
+    const oldProvenance = document.querySelector(".problem-provenance");
+    if (oldProvenance) oldProvenance.remove();
+    const guide = readingGuide(problem);
+    if (els.readHelp) {
+      const noInput = (problem.input_format || "").toLowerCase().includes("ввода нет");
+      const tags = new Set(problem.tags || []);
+      if (noInput && !tags.has("ip_restore")) {
+        els.readHelp.classList.add("hidden");
+        els.readHelp.innerHTML = "";
+      } else {
+        els.readHelp.classList.remove("hidden");
+        els.readHelp.innerHTML = `
+          <h3>${escapeHtml(guide.title)}</h3>
+          <p>${escapeHtml(guide.text)}</p>
+          <pre>${escapeHtml(guide.code)}</pre>
+        `;
+      }
+    }
     if (problem.files && problem.files[0]) {
       const name = problem.files[0].name;
       els.fileBox.classList.remove("hidden");
@@ -1182,11 +1211,39 @@ async function openProblem(id, updateHash) {
         <div><strong>выход</strong>\n${escapeHtml(example.stdout)}</div>
       </div>
     `).join("") || `<p class="muted">Для этой задачи отдельный пример ввода не показан — смотри условие.</p>`;
+    if (problem.fast_path && els.coach) {
+      const fast = document.createElement("p");
+      fast.className = "coach-fast-path";
+      fast.innerHTML = `<strong>Быстрый путь:</strong> ${escapeHtml(problem.fast_path)}`;
+      const oldFast = els.coach.querySelector(".coach-fast-path");
+      if (oldFast) oldFast.remove();
+      els.coach.appendChild(fast);
+    }
+    if (els.mistakeGuide) {
+      const items = (problem.mistake_hints || []).slice(0, 3);
+      els.mistakeGuide.innerHTML = items.length
+        ? `<h3 id="mistake-guide-title">Типичные ошибки именно здесь</h3><ul>${items.map((item) => `<li><b>${escapeHtml(item.title || "Ошибка")}</b><span>${escapeHtml(item.detail || "Сверь шаги решения с условием.")}</span></li>`).join("")}</ul>`
+        : "";
+    }
     const saved = loadSavedCode(id);
     setCode(saved && saved.trim() ? saved : starterFor(problem));
     const previous = loadResult(id);
     if (previous) {
-      renderResult(previous);
+      if (previous.status === "solution_viewed" && previous.solution) {
+        renderSolution(previous.solution, { scroll: false });
+      } else {
+        if (previous.status !== "ok" && (problemStats[id]?.fails || 0) >= 10) {
+          previous.solution_available = true;
+        }
+        renderResult(previous);
+      }
+    } else if ((problemStats[id]?.fails || 0) >= 10) {
+      const priorViews = Number(solutionViewsByProblem[id] || 0);
+      els.result.classList.remove("hidden");
+      els.result.innerHTML = `
+        <div class="banner warn">По этой задаче уже ${problemStats[id].fails} неудачных попыток.${priorViews ? " Разбор уже открывали ранее." : ""}</div>
+        <button type="button" class="solution-button" data-view-solution="1">Посмотреть подробное решение</button>
+      `;
     } else {
       els.result.classList.add("hidden");
     }
@@ -1205,6 +1262,10 @@ async function openProblem(id, updateHash) {
 async function check() {
   if (!currentId) return;
   const requestGeneration = ++checkGeneration;
+  // Capture before any session/focus work.  Focusing the name field or
+  // replacing the result must not choose a new page position in another
+  // browser engine.
+  const checkPagePosition = capturePagePosition();
   persistCode();
   try {
     if (!await ensureSession()) {
@@ -1247,7 +1308,7 @@ async function check() {
       pingExamProgress();
     }
     saveResult(currentId, data);
-    renderResult(data);
+    renderResult(data, checkPagePosition);
   } catch (error) {
     if (requestGeneration !== checkGeneration) return;
     els.result.classList.remove("hidden");
@@ -1258,6 +1319,7 @@ async function check() {
       <div class="banner bad">${escapeHtml(message)}</div>
       <button type="button" class="ghost-link" data-retry-check="1">Повторить проверку</button>
     `;
+    restorePageScroll(checkPagePosition);
   } finally {
     clearTimeout(timeout);
     if (checkController === controller) checkController = null;
@@ -1266,36 +1328,41 @@ async function check() {
   }
 }
 
-function renderResult(data) {
+function renderResult(data, savedPosition = capturePagePosition()) {
   els.result.classList.remove("hidden");
   const wrap = editor ? editor.getWrapperElement() : els.code;
   wrap.classList.toggle("syntax-mark", data.status === "syntax");
 
   const explain = explanationCard(data);
   const examBit = examFooter(data);
+  const solutionBit = data.solution_available
+    ? `<button type="button" class="solution-button" data-view-solution="1">Посмотреть подробное решение</button>`
+    : "";
 
   if (data.status === "ok") {
     els.result.innerHTML = `
+      <button type="button" class="show-result ghost-link" data-show-result="1">Показать разбор</button>
       ${explain}
       <div class="banner ok">${escapeHtml(data.message)}</div>
       <p>Пройдено тестов: ${data.passed} из ${data.total}.</p>
       ${examBit}
     `;
-    els.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    restorePageScroll(savedPosition);
     renderExamBar();
     return;
   }
 
   if (data.status === "syntax" && data.syntax) {
     els.result.innerHTML = `
+      <button type="button" class="show-result ghost-link" data-show-result="1">Показать разбор</button>
       ${explain}
       ${data.syntax.snippet ? `<pre class="snippet">${escapeHtml(data.syntax.snippet)}</pre>` : ""}
     `;
     if (editor && data.syntax.line) {
       editor.setCursor({ line: data.syntax.line - 1, ch: Math.max(0, (data.syntax.column || 1) - 1) });
-      editor.focus();
+      focusWithoutScrolling(editor);
     }
-    els.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    restorePageScroll(savedPosition);
     return;
   }
 
@@ -1325,7 +1392,9 @@ function renderResult(data) {
   }).join("");
 
   els.result.innerHTML = `
+    <button type="button" class="show-result ghost-link" data-show-result="1">Показать разбор</button>
     ${explain}
+    ${solutionBit}
     <details class="more-checks">
       <summary>Тесты и ещё подсказки</summary>
       <table class="tests">
@@ -1341,7 +1410,68 @@ function renderResult(data) {
   if (data.explanation && data.explanation.line && editor) {
     editor.setCursor({ line: data.explanation.line - 1, ch: 0 });
   }
-  els.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  restorePageScroll(savedPosition);
+}
+
+function renderSolution(data, options = {}) {
+  const lines = (data.annotated_code || []).map((item) => `
+    <div class="solution-line"><code>${escapeHtml(String(item.line).padStart(3, " "))}  ${escapeHtml(item.code)}</code><span>${escapeHtml(item.purpose)}</span></div>
+  `).join("");
+  const steps = (data.steps || []).map((step) => `<li><b>${escapeHtml(step.title)}</b><span>${escapeHtml(step.text)}</span></li>`).join("");
+  const mistakes = (data.common_mistakes || []).map((item) => `<li><b>${escapeHtml(item.title)}</b><span>${escapeHtml(item.detail)}</span></li>`).join("");
+  els.result.classList.remove("hidden");
+  els.result.innerHTML = `
+    <article class="solution-card">
+      <p class="explain-kicker">Подробное решение после 10 неудачных попыток</p>
+      <h3>${escapeHtml(data.title || "Решение")}</h3>
+       <p>${escapeHtml(data.overview || "")}</p>
+      <div class="solution-io"><div><b>Что дано</b><span>${escapeHtml(data.input_format || "Смотри условие.")}</span></div><div><b>Что вывести</b><span>${escapeHtml(data.output_format || "Смотри условие.")}</span></div></div>
+      <h4>Идея метода: ${escapeHtml(data.method || "")}</h4>
+      <ol class="solution-steps">${steps}</ol>
+      <h4>Код по строкам</h4>
+      <div class="solution-code">${lines}</div>
+      <p><b>Сложность:</b> ${escapeHtml(data.complexity || "")}</p>
+      <p>${escapeHtml(data.why || "")}</p>
+      <h4>Что часто путают</h4>
+      <ul class="solution-mistakes">${mistakes}</ul>
+      <div class="solution-fast"><b>Быстрый путь:</b> ${escapeHtml(data.fast_path || "")}</div>
+    </article>
+  `;
+  if (options.scroll !== false) scrollResultIntoView();
+}
+
+// Rendering a large result can change document height.  Do not let the
+// browser choose a new page position differently in different engines.  The
+// learner can use the explicit "Показать разбор" control when they want to
+// jump to the result.
+function capturePagePosition() {
+  return { x: window.pageXOffset || window.scrollX || 0, y: window.pageYOffset || window.scrollY || 0 };
+}
+
+function restorePageScroll(position) {
+  if (!position || !Number.isFinite(position.y)) return;
+  const restore = () => window.scrollTo(position.x || 0, position.y);
+  restore();
+  requestAnimationFrame(() => {
+    restore();
+    requestAnimationFrame(restore);
+  });
+}
+
+function scrollResultIntoView() {
+  els.result.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function focusWithoutScrolling(cm) {
+  const field = cm && typeof cm.getInputField === "function" ? cm.getInputField() : null;
+  if (field && typeof field.focus === "function") {
+    try {
+      field.focus({ preventScroll: true });
+      return;
+    } catch {
+      /* Older browsers do not accept focus options. */
+    }
+  }
 }
 
 function explanationCard(data) {
@@ -1372,6 +1502,9 @@ function explanationCard(data) {
   const selfCheck = exp.self_check
     ? `<div class="explain-block self-check-step"><span>Самопроверка перед запуском</span><p>${escapeHtml(exp.self_check)}</p></div>`
     : "";
+  const nextStep = exp.next_step
+    ? `<div class="explain-block next-step"><span>Как можно решить быстрее в следующий раз</span><p>${escapeHtml(exp.next_step)}</p></div>`
+    : "";
   return `
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
       <p class="explain-kicker">${exp.intent ? "Понял твой код" : "Разбор для ученика"}${tries}</p>
@@ -1380,6 +1513,7 @@ function explanationCard(data) {
        ${thought}
        <div class="explain-block"><span>Что случилось</span><p>${escapeHtml(exp.what)}</p></div>
        <div class="explain-block"><span>Почему так</span><p>${escapeHtml(exp.why)}</p></div>
+       ${nextStep}
        ${question}
        <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how)}</p></div>
        ${selfCheck}
@@ -1408,13 +1542,112 @@ function examFooter(data) {
   return `<p>В зачёте сдано ${done} из ${items.length}. <button type="button" class="ghost-link" data-next="1">Дальше по теме</button>${skipBit}</p>`;
 }
 
+function readingGuide(problem) {
+  const tags = new Set(problem.tags || []);
+  const file = problem.files && problem.files[0] ? problem.files[0].name : "";
+  const alias = fileAlias(problem);
+  const sample = ((problem.examples || [])[0] || {}).stdin || "";
+  const lines = sample.split("\n").filter((line) => line.trim());
+  const first = lines[0] || "";
+  const words = first.trim().split(/\s+/).filter(Boolean);
+  const numbers = words.length > 0 && words.every((word) => /^-?\d+$/.test(word));
+
+  if (tags.has("ip_restore")) {
+    return {
+      title: "Правило IPv4",
+      text: "Адрес состоит ровно из четырёх десятичных частей. В каждой — от 0 до 255 и от одной до трёх цифр; многозначная часть не начинается с 0. Поставь три точки так, чтобы все четыре части выполняли это правило.",
+      code: "часть.часть.часть.часть\n0…255 в каждой части",
+    };
+  }
+
+  if (file) {
+    const name = alias && alias !== file ? alias : file;
+    if (tags.has("ege9")) {
+      return {
+        title: "Как читать таблицу",
+        text: "Данные уже лежат в файле. Каждая строка таблицы — отдельная строка файла. Сначала открой файл, потом раздели строку.",
+        code: `for line in open('${name}'):\n    parts = line.strip().split(';')`,
+      };
+    }
+    if (tags.has("ege3")) {
+      return {
+        title: "Как читать таблицу",
+        text: "Каждая строка файла — запись с полями через точку с запятой. Сначала раздели строку, затем преобразуй числовые поля.",
+        code: `for line in open('${name}'):\n    fields = line.strip().split(';')`,
+      };
+    }
+    if (tags.has("ege10")) {
+      return {
+        title: "Как читать текст",
+        text: "Файл содержит сплошной текст. Прочитай его целиком, нормализуй регистр и только потом ищи слова.",
+        code: `text = open('${name}').read().lower()`,
+      };
+    }
+    return {
+      title: "Как читать файл",
+      text: "Ничего вводить с клавиатуры не нужно. Файл уже подставлен проверяльщиком: открой его и обработай каждую строку.",
+      code: tags.has("ege24")
+        ? `s = open('${name}').read().strip()`
+        : `data = [int(x) for x in open('${name}')]`,
+    };
+  }
+  if (lines.length >= 2 && numbers && lines[1].trim().split(/\s+/).length > 1) {
+    return {
+      title: "Как читать ввод",
+      text: "Сначала в первой строке одно число, затем во второй — несколько чисел через пробел. Нужны два отдельных чтения.",
+      code: "n = int(input())\nnums = list(map(int, input().split()))",
+    };
+  }
+  if (lines.length >= 2) {
+    return {
+      title: "Как читать ввод",
+      text: `Во вводе ${lines.length} строки. Каждый вызов input() читает ровно одну следующую строку.`,
+      code: lines.slice(0, 3).map((_, index) => `line${index + 1} = input()`).join("\n"),
+    };
+  }
+  if (numbers && words.length > 1) {
+    return {
+      title: "Как читать ввод",
+      text: "Все числа находятся в одной строке и разделены пробелами. Одного int(input()) недостаточно: сначала раздели строку.",
+      code: words.length === 2
+        ? "a, b = map(int, input().split())"
+        : "nums = list(map(int, input().split()))",
+    };
+  }
+  if (numbers && words.length === 1) {
+    return {
+      title: "Как читать ввод",
+      text: "Во вводе ровно одно целое число. input() получает его как текст, поэтому сразу преобразуй в int.",
+      code: "n = int(input())",
+    };
+  }
+  if (first && !numbers) {
+    return {
+      title: "Как читать ввод",
+      text: "Здесь вход — текст, а не число. input() уже возвращает строку, int() для неё не нужен.",
+      code: "s = input().strip()",
+    };
+  }
+  return {
+    title: "Как читать ввод",
+    text: "Сверь количество строк и значений с примером. Один input() читает одну строку целиком.",
+    code: "line = input().strip()",
+  };
+}
+
 function fileAlias(problem) {
   const tags = (problem && problem.tags) || [];
+  if (tags.includes("ege3")) return "3.txt";
   if (tags.includes("ege9")) return "9.txt";
+  if (tags.includes("ege10")) return "10.txt";
   if (tags.includes("ege17")) return "17.txt";
+  if (tags.includes("ege18")) return "18.txt";
+  if (tags.includes("ege22")) return "22.txt";
   if (tags.includes("ege24")) return "24.txt";
   return "";
 }
+
+function preview(text) {
   return String(text || "").replaceAll("\n", " ↵ ").trim() || "—";
 }
 
@@ -1592,14 +1825,47 @@ if (els.repeatErrors) els.repeatErrors.addEventListener("click", () => {
   renderList();
 });
 els.result.addEventListener("click", (event) => {
+  if (event.target.closest("[data-show-result]")) {
+    scrollResultIntoView();
+    return;
+  }
   if (event.target.closest("[data-retry-check]")) {
     check();
+    return;
+  }
+  const solutionButton = event.target.closest("[data-view-solution]");
+  if (solutionButton) {
+    viewSolution(solutionButton);
     return;
   }
   if (event.target.closest("[data-next]")) openNextUnsolved();
   if (event.target.closest("[data-exam-exit]")) stopExam();
   if (event.target.closest("[data-exam-skip]")) skipExamTask();
 });
+
+async function viewSolution(button) {
+  if (!currentId) return;
+  button.disabled = true;
+  button.textContent = "Открываю решение…";
+  try {
+    const response = await fetch("/api/solution/view", {
+      method: "POST",
+      headers: csrfHeaders(),
+      body: JSON.stringify({ problem_id: currentId }),
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.detail || "Не удалось открыть решение");
+    renderSolution(data);
+    saveResult(currentId, { status: "solution_viewed", solution: data, tries: data.failed_attempts });
+  } catch (error) {
+    button.disabled = false;
+    button.textContent = "Посмотреть подробное решение";
+    const note = document.createElement("p");
+    note.className = "banner warn";
+    note.textContent = error.message;
+    button.insertAdjacentElement("afterend", note);
+  }
+}
 if (els.progressRecommendations) {
   els.progressRecommendations.addEventListener("click", (event) => {
     const button = event.target.closest("[data-progress-task]");

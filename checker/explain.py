@@ -14,11 +14,15 @@ def attach_explanation(problem: Problem, result: GradeResult, source: str = "") 
 
 def explain_result(problem: Problem, result: GradeResult, source: str = "") -> Explanation:
     if result.status == "ok":
+        from checker.success import success_advice
+
+        advice = success_advice(problem, source)
         return Explanation(
             headline="Задача сдана",
             what="Все тесты прошли: программа считает то, что просят, и печатает ответ в нужном виде.",
-            why="Значит, и пример из условия, и скрытая проверка совпали.",
+            why=advice.praise,
             how="Можно открывать следующую задачу этой темы.",
+            next_step=advice.speed_tip,
             kind="ok",
         )
 
@@ -172,7 +176,7 @@ def _generic_how(problem: Problem, visible: bool) -> str:
     if "ege5" in tags:
         return "Раздели условие на проверки в скобках: «и» — and, «или» — or, «ровно одно» — !=. В конце напечатай int(условие), чтобы получить 1 или 0."
     if "games" in tags:
-        return "Опиши game(a, b) с терминалом `a + b >= порог` и всеми ходами. Кэшируй позиции: +1 — победа своим первым ходом, −1 — соперник выигрывает первым, +2/−2 — вторым. Затем выбери нужный min или max S."
+        return "Сначала выпиши полное состояние и точный терминал именно этой игры. Учти специальные правила (вторую кучу, запрет повтора, суперход, проигрыш при перелёте), затем перебери только допустимые ходы и проверь требуемые min/max S."
     if "ege24" in tags:
         return "Прочитай строку из файла через open(...). Иди по ней слева направо: храни длину текущей подходящей непрерывной цепочки и обновляй максимум."
     if "ege17" in tags:
@@ -289,4 +293,3 @@ def deepen_explanation(problem: Problem, result: GradeResult, tries: int) -> Gra
     if extra and extra not in (exp.how or ""):
         exp.how = ((exp.how or "").rstrip() + " " + extra).strip()
     return result
-

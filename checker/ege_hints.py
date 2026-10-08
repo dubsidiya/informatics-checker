@@ -8,8 +8,28 @@ from checker.models import Hint, Problem
 
 def diagnose_ege(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     tags = set(problem.tags)
+    if "ege1" in tags:
+        return _ege1(facts, problem, outcome)
+    if "ege3" in tags:
+        return _ege3(facts, problem, outcome)
+    if "ege4" in tags:
+        return _ege4(facts, problem, outcome)
+    if "ege2" in tags:
+        return _ege2(facts, problem, outcome)
+    if "ege15" in tags:
+        return _ege15(facts, problem, outcome)
+    if "ege18" in tags:
+        return _ege18(facts, problem, outcome)
+    if "ege26" in tags:
+        return _ege26(facts, problem, outcome)
+    if "ege27" in tags:
+        return _ege27(facts, problem, outcome)
     if "ege5" in tags:
         return _ege5(facts, problem, outcome)
+    if "ege6" in tags:
+        return _ege6(facts, problem, outcome)
+    if "ege7" in tags:
+        return _ege7(facts, problem, outcome)
     if "games" in tags:
         return _games(facts, problem, outcome)
     if "ege24" in tags:
@@ -18,6 +38,12 @@ def diagnose_ege(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[t
         return _ege8(facts, problem, outcome)
     if "ege9" in tags:
         return _ege9(facts, problem, outcome)
+    if "ege10" in tags:
+        return _ege10(facts, problem, outcome)
+    if "ege11" in tags:
+        return _ege11(facts, problem, outcome)
+    if "ege12" in tags:
+        return _ege12(facts, problem, outcome)
     if "ege13" in tags:
         return _ege13(facts, problem, outcome)
     if "ege14" in tags:
@@ -26,6 +52,8 @@ def diagnose_ege(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[t
         return _ege16(facts, problem, outcome)
     if "ege23" in tags:
         return _ege23(facts, problem, outcome)
+    if "ege22" in tags:
+        return _ege22(facts, problem, outcome)
     if "ege25" in tags:
         return _ege25(facts, problem, outcome)
     return []
@@ -33,6 +61,90 @@ def diagnose_ege(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[t
 
 def hint(title: str, detail: str, kind: str = "logic", weight: int = 80) -> tuple[int, Hint]:
     return weight, Hint(kind=kind, title=title, detail=detail)
+
+
+def _archive_fallback(problem: Problem, text: str) -> list[tuple[int, Hint]]:
+    return _ensure([], "Архивный приём применён иначе", text, weight=82)
+
+
+def _ege1(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_loop:
+        found.append(hint("Граф не обработан", "Прочитай все M рёбер и построй список смежности или множество рёбер.", weight=92))
+    if "append" not in facts.source and "set(" not in facts.source and "edges" not in facts.source:
+        found.append(hint("Не видна модель графа", "Одного чтения чисел недостаточно: сохрани связи между вершинами.", weight=88))
+    return _ensure(found, "Графовая величина посчитана иначе", "Сверь, что требуется: степень, путь, компоненты или треугольники; не смешивай вершины и рёбра.")
+
+
+def _ege3(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_open:
+        found.append(hint("Таблица не прочитана", "Открой подключённый `3.txt` и обработай каждую строку.", weight=94))
+    if facts.has_open and "split(';')" not in facts.source and 'split(";")' not in facts.source:
+        found.append(hint("Неверный разделитель таблицы", "Поля записи разделены точкой с запятой: используй split(';').", weight=90))
+    return _ensure(found, "Записи таблицы отобраны иначе", "Сверь поле фильтра, тип операции и то, что считается: сумма, количество или различные значения.")
+
+
+def _ege4(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if "format(" not in facts.source and "bin(" not in facts.source and "int(" not in facts.source:
+        found.append(hint("Не выполнен перевод кода", "Используй format/bin для двоичной записи или int(bits, 2) для чтения кода.", weight=90))
+    if "байт" in problem.statement.lower() and "//" not in facts.source:
+        found.append(hint("Байты округляются вниз", "Минимальный размер в байтах: (число_бит + 7) // 8.", weight=92))
+    return _ensure(found, "Кодирование посчитано иначе", "Сверь длину кода символа, основание системы и единицы результата.")
+
+
+def _ege6(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    if "внутр" in problem.statement.lower() and "- 1" not in facts.source and "-1" not in facts.source:
+        return [hint("Граница попала внутрь", "Точки на линии не считаются внутренними: для W×H это (W-1)*(H-1).", weight=92)]
+    return _archive_fallback(problem, "Сверь, что требуется: площадь, периметр, точки внутри или точки на границе.")
+
+
+def _ege7(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if "log2" not in facts.source and "**" not in facts.source and "while" not in facts.source:
+        found.append(hint("Не найдено число бит", "Для A вариантов нужно ceil(log2(A)) бит, а не A бит.", weight=92))
+    if "байт" in problem.statement.lower() and "//" not in facts.source:
+        found.append(hint("Не округлено до байта", "Минимум байтов считается как (bits+7)//8.", weight=90))
+    return _ensure(found, "Объём информации посчитан иначе", "Сначала посчитай биты одного объекта, потом умножь на количество и переведи в байты.")
+
+
+def _ege10(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_open:
+        found.append(hint("Текст не открыт", "Для №10 открой подключённый файл через open('10.txt').read().", weight=94))
+    if "lower" not in facts.source:
+        found.append(hint("Регистр не нормализован", "Если поиск без регистра, приведи текст и слово к lower().", weight=88))
+    if "split" not in facts.source and "findall" not in facts.source:
+        found.append(hint("Слова не выделены", "Отдели слово от пунктуации и окончаний через split/strip или регулярное выражение.", weight=88))
+    return _ensure(found, "Текст отбирается иначе", "Сверь точное совпадение, регистр и знаки препинания.")
+
+
+def _ege11(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if "log2" not in facts.source and "**" not in facts.source and "while" not in facts.source:
+        found.append(hint("Не найден размер кода", "Для A вариантов нужен минимум b, при котором 2**b >= A.", weight=92))
+    if "байт" in problem.statement.lower() and "//" not in facts.source:
+        found.append(hint("Биты не переведены в целые байты", "Округляй вверх: (bits+7)//8.", weight=90))
+    return _ensure(found, "Объём кодирования посчитан иначе", "Сверь число вариантов, бит на объект, количество объектов и единицы.")
+
+
+def _ege12(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if "while" not in facts.source:
+        found.append(hint("Замены выполнены не до конца", "Редактор повторяет замену, пока шаблон встречается; нужен цикл while.", weight=94))
+    if ".replace" not in facts.source:
+        found.append(hint("Шаблон не заменяется", "Используй replace(старое, новое, 1), чтобы менять первое вхождение.", weight=90))
+    return _ensure(found, "Редактор получил другую строку", "Сверь порядок замен и условие остановки цикла.")
+
+
+def _ege22(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if "lru_cache" not in facts.source and "cache" not in facts.source and "max(" not in facts.source:
+        found.append(hint("Критический путь не вычисляется", "Время процесса равно его длительности плюс максимум времени предшественников.", weight=92))
+    if "open" not in facts.source and not facts.has_input:
+        found.append(hint("Таблица процессов не прочитана", "Пройди все строки с ID, длительностью и зависимостями.", weight=90))
+    return _ensure(found, "Зависимости процессов обработаны иначе", "Независимые процессы идут параллельно; зависимый стартует после завершения всех предшественников.")
 
 
 def _ensure(found: list[tuple[int, Hint]], title: str, detail: str, weight: int = 80) -> list[tuple[int, Hint]]:
@@ -48,6 +160,56 @@ def _tokens(text: str) -> list[str]:
 def _lines(text: str) -> list[str]:
     return [line.strip() for line in (text or "").splitlines() if line.strip()]
 
+
+def _ege2(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_loop:
+        found.append(hint("Нет перебора таблицы", "Для №2 нужно перебрать значения 0/1 и перестановки переменных; без цикла легко пропустить вариант.", weight=92))
+    if "permut" not in facts.source and "product" not in facts.source:
+        found.append(hint("Не виден перебор порядков", "Используй `itertools.permutations('xyzw')` или четыре вложенных цикла, чтобы проверить порядок столбцов.", weight=88))
+    return _ensure(found, "Порядок переменных не совпал", "Проверь импликацию `(not p) or q`, эквивалентность `p == q` и различность строк фрагмента.")
+
+
+def _ege15(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_loop:
+        found.append(hint("Нет перебора отрезков", "Перебери возможные концы A и точки x: один угаданный отрезок не доказывает максимальность.", weight=92))
+    if not facts.has_if:
+        found.append(hint("Не проверяется формула", "Для каждого x должно вычисляться условие с P, Q и A; затем неподходящий A нужно отбросить.", weight=88))
+    return _ensure(found, "Отрезок A выбран неверно", "Сверь направление импликации: `A → P` — это `(not A) or P`; границы всех отрезков включаются.")
+
+
+def _ege18(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_open:
+        found.append(hint("Файл поля не прочитан", "Таблица лежит в подключённом файле: прочитай непустые строки через open(...), затем split().", weight=92))
+    if not facts.has_loop:
+        found.append(hint("Не видно динамики по клеткам", "Нужны циклы по строкам и столбцам: для каждой клетки выбираются предыдущие состояния.", weight=90))
+    if not (facts.uses_min and facts.uses_max):
+        found.append(hint("Нужны и максимум, и минимум", "В задаче два ответа: веди две таблицы или два значения для каждой клетки.", weight=86))
+    return _ensure(found, "Маршрут робота посчитан иначе", "Для клетки проверь переходы снизу, слева и по диагонали. Диагональный вход даёт удвоенную награду.")
+
+
+def _ege26(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_open:
+        found.append(hint("Файл протокола не прочитан", "Координаты находятся в подключённом файле, а не во вводе input().", weight=92))
+    if not facts.uses_set:
+        found.append(hint("Повторы нужно исключить", "Одна и та же точка, куда попали несколько раз, светлая только один раз. Храни позиции в set.", weight=90))
+    if 2 not in facts.moduli:
+        found.append(hint("Нечётность позиции не проверяется", "Учитывай только позиции, для которых `pos % 2 == 1`.", weight=86))
+    return _ensure(found, "Строка с рекордом выбрана неверно", "Сначала собери уникальные нечётные позиции по каждой строке, затем сравни их количества; при равенстве нужен первый номер строки.")
+
+
+def _ege27(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    if not facts.has_open:
+        found.append(hint("Координаты не прочитаны из файла", "Пройди строки подключённого файла и замени запятую в координатах на точку перед float().", weight=92))
+    if not facts.has_loop or not facts.nested_fors:
+        found.append(hint("Не видно построения кластеров", "Для связных компонент нужны обход кластера и поиск соседей по расстоянию — это вложенная проверка точек.", weight=90))
+    if "sqrt" not in facts.source and "hypot" not in facts.source and "dist" not in facts.source and "** 0.5" not in facts.source:
+        found.append(hint("Не вычисляется евклидово расстояние", "Используй `((x1-x2)**2 + (y1-y2)**2) ** 0.5` или `math.hypot`.", weight=86))
+    return _ensure(found, "Центры кластеров найдены неверно", "Отбрось малые компоненты, затем для каждой большой выбери точку с минимальной суммой расстояний. В конце применяй int, а не round.")
 
 def _ege5(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     """Hints shared by the small Boolean-expression exercises in EGE task 5."""
@@ -171,7 +333,7 @@ def _games(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
     if "def " not in src and "@cache" not in src and "lru_cache" not in src:
         found.append(hint(
             "Нужно разобрать позиции игры",
-            "Сделай функцию game(a, b): терминальная позиция даёт 0; если есть ход в неположительный код — это выигрыш, иначе позиция проигрышная. Сохраняй результаты через @cache или @lru_cache.",
+            "Сделай функцию game(...) с полным состоянием из условия: одна/две кучи, предыдущий ход, флаг суперхода — если они влияют на правила. Терминал и набор ходов тоже берутся только из этой задачи. Сохраняй результаты через @cache или @lru_cache.",
             weight=90,
         ))
     if "неудачного первого хода" in statement and ("all(" in src or "all (" in src):
@@ -199,7 +361,7 @@ def _games(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
     return _ensure(
         found,
         "Выигрышная стратегия определена неверно",
-        "Отдели терминал от ходов. Для №19 проверяй, может ли Петя сделать ход, после которого Ваня выигрывает сразу; для №20 ищи +2, для №21 — −2.",
+        "Отдели точный терминал от допустимых ходов. Для №19 обычно проверяют существование неудачного хода, для №20 — гарантию второго хода, для №21 — стратегию Вани с ограничением из формулировки.",
     )
 
 

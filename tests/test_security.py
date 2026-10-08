@@ -90,6 +90,14 @@ class BackupTests(unittest.TestCase):
         restore_backup_json(payload)
         self.assertIsNone(get_student_session(session["token"]))
 
+    def test_json_backup_keeps_solution_views(self):
+        from checker.store import record_solution_view, list_solution_views
+        record_solution_view("View User", "sum-two")
+        payload = export_backup_json()
+        self.assertTrue(payload.get("solution_views"))
+        restore_backup_json(payload)
+        self.assertTrue(any(item["student"] == "View User" for item in list_solution_views()))
+
     def test_sqlite_backup_roundtrip(self):
         record_attempt("Oleg", "sum-two", "fail", 0, 2, "no", "print(0)")
         dest = Path(self.tmp.name + ".copy")

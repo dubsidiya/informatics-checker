@@ -1,0 +1,26 @@
+[
+  {
+    "id": "ege19-vanya-first",
+    "source": "from functools import cache\n@cache\ndef game(a, b):\n    if a + b >= 62:\n        return 0\n    moves = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(min(s for s in range(1, 55) if game(7, s) != -1 and 1 in [game(9, s), game(14, s), game(7, s + 2), game(7, 2 * s)]))\n"
+  },
+  {
+    "id": "ege20-petya-second",
+    "source": "from functools import cache\n@cache\ndef game(a, b):\n    if a + b >= 62:\n        return 0\n    moves = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(max(s for s in range(1, 55) if game(7, s) == 2))\n"
+  },
+  {
+    "id": "ege21-vanya-second",
+    "source": "from functools import cache\n@cache\ndef game(a, b):\n    if a + b >= 62:\n        return 0\n    moves = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(max(s for s in range(1, 55) if game(7, s) == -2))\n"
+  },
+  {
+    "id": "author-games-41",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 129:\n        return 0\n    moves = [game(s + 1), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(1, 129) if game(s) == -1][0])\n"
+  },
+  {
+    "id": "author-games-42",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 129:\n        return 0\n    moves = [game(s + 1), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(*[s for s in range(1, 129) if game(s) == 2])\n"
+  },
+  {
+    "id": "author-games-43",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 129:\n        return 0\n    moves = [game(s + 1), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(1, 129) if game(s) == -2][0])\n"
+  }
+]

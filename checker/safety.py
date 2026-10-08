@@ -59,6 +59,9 @@ BANNED_ATTRS = {
     "__builtins__",
     "__loader__",
     "__bases__",
+    "__dict__",
+    "__getattribute__",
+    "__class__",
 }
 
 
@@ -84,11 +87,27 @@ def find_forbidden(source: str, allow_open: bool = False) -> SyntaxIssue | None:
         elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
             if node.func.id in BANNED_FUNCS and not (allow_open and node.func.id == "open"):
                 return _issue(node, f"Функция {node.func.id}() на проверяльщике запрещена.")
+            if node.func.id == "getattr" and len(node.args) >= 2:
+                key = node.args[1]
+                if isinstance(key, ast.Constant) and key.value in BANNED_ATTRS | {"__import__", "open", "eval", "exec", "compile"}:
+                    return _issue(node, "Доступ к внутренностям Python на проверяльщике запрещён.")
         elif isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
             if node.func.attr == "open" and not allow_open:
                 return _issue(node, "Функция open() на проверяльщике запрещена.")
         elif isinstance(node, ast.Attribute) and node.attr in BANNED_ATTRS:
             return _issue(node, "Такой приём Python здесь нельзя использовать.")
+        elif isinstance(node, ast.Subscript):
+            # Prevent globals()["__builtins__"] / vars()["open"] while still
+            # allowing harmless output such as print("open").
+            key = node.slice.value if isinstance(node.slice, ast.Constant) and isinstance(node.slice.value, str) else None
+            base = node.value
+            if (
+                key in BANNED_ATTRS | {"__import__", "open", "eval", "exec", "compile"}
+                and isinstance(base, ast.Call)
+                and isinstance(base.func, ast.Name)
+                and base.func.id in {"globals", "locals", "vars"}
+            ):
+                return _issue(node, "Доступ к внутренностям Python на проверяльщике запрещён.")
         elif isinstance(node, ast.Name) and node.id in BANNED_FUNCS and not (allow_open and node.id == "open"):
             if isinstance(getattr(node, "ctx", None), ast.Load):
                 # allow mentioning in comments only; this is a real name load

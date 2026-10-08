@@ -31,13 +31,14 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
 
     findings.extend(diagnose_ege(facts, problem, outcome))
     findings.extend(extra_findings(facts, problem, outcome))
+    findings.extend(_task_specific_findings(facts, problem, outcome))
 
     if outcome.first.hidden and outcome.first.verdict == "WA" and "two_int_out" in problem.tags:
         findings.append(
             hint(
                 "В условии два числа",
                 "Нужно напечатать два числа через пробел, как просят в задании, а не одно.",
-                weight=82,
+                weight=99,
             )
         )
 
@@ -60,6 +61,52 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
                 )
             )
     return _dedupe(_sorted(findings))[:3]
+
+
+def _task_specific_findings(
+    facts: CodeFacts, problem: Problem, outcome: Outcome
+) -> list[tuple[int, Hint]]:
+    """Attach one task-level misconception, not just a topic-level recipe.
+
+    Generated practice tasks carry a small, human-readable mistake map.  The
+    selector uses observable facts only; it never infers a student's intent
+    from hidden answers and never exposes a hidden expected value.
+    """
+    if not problem.mistake_hints:
+        return []
+    fallback: dict[str, str] | None = None
+    for raw in problem.mistake_hints:
+        title = raw.get("title", "Типичная ошибка именно в этой задаче").strip()
+        detail = raw.get("detail", "Сверь шаги решения с формулировкой этой задачи.").strip()
+        item = {"title": title, "detail": detail, "signal": raw.get("signal", "always")}
+        if fallback is None:
+            fallback = item
+        if _mistake_signal_matches(item["signal"], facts, outcome):
+            return [hint(title, detail, weight=91)]
+    return [hint(fallback["title"], fallback["detail"], weight=88)] if fallback else []
+
+
+def _mistake_signal_matches(signal: str, facts: CodeFacts, outcome: Outcome) -> bool:
+    signal = (signal or "always").lower()
+    if signal in {"always", "algorithm", "logic"}:
+        return True
+    if signal in {"input", "read"}:
+        return not facts.has_input and not facts.has_open
+    if signal in {"output", "format"}:
+        return outcome.empty or outcome.format_only or not facts.has_print
+    if signal in {"constant", "hardcode"}:
+        return bool(facts.constant_prints)
+    if signal in {"boundary", "range"}:
+        return facts.has_range or outcome.off_by_one
+    if signal in {"loop", "complexity"}:
+        return not facts.has_loop or facts.nested_fors
+    if signal in {"set", "duplicates"}:
+        return not facts.uses_set
+    if signal in {"file"}:
+        return facts.has_open is False
+    if signal in {"boolean", "condition"}:
+        return facts.has_if or "and" in facts.source or "or" in facts.source
+    return False
 
 
 def hint(title: str, detail: str, kind: str = "logic", line: int | None = None, weight: int = 80) -> tuple[int, Hint]:

@@ -66,7 +66,7 @@ def grade_solution(
         timeout = 4.0 if files else 1.5
         if any(tag in problem.tags for tag in ("ege8", "ege16", "ege23", "ege25")):
             timeout = max(timeout, 3.0)
-        if "ege9" in problem.tags or "ege24" in problem.tags:
+        if any(tag in problem.tags for tag in ("ege9", "ege18", "ege24", "ege26", "ege27")):
             timeout = max(timeout, 4.0)
         if deadline is not None:
             timeout = min(timeout, max(0.2, deadline - time.monotonic()))

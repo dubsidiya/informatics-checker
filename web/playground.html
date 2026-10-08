@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Песочница Python</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/style.css?v=20261005c">
+  <link rel="stylesheet" href="/vendor/codemirror/lib/codemirror.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror/addon/hint/show-hint.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror/addon/fold/foldgutter.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror/addon/dialog/dialog.min.css">
+</head>
+<body>
+  <div class="page">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Информатика · Python</p>
+        <h1>Песочница</h1>
+      </div>
+      <a class="ghost-link" href="/">К задачам</a>
+    </header>
+    <main class="playground">
+      <section class="panel">
+        <div class="editor-bar">
+          <h2>Код</h2>
+          <button id="run" type="button">Запустить</button>
+        </div>
+        <textarea id="code" spellcheck="false">print("Привет")
+</textarea>
+        <p class="muted">Можно загрузить текстовый файл до 20 МБ. Программа может работать до 2 минут и использовать до 1 ГБ памяти.</p>
+      </section>
+      <section class="panel">
+        <h2>Ввод программы</h2>
+        <textarea id="stdin" class="plain-input" placeholder="То, что программа прочитает через input()"></textarea>
+        <label class="file-upload">Файл для open()
+          <input id="upload" type="file">
+        </label>
+        <p id="file-name" class="muted">Файл не выбран.</p>
+        <p id="timer" class="muted">Время: —</p>
+        <h2>Результат</h2>
+        <pre id="output" class="program-output">Здесь появится вывод программы.</pre>
+      </section>
+    </main>
+  </div>
+  <script src="/vendor/codemirror/lib/codemirror.min.js"></script>
+  <script src="/vendor/codemirror/mode/python/python.min.js"></script>
+  <script src="/vendor/codemirror/addon/edit/matchbrackets.min.js"></script>
+  <script src="/vendor/codemirror/addon/edit/closebrackets.min.js"></script>
+  <script src="/vendor/codemirror/addon/comment/comment.min.js"></script>
+  <script src="/vendor/codemirror/addon/selection/active-line.min.js"></script>
+  <script src="/vendor/codemirror/addon/hint/show-hint.min.js"></script>
+  <script src="/vendor/codemirror/addon/fold/foldcode.min.js"></script>
+  <script src="/vendor/codemirror/addon/fold/foldgutter.min.js"></script>
+  <script src="/vendor/codemirror/addon/dialog/dialog.min.js"></script>
+  <script src="/vendor/codemirror/addon/search/searchcursor.min.js"></script>
+  <script src="/vendor/codemirror/addon/search/search.min.js"></script>
+  <script src="/static/playground.js?v=20261005d"></script>
+</body>
+</html>

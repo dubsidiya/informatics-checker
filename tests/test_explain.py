@@ -19,6 +19,18 @@ class ExplainTests(unittest.TestCase):
             or "сдана" in (result.explanation.headline + result.explanation.what).lower()
             or "получилось" in result.explanation.headline.lower()
         )
+        self.assertTrue(result.explanation.next_step.strip())
+        self.assertIn("быстр", result.explanation.next_step.lower())
+
+    def test_accepted_ege15_gets_faster_method_without_answer(self):
+        result = grade_solution(
+            get_problem("ege15-105"),
+            "best = 0\nfor a in range(20, 60):\n    for b in range(a, 60):\n        ok = True\n        for x in range(20, 60):\n            A = a <= x <= b\n            P = 44 <= x <= 49\n            Q = 28 <= x <= 53\n            if not ((not A or P) or Q):\n                ok = False\n        if ok:\n            best = max(best, b - a)\nprint(best)\n",
+        )
+        self.assertEqual(result.status, "ok")
+        tip = result.explanation.next_step.lower()
+        self.assertIn("импликац", tip)
+        self.assertNotIn("25", tip)
 
     def test_string_concat_has_what_why_how(self):
         result = grade_solution(

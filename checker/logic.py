@@ -84,6 +84,11 @@ def build_hints(
         )
         hints.extend(_runtime_specific_hints(first))
     if first.verdict in {"WA", "RE"}:
+        # Give priority to observable output mistakes (off-by-one, sign,
+        # two-number order, YES/NO and similar) before broad topic hints.
+        # This specialised handler existed already but was not connected.
+        if first.verdict == "WA" and not first.hidden:
+            hints.extend(_wrong_answer_hints(first, problem))
         hints.extend(diagnose(source, problem, tests))
 
     visible_ok = [item for item in tests if not item.hidden]
@@ -236,8 +241,11 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
     hints.append(
         Hint(
             kind="logic",
-            title="Вывод не совпал с эталоном",
-            detail=f"Ожидалось `{_preview(expected)}`, получилось `{_preview(got)}`. Пройди алгоритм на этом вводе вручную и сравни с трассировкой ниже.",
+            title="Текстовый ответ отличается",
+            detail=(
+                f"Ожидалось `{_preview(expected)}`, получилось `{_preview(got)}`. "
+                "Сверь длину ответа, порядок символов, нумерацию и условие отбора."
+            ),
         )
     )
     return hints
@@ -341,6 +349,17 @@ def _two_number_hints(got: str, expected: str, problem: Problem) -> list[Hint]:
                 detail="Нужны два числа через пробел, без запятой и без подписей.",
             )
         ]
+    if got_t == [exp[1], exp[0]] and exp[0] != exp[1]:
+        return [
+            Hint(
+                kind="format",
+                title="Числа ответа переставлены",
+                detail=(
+                    f"Напечатано `{_preview(got)}`, нужно `{_preview(expected)}`. "
+                    "Сверь порядок величин в формате ответа: первое число — первый пункт условия, второе — второй."
+                ),
+            )
+        ]
     if got_t[0] == exp[0] and got_t[1] != exp[1]:
         return [
             Hint(
@@ -365,7 +384,16 @@ def _two_number_hints(got: str, expected: str, problem: Problem) -> list[Hint]:
                 detail=_both_wrong(tags),
             )
         ]
-    return []
+    return [
+        Hint(
+            kind="logic",
+            title="Оба числа ответа другие",
+            detail=(
+                f"Получилось `{_preview(got)}`, а нужно `{_preview(expected)}`. "
+                "Проверь отдельно вычисление первого и второго показателя и порядок их печати."
+            ),
+        )
+    ]
 
 
 def _count_ok_value_wrong(tags: set[str]) -> str:
@@ -432,7 +460,7 @@ def _both_wrong(tags: set[str]) -> str:
     if "pairs" in tags:
         return (
             "Оба числа другие. Пара в №17 — это соседние элементы data[i] и data[i+1], "
-            "а не все сочетания. Дальше сверь сравнение со средним или эталоном."
+            "а не произвольные элементы списка. Дальше сверь сравнение со средним или эталоном."
         )
     return "Оба числа другие. Пройди условие на этом наборе вручную и сравни с эталоном."
 

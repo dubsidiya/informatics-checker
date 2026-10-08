@@ -4,7 +4,7 @@ import hashlib
 import sqlite3
 from collections.abc import Callable
 
-CURRENT_SCHEMA_VERSION = 3
+CURRENT_SCHEMA_VERSION = 4
 
 
 class MigrationError(RuntimeError):
@@ -272,10 +272,29 @@ def _migration_3(conn: sqlite3.Connection) -> None:
     )
 
 
+def _migration_4(conn: sqlite3.Connection) -> None:
+    """Store explicit solution-view events separately from code attempts."""
+    conn.execute(
+        """
+        CREATE TABLE IF NOT EXISTS solution_views (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ts REAL NOT NULL,
+            student TEXT NOT NULL,
+            problem_id TEXT NOT NULL,
+            student_id TEXT REFERENCES students(id) ON DELETE SET NULL,
+            student_session_id TEXT REFERENCES student_sessions(id) ON DELETE SET NULL
+        )
+        """
+    )
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_solution_views_student ON solution_views(student_id, ts)")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_solution_views_problem ON solution_views(problem_id, ts)")
+
+
 _MIGRATIONS: dict[int, Callable[[sqlite3.Connection], None]] = {
     1: _migration_1,
     2: _migration_2,
     3: _migration_3,
+    4: _migration_4,
 }
 
 

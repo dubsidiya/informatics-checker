@@ -184,6 +184,18 @@ def _attempt_exists(conn: sqlite3.Connection, student: str, problem_id: str, sta
     return row is not None
 
 
+def _solution_view_exists(conn: sqlite3.Connection, student: str, problem_id: str, ts: float) -> bool:
+    row = conn.execute(
+        """
+        SELECT id FROM solution_views
+        WHERE student = ? AND problem_id = ? AND abs(ts - ?) < 1.5
+        LIMIT 1
+        """,
+        (student, problem_id, ts),
+    ).fetchone()
+    return row is not None
+
+
 def list_attempts(student: str = "", problem_id: str = "", limit: int = 120) -> list[dict[str, Any]]:
     init_store()
     where: list[str] = []
@@ -249,8 +261,16 @@ def student_progress(student: str, student_id: str | None = None) -> dict[str, A
             ).fetchall()
             name_row = conn.execute("SELECT display_name FROM students WHERE id = ?", (student_id,)).fetchone()
             name = name_row["display_name"] if name_row else name
+            view_rows = conn.execute(
+                "SELECT problem_id, COUNT(*) AS n FROM solution_views WHERE student_id = ? GROUP BY problem_id",
+                (student_id,),
+            ).fetchall()
         else:
             rows = conn.execute("SELECT problem_id, status FROM attempts WHERE student = ?", (name,)).fetchall()
+            view_rows = conn.execute(
+                "SELECT problem_id, COUNT(*) AS n FROM solution_views WHERE student = ? GROUP BY problem_id",
+                (name,),
+            ).fetchall()
     problems: dict[str, dict[str, Any]] = {}
     for row in rows:
         cell = problems.setdefault(row["problem_id"], {"attempts": 0, "fails": 0, "solved": False})
@@ -260,7 +280,8 @@ def student_progress(student: str, student_id: str | None = None) -> dict[str, A
         else:
             cell["fails"] += 1
     solved = sorted(pid for pid, cell in problems.items() if cell["solved"])
-    return {"student": name, "solved": solved, "attempts": len(rows), "problems": problems}
+    views = {str(row["problem_id"]): int(row["n"]) for row in view_rows}
+    return {"student": name, "solved": solved, "attempts": len(rows), "problems": problems, "solution_views": views}
 
 
 def problem_attempt_count(student: str, problem_id: str, student_id: str | None = None) -> int:
@@ -281,6 +302,84 @@ def problem_attempt_count(student: str, problem_id: str, student_id: str | None 
                 (name, problem_id),
             ).fetchone()
     return int(row["n"] if row else 0)
+
+
+def failed_attempt_count(student: str, problem_id: str, student_id: str | None = None) -> int:
+    """Count unsuccessful checks for one student/task, excluding successes."""
+    name = clean_student_name(student)
+    if (name == "без имени" and student_id is None) or not problem_id:
+        return 0
+    init_store()
+    with _LOCK:
+        conn = _connect()
+        if student_id is not None:
+            row = conn.execute(
+                "SELECT COUNT(*) AS n FROM attempts WHERE student_id = ? AND problem_id = ? AND status != 'ok'",
+                (student_id, problem_id),
+            ).fetchone()
+        else:
+            row = conn.execute(
+                "SELECT COUNT(*) AS n FROM attempts WHERE student = ? AND problem_id = ? AND status != 'ok'",
+                (name, problem_id),
+            ).fetchone()
+    return int(row["n"] if row else 0)
+
+
+def record_solution_view(
+    student: str,
+    problem_id: str,
+    *,
+    student_id: str | None = None,
+    student_session_id: str | None = None,
+    ts: float | None = None,
+) -> int:
+    init_store()
+    stamp = float(ts) if ts else time.time()
+    name = clean_student_name(student)
+    with _LOCK:
+        conn = _connect()
+        sid = student_id or _get_or_create_student(conn, name)
+        cursor = conn.execute(
+            """
+            INSERT INTO solution_views
+                (ts, student, problem_id, student_id, student_session_id)
+            VALUES (?, ?, ?, ?, ?)
+            """,
+            (stamp, name, problem_id, sid, student_session_id),
+        )
+        conn.commit()
+        return int(cursor.lastrowid)
+
+
+def solution_view_count(student: str, problem_id: str, student_id: str | None = None) -> int:
+    name = clean_student_name(student)
+    if (name == "без имени" and student_id is None) or not problem_id:
+        return 0
+    init_store()
+    with _LOCK:
+        conn = _connect()
+        if student_id is not None:
+            row = conn.execute(
+                "SELECT COUNT(*) AS n FROM solution_views WHERE student_id = ? AND problem_id = ?",
+                (student_id, problem_id),
+            ).fetchone()
+        else:
+            row = conn.execute(
+                "SELECT COUNT(*) AS n FROM solution_views WHERE student = ? AND problem_id = ?",
+                (name, problem_id),
+            ).fetchone()
+    return int(row["n"] if row else 0)
+
+
+def list_solution_views(limit: int = 200) -> list[dict[str, Any]]:
+    init_store()
+    with _LOCK:
+        conn = _connect()
+        rows = conn.execute(
+            "SELECT id, ts, student, problem_id, student_id FROM solution_views ORDER BY ts DESC LIMIT ?",
+            (max(1, min(int(limit), 1000)),),
+        ).fetchall()
+    return [dict(row) for row in rows]
 
 
 def export_attempts(limit: int | None = None, include_code: bool = False) -> list[dict[str, Any]]:
@@ -326,12 +425,14 @@ def export_backup_json() -> dict[str, Any]:
     with _LOCK:
         conn = _connect()
         attempts = [dict(row) for row in conn.execute("SELECT * FROM attempts ORDER BY id").fetchall()]
+        solution_views = [dict(row) for row in conn.execute("SELECT * FROM solution_views ORDER BY id").fetchall()]
         exams = [dict(row) for row in conn.execute("SELECT * FROM exams ORDER BY id").fetchall()]
         students = [dict(row) for row in conn.execute("SELECT id, display_name, normalized_name, created_at, legacy FROM students ORDER BY created_at").fetchall()]
     return {
         "format": "informatics-checker-backup",
         "version": CURRENT_SCHEMA_VERSION,
         "attempts": attempts,
+        "solution_views": solution_views,
         "exams": exams,
         "students": students,
     }
@@ -481,6 +582,7 @@ def summarize() -> dict[str, Any]:
         "hard_tasks": hard_tasks[:40],
         "inactive": inactive[:40],
         "exams": exam_board(),
+        "solution_views": list_solution_views(200),
     }
 
 
@@ -919,9 +1021,15 @@ def restore_backup_json(payload: dict[str, Any]) -> dict[str, Any]:
     if version > CURRENT_SCHEMA_VERSION:
         raise ValueError("backup newer than schema")
     attempts = payload.get("attempts") or []
+    solution_views = payload.get("solution_views") or []
     exams = payload.get("exams") or []
     students = payload.get("students") or []
-    if not isinstance(attempts, list) or not isinstance(exams, list) or not isinstance(students, list):
+    if (
+        not isinstance(attempts, list)
+        or not isinstance(solution_views, list)
+        or not isinstance(exams, list)
+        or not isinstance(students, list)
+    ):
         raise ValueError("bad backup")
     init_store()
     inserted = 0
@@ -993,6 +1101,29 @@ def restore_backup_json(payload: dict[str, Any]) -> dict[str, Any]:
                     sid,
                     attempt_no,
                 ),
+            )
+            inserted += 1
+        for item in solution_views:
+            if not isinstance(item, dict):
+                skipped += 1
+                continue
+            student = clean_student_name(item.get("student") or "")
+            problem_id = str(item.get("problem_id") or "").strip()[:80]
+            if student == "без имени" or not problem_id:
+                skipped += 1
+                continue
+            stamp = _parse_ts(item.get("ts")) or time.time()
+            if _solution_view_exists(conn, student, problem_id, stamp):
+                skipped += 1
+                continue
+            sid = str(item.get("student_id") or "") or _get_or_create_student(conn, student)
+            conn.execute(
+                """
+                INSERT INTO solution_views
+                    (ts, student, problem_id, student_id, student_session_id)
+                VALUES (?, ?, ?, ?, NULL)
+                """,
+                (stamp, student, problem_id, sid),
             )
             inserted += 1
         for item in exams:

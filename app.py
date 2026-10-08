@@ -16,10 +16,14 @@ from checker.backup import restore_sqlite, sqlite_backup
 from checker.config import get_config, reset_config
 from checker.explain import deepen_explanation
 from checker.grade import grade_solution
+from checker.sandbox import run_playground
+from checker.safety import find_forbidden
+from checker.syntax import explain_syntax, russian_traceback
 from checker.http_security import RateLimiter, client_ip, origin_allowed, parse_content_length
 from checker.observability import bump, log_event, new_request_id, snapshot
 from checker.problems import get_problem, list_summaries
 from checker.runner import RunnerError
+from checker.solutions import SOLUTION_UNLOCK_FAILURES, build_solution, solution_source
 from checker.store import (
     create_student_session,
     create_teacher_session,
@@ -36,8 +40,12 @@ from checker.store import (
     list_attempts,
     live_exam,
     problem_attempt_count,
+    failed_attempt_count,
     probe_write,
     record_attempt,
+    record_solution_view,
+    solution_view_count,
+    list_solution_views,
     revoke_student_session,
     revoke_teacher_session,
     start_exam,
@@ -51,6 +59,39 @@ ROOT = Path(__file__).resolve().parent
 WEB = ROOT / "web"
 _RATE = RateLimiter()
 _GRADE_GATE: threading.BoundedSemaphore | None = None
+
+
+def _playground_response(raw: bytes) -> dict:
+    payload = json.loads(raw.decode("utf-8"))
+    source = str(payload.get("code") or "").replace("\r\n", "\n")
+    stdin = str(payload.get("stdin") or "").replace("\r\n", "\n")
+    filename = str(payload.get("filename") or "")
+    file_text = str(payload.get("file") or "").replace("\r\n", "\n")
+    if len(source) > 80_000 or len(stdin) > 80_000 or len(file_text) > 20_000_000:
+        return {"ok": False, "detail": "Слишком большой код, ввод или файл."}
+    if not source.strip():
+        return {"ok": False, "detail": "Напиши программу."}
+    syntax = explain_syntax(source)
+    if syntax:
+        return {"ok": False, "status": "syntax", "line": syntax.line, "detail": syntax.explanation}
+    # A zero-byte upload is still a valid readable file.  Use the filename to
+    # distinguish "no upload" from an intentionally empty upload.
+    blocked = find_forbidden(source, allow_open=bool(filename.strip()))
+    if blocked:
+        return {"ok": False, "status": "forbidden", "line": blocked.line, "detail": blocked.explanation}
+    started = time.perf_counter()
+    result = run_playground(source, stdin, filename, file_text, timeout=120.0)
+    elapsed = time.perf_counter() - started
+    return {
+        "ok": True,
+        "status": "timeout" if result.timed_out else ("error" if result.returncode else "ok"),
+        "stdout": result.stdout,
+        "stderr": result.stderr,
+        "translation": russian_traceback(result.stderr),
+        "line": result.error_line,
+        "detail": result.error_message,
+        "elapsed_ms": round(elapsed * 1000),
+    }
 
 
 def _gate() -> threading.BoundedSemaphore:
@@ -99,11 +140,51 @@ class BoundedThreadingHTTPServer(ThreadingHTTPServer):
                 pass
             bump("http_503")
             return
-        self.RequestHandlerClass(request, client_address, self, _release=self._sema.release)
+        # ThreadingHTTPServer normally starts a worker here.  Calling the
+        # handler directly (as this class used to) made every long-running
+        # code check block the whole HTTP server despite a configured thread
+        # limit.  Keep the connection cap, then hand off to ThreadingMixIn.
+        try:
+            super().process_request(request, client_address)
+        except Exception:
+            self._sema.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            self.finish_request(request, client_address)
+        except Exception:
+            self.handle_error(request, client_address)
+        finally:
+            self.shutdown_request(request)
+            self._sema.release()
 
 
 class Handler(SimpleHTTPRequestHandler):
+    def _playground(self, raw: bytes) -> None:
+        if not _RATE.allow(f"play:{self._client_ip()}", self._cfg().rate_limit):
+            bump("http_429")
+            self._send_json({"ok": False, "detail": "Слишком много запусков. Подожди минуту."}, 429)
+            return
+        acquired = _gate().acquire(timeout=self._cfg().grade_queue_timeout)
+        if not acquired:
+            bump("http_503")
+            self._send_json({"ok": False, "detail": "Сейчас много запусков. Попробуй через пару секунд."}, 503)
+            return
+        try:
+            try:
+                self._send_json(_playground_response(raw))
+            except (UnicodeError, json.JSONDecodeError, TypeError, ValueError):
+                self._send_json({"ok": False, "detail": "Не удалось прочитать запрос."}, 400)
+            except Exception:
+                log_event("playground_fail", error=traceback.format_exc(limit=6))
+                self._send_json({"ok": False, "detail": "Песочницу сейчас нельзя запустить."}, 500)
+        finally:
+            _gate().release()
+
     def __init__(self, *args, _release=None, **kwargs):
+        # _release is retained for backwards compatibility with older test
+        # helpers. The server now releases the slot in the worker thread.
         self._release = _release
         self._headers_sent = False
         self._status = 0
@@ -114,9 +195,7 @@ class Handler(SimpleHTTPRequestHandler):
         try:
             super().finish()
         finally:
-            if self._release:
-                self._release()
-                self._release = None
+            self._release = None
 
     def log_message(self, format, *args):
         return
@@ -158,7 +237,11 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("X-Request-Id", self.request_id)
 
     def _set_cookie(self, name: str, value: str, max_age: int, httponly: bool = True) -> None:
-        secure = self._cfg().is_production or bool(os.environ.get("RENDER"))
+        # The VPS is currently served over plain HTTP.  Setting Secure on an
+        # HTTP origin makes browsers silently discard the session cookies, so
+        # the next /api/check request looks unauthenticated.  Use the actual
+        # configured public scheme; HTTPS deployments still get Secure.
+        secure = self._cfg().public_origin.lower().startswith("https://")
         self.send_header(
             "Set-Cookie",
             f"{name}={value}; {cookie_flags(secure=secure, max_age=max_age, httponly=httponly)}",
@@ -216,6 +299,9 @@ class Handler(SimpleHTTPRequestHandler):
 
         if path == "/":
             self._send_file(WEB / "index.html", "text/html; charset=utf-8", method)
+            return
+        if path == "/playground":
+            self._send_file(WEB / "playground.html", "text/html; charset=utf-8", method)
             return
         if path == "/teacher":
             self._send_file(WEB / "teacher.html", "text/html; charset=utf-8", method)
@@ -342,6 +428,12 @@ class Handler(SimpleHTTPRequestHandler):
                 return
             self._send_json(attempt, head=method == "HEAD")
             return
+        if path == "/api/teacher/solution-views":
+            if not self._teacher():
+                self._send_json({"detail": "Нужен вход учителя"}, 401, head=method == "HEAD")
+                return
+            self._send_json(list_solution_views(300), head=method == "HEAD")
+            return
         if path.startswith("/static/") or path.startswith("/vendor/"):
             # /static/ is an alias for the web root; /vendor/ maps to /web/vendor.
             rel = path.removeprefix("/static/") if path.startswith("/static/") else path.removeprefix("/")
@@ -385,9 +477,11 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/teacher/restore.json": 8_000_000,
             "/api/teacher/restore.sqlite3": 32_000_000,
             "/api/check": 96_000,
+            "/api/playground": 22_000_000,
             "/api/teacher/login": 8_192,
             "/api/student/session": 8_192,
             "/api/exam": 8_192,
+            "/api/solution/view": 8_192,
         }.get(path, 8_192)
         if length > max_len:
             self._send_json({"detail": "Слишком большой запрос"}, 413)
@@ -599,6 +693,63 @@ class Handler(SimpleHTTPRequestHandler):
             self._send_json({"detail": "Некорректный запрос"}, 400)
             return
 
+        if path == "/api/playground":
+            self._playground(raw)
+            return
+        if path == "/api/solution/view":
+            session = self._student()
+            if not session:
+                self._send_json({"detail": "Напиши своё имя сверху, чтобы открыть разбор."}, 401)
+                return
+            if not self._csrf_ok(session["csrf_hash"]):
+                self._send_json({"detail": "Обнови страницу и попробуй ещё раз."}, 403)
+                return
+            if not _RATE.allow(f"solution:{session['student_id']}", 20):
+                bump("http_429")
+                self._send_json({"detail": "Слишком много запросов решения. Подожди минуту."}, 429)
+                return
+            try:
+                payload = json.loads(raw.decode("utf-8") or "{}")
+                problem_id = str(payload.get("problem_id") or "").strip()
+                problem = get_problem(problem_id)
+            except (json.JSONDecodeError, TypeError, UnicodeDecodeError):
+                self._send_json({"detail": "Некорректный запрос"}, 400)
+                return
+            except KeyError:
+                self._send_json({"detail": "Задача не найдена"}, 404)
+                return
+            source = solution_source(problem_id)
+            failed = failed_attempt_count(
+                session["student"], problem_id, student_id=session["student_id"]
+            )
+            if failed < SOLUTION_UNLOCK_FAILURES:
+                self._send_json({"detail": f"Разбор откроется после {SOLUTION_UNLOCK_FAILURES} неудачных попыток.", "failed_attempts": failed, "unlock_after": SOLUTION_UNLOCK_FAILURES}, 403)
+                return
+            if not source:
+                self._send_json({"detail": "Для этой задачи подробный эталон пока не подготовлен."}, 404)
+                return
+            try:
+                record_solution_view(
+                    session["student"],
+                    problem_id,
+                    student_id=session["student_id"],
+                    student_session_id=session["session_id"],
+                )
+                payload_out = build_solution(
+                    problem,
+                    source,
+                    failed_attempts=failed,
+                    viewed=True,
+                )
+                payload_out["view_count"] = solution_view_count(
+                    session["student"], problem_id, student_id=session["student_id"]
+                )
+            except Exception:
+                log_event("solution_view_fail", request_id=self.request_id, problem_id=problem_id)
+                self._send_json({"detail": "Не удалось открыть разбор. Попробуй ещё раз."}, 500)
+                return
+            self._send_json(payload_out)
+            return
         if path != "/api/check":
             self._send_json({"detail": "Страница не найдена"}, 404)
             return
@@ -675,6 +826,14 @@ class Handler(SimpleHTTPRequestHandler):
         bump("grade_ok" if result.status == "ok" else "grade_fail")
         payload_out = result.to_dict()
         payload_out["student"] = session["student"]
+        failed_count = failed_attempt_count(
+            session["student"], problem_id, student_id=session["student_id"]
+        )
+        payload_out["failed_attempts"] = failed_count
+        payload_out["solution_available"] = bool(
+            result.status != "ok" and failed_count >= SOLUTION_UNLOCK_FAILURES and solution_source(problem_id)
+        )
+        payload_out["solution_unlock_after"] = SOLUTION_UNLOCK_FAILURES
         if result.status == "ok":
             update_exam(session["student"], student_id=session["student_id"], status="live")
         self._send_json(payload_out)

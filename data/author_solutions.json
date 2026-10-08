@@ -1,0 +1,2550 @@
+[
+  {
+    "id": "abs-diff",
+    "source": "a, b = map(int, input().split())\nprint(abs(a - b))\n"
+  },
+  {
+    "id": "author-bridge-01",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x%3==0 for x in a))\n"
+  },
+  {
+    "id": "author-bridge-02",
+    "source": "n=int(input())\nprint(int(n%5==0))\n"
+  },
+  {
+    "id": "author-bridge-03",
+    "source": "s=input()\nprint(max(map(len,s.split('0'))))\n"
+  },
+  {
+    "id": "author-bridge-04",
+    "source": "n=int(input())\nprint(bin(n)[2:].count('1'))\n"
+  },
+  {
+    "id": "author-bridge-05",
+    "source": "a=list(map(int,input().split()))\nprint(max((a[i]+a[i+1] for i in range(len(a)-1) if a[i]>0 and a[i+1]>0),default=0))\n"
+  },
+  {
+    "id": "author-bridge-06",
+    "source": "n=int(input())\nprint(sum(x%3==0 or x%5==0 for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-bridge-07",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x%3==0 for x in a))\n"
+  },
+  {
+    "id": "author-bridge-08",
+    "source": "n=int(input())\nprint(int(n%6==0))\n"
+  },
+  {
+    "id": "author-bridge-09",
+    "source": "s=input()\nprint(max(map(len,s.split('0'))))\n"
+  },
+  {
+    "id": "author-bridge-10",
+    "source": "n=int(input())\nprint(bin(n)[2:].count('1'))\n"
+  },
+  {
+    "id": "author-bridge-11",
+    "source": "a=list(map(int,input().split()))\nprint(max((a[i]+a[i+1] for i in range(len(a)-1) if a[i]>0 and a[i+1]>0),default=0))\n"
+  },
+  {
+    "id": "author-bridge-12",
+    "source": "n=int(input())\nprint(sum(x%3==0 or x%5==0 for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-bridge-13",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x%3==0 for x in a))\n"
+  },
+  {
+    "id": "author-bridge-14",
+    "source": "n=int(input())\nprint(int(n%7==0))\n"
+  },
+  {
+    "id": "author-bridge-15",
+    "source": "s=input()\nprint(max(map(len,s.split('0'))))\n"
+  },
+  {
+    "id": "author-bridge-16",
+    "source": "n=int(input())\nprint(bin(n)[2:].count('1'))\n"
+  },
+  {
+    "id": "author-bridge-17",
+    "source": "a=list(map(int,input().split()))\nprint(max((a[i]+a[i+1] for i in range(len(a)-1) if a[i]>0 and a[i+1]>0),default=0))\n"
+  },
+  {
+    "id": "author-bridge-18",
+    "source": "n=int(input())\nprint(sum(x%3==0 or x%5==0 for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-bridge-19",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x%3==0 for x in a))\n"
+  },
+  {
+    "id": "author-bridge-20",
+    "source": "n=int(input())\nprint(int(n%8==0))\n"
+  },
+  {
+    "id": "author-bridge-21",
+    "source": "s=input()\nprint(max(map(len,s.split('0'))))\n"
+  },
+  {
+    "id": "author-bridge-22",
+    "source": "n=int(input())\nprint(bin(n)[2:].count('1'))\n"
+  },
+  {
+    "id": "author-bridge-23",
+    "source": "a=list(map(int,input().split()))\nprint(max((a[i]+a[i+1] for i in range(len(a)-1) if a[i]>0 and a[i+1]>0),default=0))\n"
+  },
+  {
+    "id": "author-bridge-24",
+    "source": "n=int(input())\nprint(sum(x%3==0 or x%5==0 for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-conditions-01",
+    "source": "x=int(input())\nprint(int(-10<=x<=10))\n"
+  },
+  {
+    "id": "author-conditions-02",
+    "source": "x=int(input())\nprint(int(x%4==0))\n"
+  },
+  {
+    "id": "author-conditions-03",
+    "source": "x=int(input())\nprint(int(x==6 or x==10))\n"
+  },
+  {
+    "id": "author-conditions-04",
+    "source": "x=int(input())\nprint(int(x>0 and x%8!=0))\n"
+  },
+  {
+    "id": "author-conditions-05",
+    "source": "x=int(input())\nprint(int(abs(x)%2==1 and abs(x)<20))\n"
+  },
+  {
+    "id": "author-conditions-06",
+    "source": "x=int(input())\nprint(int(x<0 or x>100))\n"
+  },
+  {
+    "id": "author-conditions-07",
+    "source": "x=int(input())\nprint(int(x%4==0 and x%6!=0))\n"
+  },
+  {
+    "id": "author-conditions-08",
+    "source": "x=int(input())\nprint(int((x%2==0)!=(x%3==0)))\n"
+  },
+  {
+    "id": "author-conditions-09",
+    "source": "x=int(input())\nprint(int(-18<=x<=18))\n"
+  },
+  {
+    "id": "author-conditions-10",
+    "source": "x=int(input())\nprint(int(x%5==0))\n"
+  },
+  {
+    "id": "author-conditions-11",
+    "source": "x=int(input())\nprint(int(x==7 or x==8))\n"
+  },
+  {
+    "id": "author-conditions-12",
+    "source": "x=int(input())\nprint(int(x>0 and x%6!=0))\n"
+  },
+  {
+    "id": "author-conditions-13",
+    "source": "x=int(input())\nprint(int(abs(x)%2==1 and abs(x)<20))\n"
+  },
+  {
+    "id": "author-conditions-14",
+    "source": "x=int(input())\nprint(int(x<0 or x>100))\n"
+  },
+  {
+    "id": "author-conditions-15",
+    "source": "x=int(input())\nprint(int(x%4==0 and x%6!=0))\n"
+  },
+  {
+    "id": "author-conditions-16",
+    "source": "x=int(input())\nprint(int((x%2==0)!=(x%3==0)))\n"
+  },
+  {
+    "id": "author-conditions-17",
+    "source": "x=int(input())\nprint(int(-26<=x<=26))\n"
+  },
+  {
+    "id": "author-conditions-18",
+    "source": "x=int(input())\nprint(int(x%6==0))\n"
+  },
+  {
+    "id": "author-conditions-19",
+    "source": "x=int(input())\nprint(int(x==8 or x==11))\n"
+  },
+  {
+    "id": "author-conditions-20",
+    "source": "x=int(input())\nprint(int(x>0 and x%9!=0))\n"
+  },
+  {
+    "id": "author-conditions-21",
+    "source": "x=int(input())\nprint(int(abs(x)%2==1 and abs(x)<20))\n"
+  },
+  {
+    "id": "author-conditions-22",
+    "source": "x=int(input())\nprint(int(x<0 or x>100))\n"
+  },
+  {
+    "id": "author-conditions-23",
+    "source": "x=int(input())\nprint(int(x%4==0 and x%6!=0))\n"
+  },
+  {
+    "id": "author-conditions-24",
+    "source": "x=int(input())\nprint(int((x%2==0)!=(x%3==0)))\n"
+  },
+  {
+    "id": "author-conditions-25",
+    "source": "x=int(input())\nprint(int(-34<=x<=34))\n"
+  },
+  {
+    "id": "author-conditions-26",
+    "source": "x=int(input())\nprint(int(x%7==0))\n"
+  },
+  {
+    "id": "author-conditions-27",
+    "source": "x=int(input())\nprint(int(x==9 or x==9))\n"
+  },
+  {
+    "id": "author-conditions-28",
+    "source": "x=int(input())\nprint(int(x>0 and x%7!=0))\n"
+  },
+  {
+    "id": "author-conditions-29",
+    "source": "x=int(input())\nprint(int(abs(x)%2==1 and abs(x)<20))\n"
+  },
+  {
+    "id": "author-conditions-30",
+    "source": "x=int(input())\nprint(int(x<0 or x>100))\n"
+  },
+  {
+    "id": "author-conditions-31",
+    "source": "x=int(input())\nprint(int(x%4==0 and x%6!=0))\n"
+  },
+  {
+    "id": "author-conditions-32",
+    "source": "x=int(input())\nprint(int((x%2==0)!=(x%3==0)))\n"
+  },
+  {
+    "id": "author-conditions-33",
+    "source": "x=int(input())\nprint(int(-42<=x<=42))\n"
+  },
+  {
+    "id": "author-conditions-34",
+    "source": "x=int(input())\nprint(int(x%8==0))\n"
+  },
+  {
+    "id": "author-conditions-35",
+    "source": "x=int(input())\nprint(int(x==10 or x==12))\n"
+  },
+  {
+    "id": "author-cycles-01",
+    "source": "n,k=map(int,input().split())\nprint(sum(x for x in range(1,n+1) if x%k==0))\n"
+  },
+  {
+    "id": "author-cycles-02",
+    "source": "n=int(input())\nprint(sum(x*x for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-cycles-03",
+    "source": "n=int(input())\nprint(sum(int(c)%2==0 for c in str(n)))\n"
+  },
+  {
+    "id": "author-cycles-04",
+    "source": "n=int(input())\nprint(max(map(int,str(n))))\n"
+  },
+  {
+    "id": "author-cycles-05",
+    "source": "n=int(input())\np=1\nfor x in range(1,n+1,2):\n    p*=x\nprint(p)\n"
+  },
+  {
+    "id": "author-cycles-06",
+    "source": "n=int(input())\nprint(sum(1 for x in range(1,n+1) if x%3==0 or x%5==0))\n"
+  },
+  {
+    "id": "author-cycles-07",
+    "source": "n=int(input())\ns=0\nwhile n:\n    s+=n%10\n    n//=10\nprint(s)\n"
+  },
+  {
+    "id": "author-cycles-08",
+    "source": "n=int(input())\nc=0\nfor x in range(1,n+1):\n    if n%x==0:\n        c+=1\nprint(c)\n"
+  },
+  {
+    "id": "author-cycles-09",
+    "source": "n,k=map(int,input().split())\nprint(sum(x for x in range(1,n+1) if x%k==0))\n"
+  },
+  {
+    "id": "author-cycles-10",
+    "source": "n=int(input())\nprint(sum(x*x for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-cycles-11",
+    "source": "n=int(input())\nprint(sum(int(c)%2==0 for c in str(n)))\n"
+  },
+  {
+    "id": "author-cycles-12",
+    "source": "n=int(input())\nprint(max(map(int,str(n))))\n"
+  },
+  {
+    "id": "author-cycles-13",
+    "source": "n=int(input())\np=1\nfor x in range(1,n+1,2):\n    p*=x\nprint(p)\n"
+  },
+  {
+    "id": "author-cycles-14",
+    "source": "n=int(input())\nprint(sum(1 for x in range(1,n+1) if x%3==0 or x%5==0))\n"
+  },
+  {
+    "id": "author-cycles-15",
+    "source": "n=int(input())\ns=0\nwhile n:\n    s+=n%10\n    n//=10\nprint(s)\n"
+  },
+  {
+    "id": "author-cycles-16",
+    "source": "n=int(input())\nc=0\nfor x in range(1,n+1):\n    if n%x==0:\n        c+=1\nprint(c)\n"
+  },
+  {
+    "id": "author-cycles-17",
+    "source": "n,k=map(int,input().split())\nprint(sum(x for x in range(1,n+1) if x%k==0))\n"
+  },
+  {
+    "id": "author-cycles-18",
+    "source": "n=int(input())\nprint(sum(x*x for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-cycles-19",
+    "source": "n=int(input())\nprint(sum(int(c)%2==0 for c in str(n)))\n"
+  },
+  {
+    "id": "author-cycles-20",
+    "source": "n=int(input())\nprint(max(map(int,str(n))))\n"
+  },
+  {
+    "id": "author-cycles-21",
+    "source": "n=int(input())\np=1\nfor x in range(1,n+1,2):\n    p*=x\nprint(p)\n"
+  },
+  {
+    "id": "author-cycles-22",
+    "source": "n=int(input())\nprint(sum(1 for x in range(1,n+1) if x%3==0 or x%5==0))\n"
+  },
+  {
+    "id": "author-cycles-23",
+    "source": "n=int(input())\ns=0\nwhile n:\n    s+=n%10\n    n//=10\nprint(s)\n"
+  },
+  {
+    "id": "author-cycles-24",
+    "source": "n=int(input())\nc=0\nfor x in range(1,n+1):\n    if n%x==0:\n        c+=1\nprint(c)\n"
+  },
+  {
+    "id": "author-cycles-25",
+    "source": "n,k=map(int,input().split())\nprint(sum(x for x in range(1,n+1) if x%k==0))\n"
+  },
+  {
+    "id": "author-cycles-26",
+    "source": "n=int(input())\nprint(sum(x*x for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-cycles-27",
+    "source": "n=int(input())\nprint(sum(int(c)%2==0 for c in str(n)))\n"
+  },
+  {
+    "id": "author-cycles-28",
+    "source": "n=int(input())\nprint(max(map(int,str(n))))\n"
+  },
+  {
+    "id": "author-cycles-29",
+    "source": "n=int(input())\np=1\nfor x in range(1,n+1,2):\n    p*=x\nprint(p)\n"
+  },
+  {
+    "id": "author-cycles-30",
+    "source": "n=int(input())\nprint(sum(1 for x in range(1,n+1) if x%3==0 or x%5==0))\n"
+  },
+  {
+    "id": "author-cycles-31",
+    "source": "n=int(input())\ns=0\nwhile n:\n    s+=n%10\n    n//=10\nprint(s)\n"
+  },
+  {
+    "id": "author-cycles-32",
+    "source": "n=int(input())\nc=0\nfor x in range(1,n+1):\n    if n%x==0:\n        c+=1\nprint(c)\n"
+  },
+  {
+    "id": "author-cycles-33",
+    "source": "n,k=map(int,input().split())\nprint(sum(x for x in range(1,n+1) if x%k==0))\n"
+  },
+  {
+    "id": "author-cycles-34",
+    "source": "n=int(input())\nprint(sum(x*x for x in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-cycles-35",
+    "source": "n=int(input())\nprint(sum(int(c)%2==0 for c in str(n)))\n"
+  },
+  {
+    "id": "author-cycles-36",
+    "source": "n=int(input())\nprint(max(map(int,str(n))))\n"
+  },
+  {
+    "id": "author-ege13-01",
+    "source": "a,b,c,d,p=map(int,input().split())\nmask=(2**32-1) ^ (2**(32-p)-1)\nnet=((a<<24)|(b<<16)|(c<<8)|d)&mask\nprint((net>>24)&255,(net>>16)&255,(net>>8)&255,net&255)\n"
+  },
+  {
+    "id": "author-ege13-02",
+    "source": "a,b,c,d,p=map(int,input().split())\nprint(2**(32-p)-2)\n"
+  },
+  {
+    "id": "author-ege13-03",
+    "source": "a,b,c,d,p=map(int,input().split())\nprint(p)\n"
+  },
+  {
+    "id": "author-ege13-04",
+    "source": "a,b,c,d,p=map(int,input().split())\nprint((d+1)%256)\n"
+  },
+  {
+    "id": "author-ege14-01",
+    "source": "n,b=map(int,input().split())\ns=0\nwhile n:\n    s+=n%b\n    n//=b\nprint(s)\n"
+  },
+  {
+    "id": "author-ege14-02",
+    "source": "n,b=map(int,input().split())\nc=0\nwhile n:\n    c+=n%b==0\n    n//=b\nprint(c)\n"
+  },
+  {
+    "id": "author-ege14-03",
+    "source": "n,b=map(int,input().split())\nans=[]\nwhile n:\n    ans.append(str(n%b))\n    n//=b\nprint(''.join(ans[::-1]) or '0')\n"
+  },
+  {
+    "id": "author-ege14-04",
+    "source": "n,b=map(int,input().split())\nans=[]\nwhile n:\n    ans.append(n%b)\n    n//=b\nprint(ans[-1] if ans else 0)\n"
+  },
+  {
+    "id": "author-ege15-01",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-02",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-03",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-04",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-05",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-06",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-07",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-08",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-09",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-10",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-11",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-12",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-13",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-14",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-15",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-16",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-17",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-18",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-19",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-20",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-21",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-22",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-23",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-24",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-25",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-26",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-27",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-28",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-29",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-30",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-31",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-32",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-33",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-34",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-35",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-36",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-37",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-38",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege15-39",
+    "source": "p1,p2,q1,q2=map(int,input().split())\nbest=0\nfor a in range(-20,41):\n    for b in range(a,41):\n        ok=True\n        for x in range(-20,41):\n            A=a<=x<=b; P=p1<=x<=p2; Q=q1<=x<=q2\n            if not ((not A or P) or Q): ok=False\n        if ok: best=max(best,b-a)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege16-01",
+    "source": "from functools import lru_cache\n@lru_cache(None)\ndef f(n):\n    return 0 if n == 0 else 1 if n == 1 else f(n - 1) + f(n - 2)\nn = int(input())\nprint(f(n))\n"
+  },
+  {
+    "id": "author-ege16-02",
+    "source": "from functools import lru_cache\n@lru_cache(None)\ndef f(n):\n    return 0 if n==0 else 2*f(n-1)+1\nn=int(input())\nprint(f(n))\n"
+  },
+  {
+    "id": "author-ege16-03",
+    "source": "from functools import lru_cache\n@lru_cache(None)\ndef f(n):\n    return 2 if n==0 else f(n-1)+n\nn=int(input())\nprint(f(n))\n"
+  },
+  {
+    "id": "author-ege17-01",
+    "source": "a=list(map(int,input().split()))\nk=0\nmx=-10**9\nfor j in range(len(a)-1):\n    if (a[j]+a[j+1])%3==0:\n        k+=1;mx=max(mx,a[j]+a[j+1])\nprint(k,mx if k else 0)\n"
+  },
+  {
+    "id": "author-ege17-02",
+    "source": "a=list(map(int,input().split()))\nk=0\nmx=-10**9\nfor j in range(len(a)-1):\n    if (a[j]+a[j+1])%4==0:\n        k+=1;mx=max(mx,a[j]+a[j+1])\nprint(k,mx if k else 0)\n"
+  },
+  {
+    "id": "author-ege18-01",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-02",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-03",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-04",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-05",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-06",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-07",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-08",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-09",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-10",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-11",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-12",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-13",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-14",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-15",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-16",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-17",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-18",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-19",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-20",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-21",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-22",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-23",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-24",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-25",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-26",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-27",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-28",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-29",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-30",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-31",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-32",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-33",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-34",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-35",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-36",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-37",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-38",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege18-39",
+    "source": "n=int(input())\na=[list(map(int,input().split())) for _ in range(n)]\nlo=[[10**9]*n for _ in range(n)]\nhi=[[-10**9]*n for _ in range(n)]\nlo[0][0]=hi[0][0]=2*a[0][0]\nfor i in range(n):\n    for j in range(n):\n        if i==0 and j==0: continue\n        vals=[]\n        if i: vals.append((lo[i-1][j],hi[i-1][j],a[i][j]))\n        if j: vals.append((lo[i][j-1],hi[i][j-1],a[i][j]))\n        if i and j: vals.append((lo[i-1][j-1],hi[i-1][j-1],2*a[i][j]))\n        lo[i][j]=min(x[0]+x[2] for x in vals);hi[i][j]=max(x[1]+x[2] for x in vals)\nhi[-1][-1]+=a[-1][-1];lo[-1][-1]+=a[-1][-1]\nprint(hi[-1][-1],lo[-1][-1])\n"
+  },
+  {
+    "id": "author-ege2-01",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-02",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-03",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-04",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-05",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-06",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-07",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-08",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-09",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-10",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-11",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-12",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-13",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-14",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-15",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-16",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-17",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-18",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-19",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-20",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-21",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-22",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-23",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-24",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-25",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-26",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-27",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-28",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-29",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-30",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-31",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-32",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-33",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-34",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-35",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-36",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x != z) or (y and w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-37",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x and not y) or z)\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-38",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x == y) and (z or not w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege2-39",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    x,y,z,w=map(int,input().split())\n    ans+=int((x or y) and (not z or w))\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege23-01",
+    "source": "from functools import lru_cache\n@lru_cache(None)\ndef f(x,n):\n    if x>n:return 0\n    if x==n:return 1\n    return f(x+1,n)+f(x*2,n)\nn=int(input())\nprint(f(1,n))\n"
+  },
+  {
+    "id": "author-ege23-02",
+    "source": "from functools import lru_cache\n@lru_cache(None)\ndef f(x,n):\n    if x>n:return 0\n    if x==n:return 1\n    return f(x+1,n)+f(x*2,n)\nn=int(input())\nprint(f(1,n))\n"
+  },
+  {
+    "id": "author-ege23-03",
+    "source": "from functools import lru_cache\n@lru_cache(None)\ndef f(x,n):\n    if x>n:return 0\n    if x==n:return 1\n    return f(x+1,n)+f(x*2,n)\nn=int(input())\nprint(f(1,n))\n"
+  },
+  {
+    "id": "author-ege24-01",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-02",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-03",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-04",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-05",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-06",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-07",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-08",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-09",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-10",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-11",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-12",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-13",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-14",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-15",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-16",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-17",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-18",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-19",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-20",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-21",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-22",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-23",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-24",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-25",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-26",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-27",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-28",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-29",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-30",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-31",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-32",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-33",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-34",
+    "source": "s=input().strip()\ncur=best=0\nfor i,ch in enumerate(s):\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-35",
+    "source": "s = input().strip()\nif not s:\n    print(0)\nelse:\n    cur = best = 1\n    for i in range(1, len(s)):\n        cur = cur + 1 if s[i] != s[i - 1] else 1\n        best = max(best, cur)\n    print(best)\n"
+  },
+  {
+    "id": "author-ege24-36",
+    "source": "s=input().strip();p='BAFE';cur=best=0\nfor ch in s:\n    cur=cur+1 if ch==p[cur%4] else (1 if ch=='B' else 0)\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege24-37",
+    "source": "s=input().strip()\ncur=best=0\nfor ch in s:\n    cur=cur+1 if ch=='A' else 0\n    best=max(best,cur)\nprint(best)\n"
+  },
+  {
+    "id": "author-ege25-01",
+    "source": "a,b=map(int,input().split())\nans=[]\nfor x in range(a,b+1):\n    c=sum(x%d==0 for d in range(1,x+1))\n    if c==4: ans.append(x)\nprint(len(ans),max(ans) if ans else 0)\n"
+  },
+  {
+    "id": "author-ege25-02",
+    "source": "a,b=map(int,input().split())\nans=[]\nfor x in range(a,b+1):\n    c=sum(x%d==0 for d in range(1,x+1))\n    if c==4: ans.append(x)\nprint(len(ans),max(ans) if ans else 0)\n"
+  },
+  {
+    "id": "author-ege25-03",
+    "source": "a,b=map(int,input().split())\nans=[]\nfor x in range(a,b+1):\n    c=sum(x%d==0 for d in range(1,x+1))\n    if c==4: ans.append(x)\nprint(len(ans),max(ans) if ans else 0)\n"
+  },
+  {
+    "id": "author-ege26-01",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-02",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-03",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-04",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-05",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-06",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-07",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-08",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-09",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-10",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-11",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-12",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-13",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-14",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-15",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-16",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-17",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-18",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-19",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-20",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-21",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-22",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-23",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-24",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-25",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-26",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-27",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-28",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-29",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-30",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-31",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-32",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-33",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-34",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-35",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-36",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-37",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-38",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege26-39",
+    "source": "n=int(input())\nrows={}\nfor _ in range(n):\n    r,p=map(int,input().split())\n    if p%2: rows.setdefault(r,set()).add(p)\nbest=max((len(v),-k) for k,v in rows.items())\nprint(best[0],-best[1])\n"
+  },
+  {
+    "id": "author-ege27-01",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-02",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-03",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-04",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-05",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-06",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-07",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-08",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-09",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-10",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-11",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-12",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-13",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-14",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-15",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-16",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-17",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-18",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-19",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-20",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-21",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-22",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-23",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-24",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-25",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-26",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-27",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-28",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-29",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-30",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-31",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-32",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-33",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-34",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-35",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-36",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-37",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-38",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege27-39",
+    "source": "from math import hypot\nn=int(input())\ne=float(input())\np=[tuple(map(float,input().split())) for _ in range(n)]\nleft=set(range(n));cs=[]\nwhile left:\n    seed=left.pop();q=[seed];c=[seed]\n    for i in q:\n        for j in list(left):\n            if hypot(p[i][0]-p[j][0],p[i][1]-p[j][1])<e:\n                left.remove(j);q.append(j);c.append(j)\n    if len(c)>=3: cs.append(c)\ncenters=[]\nfor c in cs:\n    centers.append(min(c,key=lambda i:sum(hypot(p[i][0]-p[j][0],p[i][1]-p[j][1]) for j in c)))\nprint(int(sum(p[i][0] for i in centers)/len(centers)*10000),int(sum(p[i][1] for i in centers)/len(centers)*10000))\n"
+  },
+  {
+    "id": "author-ege5-01",
+    "source": "x=int(input())\nprint(int(x>0 and x%3==0))\n"
+  },
+  {
+    "id": "author-ege5-02",
+    "source": "x=int(input())\nprint(int(10<=x<=30 and x!=20))\n"
+  },
+  {
+    "id": "author-ege5-03",
+    "source": "x=int(input())\nprint(int((x%2==0)!=(x%3==0)))\n"
+  },
+  {
+    "id": "author-ege5-04",
+    "source": "a,b=map(int,input().split())\nprint(int(a>0 or b>0))\n"
+  },
+  {
+    "id": "author-ege5-05",
+    "source": "x=int(input())\nprint(int(abs(x)%10 in (2,7)))\n"
+  },
+  {
+    "id": "author-ege5-06",
+    "source": "x=int(input())\nprint(int(x>0 and x%8==0))\n"
+  },
+  {
+    "id": "author-ege5-07",
+    "source": "x=int(input())\nprint(int(10<=x<=30 and x!=20))\n"
+  },
+  {
+    "id": "author-ege5-08",
+    "source": "x=int(input())\nprint(int((x%2==0)!=(x%3==0)))\n"
+  },
+  {
+    "id": "author-ege5-09",
+    "source": "a,b=map(int,input().split())\nprint(int(a>0 or b>0))\n"
+  },
+  {
+    "id": "author-ege5-10",
+    "source": "x=int(input())\nprint(int(abs(x)%10 in (2,7)))\n"
+  },
+  {
+    "id": "author-ege8-01",
+    "source": "from itertools import product\nprint(sum('A' in ''.join(p) for p in product('ABC', repeat=4)))\n"
+  },
+  {
+    "id": "author-ege8-02",
+    "source": "from itertools import product\nprint(sum(all(p[j]!=p[j+1] for j in range(3)) for p in product('ABCD', repeat=4)))\n"
+  },
+  {
+    "id": "author-ege8-03",
+    "source": "from itertools import product\nprint(sum(p[0]=='B' for p in product('ABC', repeat=5)))\n"
+  },
+  {
+    "id": "author-ege8-04",
+    "source": "from itertools import product\nprint(sum(p.count('A')==2 for p in product('ABC', repeat=5)))\n"
+  },
+  {
+    "id": "author-ege8-05",
+    "source": "from itertools import product\nwords=[''.join(p) for p in product('ABC', repeat=3)]\nprint(words[int(input())-1])\n"
+  },
+  {
+    "id": "author-ege9-01",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if len(set(a))==len(a): ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege9-02",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if sum(a)%2==0: ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege9-03",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if max(a)==sum(a)-max(a): ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege9-04",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if a[0]<a[1]<a[2]<a[3]: ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege9-05",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if len(set(a))==len(a): ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege9-06",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if sum(a)%2==0: ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege9-07",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if max(a)==sum(a)-max(a): ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-ege9-08",
+    "source": "n=int(input())\nans=0\nfor _ in range(n):\n    a=list(map(int,input().split()))\n    if a[0]<a[1]<a[2]<a[3]: ans+=1\nprint(ans)\n"
+  },
+  {
+    "id": "author-io-01",
+    "source": "a,b,c=map(int,input().split())\nprint(a+b+c)\n"
+  },
+  {
+    "id": "author-io-02",
+    "source": "a,b,c=map(int,input().split())\nprint(a-c)\n"
+  },
+  {
+    "id": "author-io-03",
+    "source": "a,b=map(int,input().split())\nprint(a*b)\n"
+  },
+  {
+    "id": "author-io-04",
+    "source": "a,b=map(int,input().split())\nprint(2*(a+b))\n"
+  },
+  {
+    "id": "author-io-05",
+    "source": "n,k=map(int,input().split())\nprint(n//k,n%k)\n"
+  },
+  {
+    "id": "author-io-06",
+    "source": "a,b=map(int,input().split())\nprint((a-b)**2)\n"
+  },
+  {
+    "id": "author-io-07",
+    "source": "print(int(input())//10)\n"
+  },
+  {
+    "id": "author-io-08",
+    "source": "print(int(input())%100)\n"
+  },
+  {
+    "id": "author-io-09",
+    "source": "a,b=map(int,input().split())\nprint(a*a+b*b)\n"
+  },
+  {
+    "id": "author-io-10",
+    "source": "m=int(input())\nprint(m//60,m%60)\n"
+  },
+  {
+    "id": "author-io-11",
+    "source": "n=int(input())\nprint(n//10,n%10)\n"
+  },
+  {
+    "id": "author-io-12",
+    "source": "x,y,dx,dy=map(int,input().split())\nprint(x+dx,y+dy)\n"
+  },
+  {
+    "id": "author-io-13",
+    "source": "a,b,c=map(int,input().split())\nprint(a+b+c)\n"
+  },
+  {
+    "id": "author-io-14",
+    "source": "a,b,c=map(int,input().split())\nprint(a-c)\n"
+  },
+  {
+    "id": "author-io-15",
+    "source": "a,b=map(int,input().split())\nprint(a*b)\n"
+  },
+  {
+    "id": "author-io-16",
+    "source": "a,b=map(int,input().split())\nprint(2*(a+b))\n"
+  },
+  {
+    "id": "author-io-17",
+    "source": "n,k=map(int,input().split())\nprint(n//k,n%k)\n"
+  },
+  {
+    "id": "author-io-18",
+    "source": "a,b=map(int,input().split())\nprint((a-b)**2)\n"
+  },
+  {
+    "id": "author-io-19",
+    "source": "print(int(input())//10)\n"
+  },
+  {
+    "id": "author-io-20",
+    "source": "print(int(input())%100)\n"
+  },
+  {
+    "id": "author-io-21",
+    "source": "a,b=map(int,input().split())\nprint(a*a+b*b)\n"
+  },
+  {
+    "id": "author-io-22",
+    "source": "m=int(input())\nprint(m//60,m%60)\n"
+  },
+  {
+    "id": "author-io-23",
+    "source": "n=int(input())\nprint(n//10,n%10)\n"
+  },
+  {
+    "id": "author-io-24",
+    "source": "x,y,dx,dy=map(int,input().split())\nprint(x+dx,y+dy)\n"
+  },
+  {
+    "id": "author-io-25",
+    "source": "a,b,c=map(int,input().split())\nprint(a+b+c)\n"
+  },
+  {
+    "id": "author-io-26",
+    "source": "a,b,c=map(int,input().split())\nprint(a-c)\n"
+  },
+  {
+    "id": "author-io-27",
+    "source": "a,b=map(int,input().split())\nprint(a*b)\n"
+  },
+  {
+    "id": "author-io-28",
+    "source": "a,b=map(int,input().split())\nprint(2*(a+b))\n"
+  },
+  {
+    "id": "author-io-29",
+    "source": "n,k=map(int,input().split())\nprint(n//k,n%k)\n"
+  },
+  {
+    "id": "author-io-30",
+    "source": "a,b=map(int,input().split())\nprint((a-b)**2)\n"
+  },
+  {
+    "id": "author-io-31",
+    "source": "print(int(input())//10)\n"
+  },
+  {
+    "id": "author-io-32",
+    "source": "print(int(input())%100)\n"
+  },
+  {
+    "id": "author-io-33",
+    "source": "a,b=map(int,input().split())\nprint(a*a+b*b)\n"
+  },
+  {
+    "id": "author-io-34",
+    "source": "m=int(input())\nprint(m//60,m%60)\n"
+  },
+  {
+    "id": "author-io-35",
+    "source": "n=int(input())\nprint(n//10,n%10)\n"
+  },
+  {
+    "id": "author-io-36",
+    "source": "x,y,dx,dy=map(int,input().split())\nprint(x+dx,y+dy)\n"
+  },
+  {
+    "id": "author-io-37",
+    "source": "a,b,c=map(int,input().split())\nprint(a+b+c)\n"
+  },
+  {
+    "id": "author-io-38",
+    "source": "a,b,c=map(int,input().split())\nprint(a-c)\n"
+  },
+  {
+    "id": "author-io-39",
+    "source": "a,b=map(int,input().split())\nprint(a*b)\n"
+  },
+  {
+    "id": "author-lists-01",
+    "source": "a=list(map(int,input().split()))\nprint(sum(a))\n"
+  },
+  {
+    "id": "author-lists-02",
+    "source": "a=list(map(int,input().split()))\nprint(max(a))\n"
+  },
+  {
+    "id": "author-lists-03",
+    "source": "a=list(map(int,input().split()))\nprint(min(a))\n"
+  },
+  {
+    "id": "author-lists-04",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x>0 for x in a))\n"
+  },
+  {
+    "id": "author-lists-05",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x==0 for x in a))\n"
+  },
+  {
+    "id": "author-lists-06",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x for x in a if x%2==0))\n"
+  },
+  {
+    "id": "author-lists-07",
+    "source": "a=list(map(int,input().split()))\nprint(len(set(a)))\n"
+  },
+  {
+    "id": "author-lists-08",
+    "source": "a=list(map(int,input().split()))\nprint(*a[::-1])\n"
+  },
+  {
+    "id": "author-lists-09",
+    "source": "a=list(map(int,input().split()))\nprint(max(a[i]+a[i+1] for i in range(len(a)-1)))\n"
+  },
+  {
+    "id": "author-lists-10",
+    "source": "a=sorted(set(map(int,input().split())))\nprint(a[-2])\n"
+  },
+  {
+    "id": "author-lists-11",
+    "source": "a=list(map(int,input().split()))\nprint(sum(a))\n"
+  },
+  {
+    "id": "author-lists-12",
+    "source": "a=list(map(int,input().split()))\nprint(max(a))\n"
+  },
+  {
+    "id": "author-lists-13",
+    "source": "a=list(map(int,input().split()))\nprint(min(a))\n"
+  },
+  {
+    "id": "author-lists-14",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x>0 for x in a))\n"
+  },
+  {
+    "id": "author-lists-15",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x==0 for x in a))\n"
+  },
+  {
+    "id": "author-lists-16",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x for x in a if x%2==0))\n"
+  },
+  {
+    "id": "author-lists-17",
+    "source": "a=list(map(int,input().split()))\nprint(len(set(a)))\n"
+  },
+  {
+    "id": "author-lists-18",
+    "source": "a=list(map(int,input().split()))\nprint(*a[::-1])\n"
+  },
+  {
+    "id": "author-lists-19",
+    "source": "a=list(map(int,input().split()))\nprint(max(a[i]+a[i+1] for i in range(len(a)-1)))\n"
+  },
+  {
+    "id": "author-lists-20",
+    "source": "a=sorted(set(map(int,input().split())))\nprint(a[-2])\n"
+  },
+  {
+    "id": "author-lists-21",
+    "source": "a=list(map(int,input().split()))\nprint(sum(a))\n"
+  },
+  {
+    "id": "author-lists-22",
+    "source": "a=list(map(int,input().split()))\nprint(max(a))\n"
+  },
+  {
+    "id": "author-lists-23",
+    "source": "a=list(map(int,input().split()))\nprint(min(a))\n"
+  },
+  {
+    "id": "author-lists-24",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x>0 for x in a))\n"
+  },
+  {
+    "id": "author-lists-25",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x==0 for x in a))\n"
+  },
+  {
+    "id": "author-lists-26",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x for x in a if x%2==0))\n"
+  },
+  {
+    "id": "author-lists-27",
+    "source": "a=list(map(int,input().split()))\nprint(len(set(a)))\n"
+  },
+  {
+    "id": "author-lists-28",
+    "source": "a=list(map(int,input().split()))\nprint(*a[::-1])\n"
+  },
+  {
+    "id": "author-lists-29",
+    "source": "a=list(map(int,input().split()))\nprint(max(a[i]+a[i+1] for i in range(len(a)-1)))\n"
+  },
+  {
+    "id": "author-lists-30",
+    "source": "a=sorted(set(map(int,input().split())))\nprint(a[-2])\n"
+  },
+  {
+    "id": "author-lists-31",
+    "source": "a=list(map(int,input().split()))\nprint(sum(a))\n"
+  },
+  {
+    "id": "author-lists-32",
+    "source": "a=list(map(int,input().split()))\nprint(max(a))\n"
+  },
+  {
+    "id": "author-lists-33",
+    "source": "a=list(map(int,input().split()))\nprint(min(a))\n"
+  },
+  {
+    "id": "author-lists-34",
+    "source": "a=list(map(int,input().split()))\nprint(sum(x>0 for x in a))\n"
+  },
+  {
+    "id": "author-numbers-01",
+    "source": "n=int(input())\nprint(sum(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-02",
+    "source": "n=int(input())\nprint(len(str(abs(n))))\n"
+  },
+  {
+    "id": "author-numbers-03",
+    "source": "n=int(input())\nprint(abs(n)%10)\n"
+  },
+  {
+    "id": "author-numbers-04",
+    "source": "n=int(input())\nprint(int(str(abs(n))[::-1]))\n"
+  },
+  {
+    "id": "author-numbers-05",
+    "source": "n=int(input())\nprint(max(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-06",
+    "source": "n=int(input())\nprint(min(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-07",
+    "source": "n=int(input())\ns=str(abs(n))\nprint(int(s==s[::-1]))\n"
+  },
+  {
+    "id": "author-numbers-08",
+    "source": "n=int(input())\nprint(int(n>1 and all(n%d for d in range(2,int(n**0.5)+1))))\n"
+  },
+  {
+    "id": "author-numbers-09",
+    "source": "n=int(input())\nprint(sum(n%d==0 for d in [0] for d in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-numbers-10",
+    "source": "import math\nn=int(input())\nprint(math.gcd(n,12))\n"
+  },
+  {
+    "id": "author-numbers-11",
+    "source": "n=int(input())\nprint(n%7)\n"
+  },
+  {
+    "id": "author-numbers-12",
+    "source": "n=int(input())\nprint(len(bin(n))-2)\n"
+  },
+  {
+    "id": "author-numbers-13",
+    "source": "n=int(input())\nprint(sum(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-14",
+    "source": "n=int(input())\nprint(len(str(abs(n))))\n"
+  },
+  {
+    "id": "author-numbers-15",
+    "source": "n=int(input())\nprint(abs(n)%10)\n"
+  },
+  {
+    "id": "author-numbers-16",
+    "source": "n=int(input())\nprint(int(str(abs(n))[::-1]))\n"
+  },
+  {
+    "id": "author-numbers-17",
+    "source": "n=int(input())\nprint(max(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-18",
+    "source": "n=int(input())\nprint(min(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-19",
+    "source": "n=int(input())\ns=str(abs(n))\nprint(int(s==s[::-1]))\n"
+  },
+  {
+    "id": "author-numbers-20",
+    "source": "n=int(input())\nprint(int(n>1 and all(n%d for d in range(2,int(n**0.5)+1))))\n"
+  },
+  {
+    "id": "author-numbers-21",
+    "source": "n=int(input())\nprint(sum(n%d==0 for d in [0] for d in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-numbers-22",
+    "source": "import math\nn=int(input())\nprint(math.gcd(n,12))\n"
+  },
+  {
+    "id": "author-numbers-23",
+    "source": "n=int(input())\nprint(n%7)\n"
+  },
+  {
+    "id": "author-numbers-24",
+    "source": "n=int(input())\nprint(len(bin(n))-2)\n"
+  },
+  {
+    "id": "author-numbers-25",
+    "source": "n=int(input())\nprint(sum(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-26",
+    "source": "n=int(input())\nprint(len(str(abs(n))))\n"
+  },
+  {
+    "id": "author-numbers-27",
+    "source": "n=int(input())\nprint(abs(n)%10)\n"
+  },
+  {
+    "id": "author-numbers-28",
+    "source": "n=int(input())\nprint(int(str(abs(n))[::-1]))\n"
+  },
+  {
+    "id": "author-numbers-29",
+    "source": "n=int(input())\nprint(max(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-30",
+    "source": "n=int(input())\nprint(min(map(int,str(abs(n)))))\n"
+  },
+  {
+    "id": "author-numbers-31",
+    "source": "n=int(input())\ns=str(abs(n))\nprint(int(s==s[::-1]))\n"
+  },
+  {
+    "id": "author-numbers-32",
+    "source": "n=int(input())\nprint(int(n>1 and all(n%d for d in range(2,int(n**0.5)+1))))\n"
+  },
+  {
+    "id": "author-numbers-33",
+    "source": "n=int(input())\nprint(sum(n%d==0 for d in [0] for d in range(1,n+1)))\n"
+  },
+  {
+    "id": "author-search-01",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.index(x)+1 if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-02",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.count(x))\n"
+  },
+  {
+    "id": "author-search-03",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(int(any(a[j]+a[k]==x for j in range(len(a)) for k in range(j+1,len(a)))))\n"
+  },
+  {
+    "id": "author-search-04",
+    "source": "a=list(map(int,input().split()))\nprint(next((i+1 for i,x in enumerate(a) if x>0),-1))\n"
+  },
+  {
+    "id": "author-search-05",
+    "source": "a=list(map(int,input().split()))\nprint(a.index(max(a))+1)\n"
+  },
+  {
+    "id": "author-search-06",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(len(a)-a[::-1].index(x) if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-07",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.index(x)+1 if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-08",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.count(x))\n"
+  },
+  {
+    "id": "author-search-09",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(int(any(a[j]+a[k]==x for j in range(len(a)) for k in range(j+1,len(a)))))\n"
+  },
+  {
+    "id": "author-search-10",
+    "source": "a=list(map(int,input().split()))\nprint(next((i+1 for i,x in enumerate(a) if x>0),-1))\n"
+  },
+  {
+    "id": "author-search-11",
+    "source": "a=list(map(int,input().split()))\nprint(a.index(max(a))+1)\n"
+  },
+  {
+    "id": "author-search-12",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(len(a)-a[::-1].index(x) if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-13",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.index(x)+1 if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-14",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.count(x))\n"
+  },
+  {
+    "id": "author-search-15",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(int(any(a[j]+a[k]==x for j in range(len(a)) for k in range(j+1,len(a)))))\n"
+  },
+  {
+    "id": "author-search-16",
+    "source": "a=list(map(int,input().split()))\nprint(next((i+1 for i,x in enumerate(a) if x>0),-1))\n"
+  },
+  {
+    "id": "author-search-17",
+    "source": "a=list(map(int,input().split()))\nprint(a.index(max(a))+1)\n"
+  },
+  {
+    "id": "author-search-18",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(len(a)-a[::-1].index(x) if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-19",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.index(x)+1 if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-20",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.count(x))\n"
+  },
+  {
+    "id": "author-search-21",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(int(any(a[j]+a[k]==x for j in range(len(a)) for k in range(j+1,len(a)))))\n"
+  },
+  {
+    "id": "author-search-22",
+    "source": "a=list(map(int,input().split()))\nprint(next((i+1 for i,x in enumerate(a) if x>0),-1))\n"
+  },
+  {
+    "id": "author-search-23",
+    "source": "a=list(map(int,input().split()))\nprint(a.index(max(a))+1)\n"
+  },
+  {
+    "id": "author-search-24",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(len(a)-a[::-1].index(x) if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-25",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.index(x)+1 if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-26",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.count(x))\n"
+  },
+  {
+    "id": "author-search-27",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(int(any(a[j]+a[k]==x for j in range(len(a)) for k in range(j+1,len(a)))))\n"
+  },
+  {
+    "id": "author-search-28",
+    "source": "a=list(map(int,input().split()))\nprint(next((i+1 for i,x in enumerate(a) if x>0),-1))\n"
+  },
+  {
+    "id": "author-search-29",
+    "source": "a=list(map(int,input().split()))\nprint(a.index(max(a))+1)\n"
+  },
+  {
+    "id": "author-search-30",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(len(a)-a[::-1].index(x) if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-31",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.index(x)+1 if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-32",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.count(x))\n"
+  },
+  {
+    "id": "author-search-33",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(int(any(a[j]+a[k]==x for j in range(len(a)) for k in range(j+1,len(a)))))\n"
+  },
+  {
+    "id": "author-search-34",
+    "source": "a=list(map(int,input().split()))\nprint(next((i+1 for i,x in enumerate(a) if x>0),-1))\n"
+  },
+  {
+    "id": "author-search-35",
+    "source": "a=list(map(int,input().split()))\nprint(a.index(max(a))+1)\n"
+  },
+  {
+    "id": "author-search-36",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(len(a)-a[::-1].index(x) if x in a else -1)\n"
+  },
+  {
+    "id": "author-search-37",
+    "source": "a=list(map(int,input().split()))\nx=int(input())\nprint(a.index(x)+1 if x in a else -1)\n"
+  },
+  {
+    "id": "author-strings-01",
+    "source": "s=input()\nprint(len(s))\n"
+  },
+  {
+    "id": "author-strings-02",
+    "source": "s=input()\nprint(s[0])\n"
+  },
+  {
+    "id": "author-strings-03",
+    "source": "s=input()\nprint(s[-1])\n"
+  },
+  {
+    "id": "author-strings-04",
+    "source": "s=input()\nprint(s.count('A'))\n"
+  },
+  {
+    "id": "author-strings-05",
+    "source": "s=input()\nprint(sum(c.isdigit() for c in s))\n"
+  },
+  {
+    "id": "author-strings-06",
+    "source": "s=input()\nprint(s[::-1])\n"
+  },
+  {
+    "id": "author-strings-07",
+    "source": "s=input()\nprint(s.lower())\n"
+  },
+  {
+    "id": "author-strings-08",
+    "source": "s=input()\nprint(s.upper())\n"
+  },
+  {
+    "id": "author-strings-09",
+    "source": "s=input()\nprint(len(s.split()))\n"
+  },
+  {
+    "id": "author-strings-10",
+    "source": "s=input()\nprint(int('ab' in s.lower()))\n"
+  },
+  {
+    "id": "author-strings-11",
+    "source": "s=input()\nprint(len(set(s)))\n"
+  },
+  {
+    "id": "author-strings-12",
+    "source": "s=input().lower()\nprint(int(s==s[::-1]))\n"
+  },
+  {
+    "id": "author-strings-13",
+    "source": "s=input()\nprint(len(s))\n"
+  },
+  {
+    "id": "author-strings-14",
+    "source": "s=input()\nprint(s[0])\n"
+  },
+  {
+    "id": "author-strings-15",
+    "source": "s=input()\nprint(s[-1])\n"
+  },
+  {
+    "id": "author-strings-16",
+    "source": "s=input()\nprint(s.count('A'))\n"
+  },
+  {
+    "id": "author-strings-17",
+    "source": "s=input()\nprint(sum(c.isdigit() for c in s))\n"
+  },
+  {
+    "id": "author-strings-18",
+    "source": "s=input()\nprint(s[::-1])\n"
+  },
+  {
+    "id": "author-strings-19",
+    "source": "s=input()\nprint(s.lower())\n"
+  },
+  {
+    "id": "author-strings-20",
+    "source": "s=input()\nprint(s.upper())\n"
+  },
+  {
+    "id": "author-strings-21",
+    "source": "s=input()\nprint(len(s.split()))\n"
+  },
+  {
+    "id": "author-strings-22",
+    "source": "s=input()\nprint(int('ab' in s.lower()))\n"
+  },
+  {
+    "id": "author-strings-23",
+    "source": "s=input()\nprint(len(set(s)))\n"
+  },
+  {
+    "id": "author-strings-24",
+    "source": "s=input().lower()\nprint(int(s==s[::-1]))\n"
+  },
+  {
+    "id": "author-strings-25",
+    "source": "s=input()\nprint(len(s))\n"
+  },
+  {
+    "id": "author-strings-26",
+    "source": "s=input()\nprint(s[0])\n"
+  },
+  {
+    "id": "author-strings-27",
+    "source": "s=input()\nprint(s[-1])\n"
+  },
+  {
+    "id": "author-strings-28",
+    "source": "s=input()\nprint(s.count('A'))\n"
+  },
+  {
+    "id": "author-strings-29",
+    "source": "s=input()\nprint(sum(c.isdigit() for c in s))\n"
+  },
+  {
+    "id": "author-strings-30",
+    "source": "s=input()\nprint(s[::-1])\n"
+  },
+  {
+    "id": "author-strings-31",
+    "source": "s=input()\nprint(s.lower())\n"
+  },
+  {
+    "id": "author-strings-32",
+    "source": "s=input()\nprint(s.upper())\n"
+  },
+  {
+    "id": "author-strings-33",
+    "source": "s=input()\nprint(len(s.split()))\n"
+  },
+  {
+    "id": "author-strings-34",
+    "source": "s=input()\nprint(int('ab' in s.lower()))\n"
+  },
+  {
+    "id": "author-strings-35",
+    "source": "s=input()\nprint(len(set(s)))\n"
+  },
+  {
+    "id": "author-strings-36",
+    "source": "s=input().lower()\nprint(int(s==s[::-1]))\n"
+  },
+  {
+    "id": "bridge-base-digits",
+    "source": "n, b = map(int, input().split())\ns = 0\nwhile n:\n    s += n % b\n    n //= b\nprint(s)\n"
+  },
+  {
+    "id": "bridge-command-count",
+    "source": "n = int(input())\nf = [0] * (n + 1)\nf[1] = 1\nfor x in range(1, n):\n    if x + 1 <= n:\n        f[x + 1] += f[x]\n    if x * 2 <= n:\n        f[x * 2] += f[x]\nprint(f[n])\n"
+  },
+  {
+    "id": "bridge-count-in-list",
+    "source": "print(sum(x % 2 == 0 and x % 3 != 0 for x in map(int, input().split())))\n"
+  },
+  {
+    "id": "bridge-count-words",
+    "source": "from itertools import product\nprint(sum('A' in ''.join(p) for p in product('AB', repeat=3)))\n"
+  },
+  {
+    "id": "bridge-digit-sum",
+    "source": "print(sum(map(int, input().strip())))\n"
+  },
+  {
+    "id": "bridge-exactly-one",
+    "source": "a, b = map(int, input().split())\nprint(int((a % 2 == 0) != (b % 2 == 0)))\n"
+  },
+  {
+    "id": "bridge-four-divisors",
+    "source": "a, b = map(int, input().split())\nxs = []\nfor x in range(a, b + 1):\n    divs = [d for d in range(1, x + 1) if x % d == 0]\n    if len(divs) == 4:\n        xs.append(x)\nprint(len(xs), max(xs))\n"
+  },
+  {
+    "id": "bridge-last-digit",
+    "source": "print(int(input()) % 10)\n"
+  },
+  {
+    "id": "bridge-longest-run",
+    "source": "s = input().strip()\nbest = cur = 1\nfor i in range(1, len(s)):\n    cur = cur + 1 if s[i] == s[i - 1] else 1\n    best = max(best, cur)\nprint(best)\n"
+  },
+  {
+    "id": "bridge-neighbor-pairs",
+    "source": "a = list(map(int, input().split()))\nxs = [a[i] + a[i + 1] for i in range(len(a) - 1) if a[i] > 0 and a[i + 1] > 0]\nprint(len(xs), max(xs) if xs else 0)\n"
+  },
+  {
+    "id": "bridge-no-double",
+    "source": "s = input().strip()\nbest = cur = 1\nfor i in range(1, len(s)):\n    cur = cur + 1 if s[i] != s[i - 1] else 1\n    best = max(best, cur)\nprint(best)\n"
+  },
+  {
+    "id": "bridge-range-count-max",
+    "source": "a, b = map(int, input().split())\nxs = [x for x in range(a, b + 1) if x % 2 == 0]\nprint(len(xs), max(xs))\n"
+  },
+  {
+    "id": "bridge-recursive-sum",
+    "source": "n = int(input())\nprint(n * (n + 1) // 2)\n"
+  },
+  {
+    "id": "bridge-segment-except",
+    "source": "x = int(input())\nprint(int(10 <= x <= 20 and x != 15))\n"
+  },
+  {
+    "id": "bridge-two-conditions",
+    "source": "x = int(input())\nprint(int(x > 0 and x % 3 == 0))\n"
+  },
+  {
+    "id": "bridge-word-number",
+    "source": "from itertools import product\nn = int(input())\nwords = [''.join(p) for p in product('ABC', repeat=2)]\nprint(words[n - 1])\n"
+  },
+  {
+    "id": "count-divisible-range",
+    "source": "a, b, k = map(int, input().split())\nprint(sum(1 for x in range(a, b + 1) if x % k == 0))\n"
+  },
+  {
+    "id": "count-even",
+    "source": "input()\nprint(sum(x % 2 == 0 for x in map(int, input().split())))\n"
+  },
+  {
+    "id": "count-vowels",
+    "source": "v = set('аеёиоуыэюяАЕЁИОУЫЭЮЯ')\nprint(sum(ch in v for ch in input()))\n"
+  },
+  {
+    "id": "count-words",
+    "source": "print(len(input().split()))\n"
+  },
+  {
+    "id": "digit-sum",
+    "source": "print(sum(map(int, input().strip())))\n"
+  },
+  {
+    "id": "even-odd",
+    "source": "n = int(input())\nprint('EVEN' if n % 2 == 0 else 'ODD')\n"
+  },
+  {
+    "id": "factorial",
+    "source": "n = int(input())\np = 1\nfor i in range(2, n + 1):\n    p *= i\nprint(p)\n"
+  },
+  {
+    "id": "fizz-count",
+    "source": "n = int(input())\nprint(sum(1 for i in range(1, n + 1) if i % 3 == 0 or i % 5 == 0))\n"
+  },
+  {
+    "id": "gcd-two",
+    "source": "a, b = map(int, input().split())\nwhile b:\n    a, b = b, a % b\nprint(a)\n"
+  },
+  {
+    "id": "last-digit",
+    "source": "print(int(input()) % 10)\n"
+  },
+  {
+    "id": "leap-year",
+    "source": "y = int(input())\nprint('YES' if (y % 4 == 0 and y % 100 != 0) or y % 400 == 0 else 'NO')\n"
+  },
+  {
+    "id": "linear-search",
+    "source": "n, x = map(int, input().split())\na = list(map(int, input().split()))\nprint('YES' if x in a else 'NO')\n"
+  },
+  {
+    "id": "max-pair-diff",
+    "source": "a = list(map(int, input().split()))\nprint(max(abs(a[i + 1] - a[i]) for i in range(len(a) - 1)))\n"
+  },
+  {
+    "id": "max-three",
+    "source": "print(max(map(int, input().split())))\n"
+  },
+  {
+    "id": "min-of-n",
+    "source": "input()\nprint(min(map(int, input().split())))\n"
+  },
+  {
+    "id": "pair-sum",
+    "source": "n, s = map(int, input().split())\na = list(map(int, input().split()))\nseen = set()\nok = False\nfor x in a:\n    if s - x in seen:\n        ok = True\n        break\n    seen.add(x)\nprint('YES' if ok else 'NO')\n"
+  },
+  {
+    "id": "palindrome",
+    "source": "s = input().strip().lower()\nprint('YES' if s == s[::-1] else 'NO')\n"
+  },
+  {
+    "id": "power-of-two",
+    "source": "n = int(input())\nprint('YES' if n > 0 and n & (n - 1) == 0 else 'NO')\n"
+  },
+  {
+    "id": "prefix-sum",
+    "source": "input()\ns = 0\nout = []\nfor x in map(int, input().split()):\n    s += x\n    out.append(s)\nprint(*out)\n"
+  },
+  {
+    "id": "repeat-string",
+    "source": "s = input()\nk = int(input())\nprint(s * k)\n"
+  },
+  {
+    "id": "reverse-digits",
+    "source": "print(int(input().strip()[::-1] or '0'))\n"
+  },
+  {
+    "id": "reverse-number",
+    "source": "print(int(input()[::-1]))\n"
+  },
+  {
+    "id": "school-grade",
+    "source": "n = int(input())\nif n < 50:\n    print(2)\nelif n < 70:\n    print(3)\nelif n < 90:\n    print(4)\nelse:\n    print(5)\n"
+  },
+  {
+    "id": "second-max",
+    "source": "input()\na = sorted(set(map(int, input().split())))\nprint(a[-2])\n"
+  },
+  {
+    "id": "second-minimum",
+    "source": "a = sorted(set(map(int, input().split())))\nprint(a[-2])\n"
+  },
+  {
+    "id": "sum-1-n",
+    "source": "n = int(input())\nprint(n * (n + 1) // 2)\n"
+  },
+  {
+    "id": "sum-two",
+    "source": "a, b = map(int, input().split())\nprint(a + b)\n"
+  },
+  {
+    "id": "to-binary",
+    "source": "print(bin(int(input()))[2:])\n"
+  },
+  {
+    "id": "unique-count",
+    "source": "input()\nprint(len(set(map(int, input().split()))))\n"
+  },
+  {
+    "id": "author-games-04",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 51:\n        return 0\n    moves = [game(nxt) for nxt in (s + 1, s + 3, s * 3) if nxt % 2 == 1]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(next(s for s in range(1, 51) if any(game(nxt) == 1 for nxt in (s + 1, s + 3, s * 3) if nxt % 2)))\n"
+  },
+  {
+    "id": "author-games-05",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 51:\n        return 0\n    moves = [game(nxt) for nxt in (s + 1, s + 3, s * 3) if nxt % 2 == 1]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(*[s for s in range(1, 51) if game(s) == 2][-2:])\n"
+  },
+  {
+    "id": "author-games-06",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 51:\n        return 0\n    moves = [game(nxt) for nxt in (s + 1, s + 3, s * 3) if nxt % 2 == 1]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(len([s for s in range(1, 51) if game(s) == -2]))\n"
+  },
+  {
+    "id": "author-games-07",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if 45 <= s <= 112:\n        return 0\n    if s > 112:\n        return 1\n    moves = [game(s + 2), game(s * 3)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(min(s for s in range(1, 45) if game(s) == -1))\n"
+  },
+  {
+    "id": "author-games-08",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if 45 <= s <= 112:\n        return 0\n    if s > 112:\n        return 1\n    moves = [game(s + 2), game(s * 3)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(len([s for s in range(1, 45) if game(s) == 2]))\n"
+  },
+  {
+    "id": "author-games-09",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if 45 <= s <= 112:\n        return 0\n    if s > 112:\n        return 1\n    moves = [game(s + 2), game(s * 3)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nans = [s for s in range(1, 45) if game(s) == -2]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-10",
+    "source": "from functools import cache\nfrom math import ceil\n@cache\ndef game(a, b):\n    if a + b <= 32:\n        return 0\n    moves = []\n    if a > 0: moves.append(game(a - 1, b))\n    if a > 1: moves.append(game(ceil(a / 2), b))\n    if b > 0: moves.append(game(a, b - 1))\n    if b > 1: moves.append(game(a, ceil(b / 2)))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(23, 1000) if game(10, s) == -1][0])\n"
+  },
+  {
+    "id": "author-games-11",
+    "source": "from functools import cache\nfrom math import ceil\n@cache\ndef game(a, b):\n    if a + b <= 32:\n        return 0\n    moves = []\n    if a > 0: moves.append(game(a - 1, b))\n    if a > 1: moves.append(game(ceil(a / 2), b))\n    if b > 0: moves.append(game(a, b - 1))\n    if b > 1: moves.append(game(a, ceil(b / 2)))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nans = [s for s in range(23, 1000) if game(10, s) == 2]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-12",
+    "source": "from functools import cache\nfrom math import ceil\n@cache\ndef game(a, b):\n    if a + b <= 32:\n        return 0\n    moves = []\n    if a > 0: moves.append(game(a - 1, b))\n    if a > 1: moves.append(game(ceil(a / 2), b))\n    if b > 0: moves.append(game(a, b - 1))\n    if b > 1: moves.append(game(a, ceil(b / 2)))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(23, 1000) if game(10, s) == -2][0])\n"
+  },
+  {
+    "id": "author-games-13",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 1000:\n        return 0\n    moves = [game(s + 100), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(len([s for s in range(1, 1000) if game(s) == -1]))\n"
+  },
+  {
+    "id": "author-games-14",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 1000:\n        return 0\n    moves = [game(s + 100), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(len([s for s in range(1, 1000) if game(s) == 2]))\n"
+  },
+  {
+    "id": "author-games-15",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 1000:\n        return 0\n    moves = [game(s + 100), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nans = [s for s in range(1, 1000) if game(s) == -2 and 1 in [game(s + 100), game(s * 2)]]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-16",
+    "source": "from functools import cache\n@cache\ndef game(k, s):\n    if k + s >= 30:\n        return 0\n    moves = [game(k + 1, s), game(k, s + 1), game(k * 2, s), game(k, s * 3)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(len([(k, s) for k in range(1, 30) for s in range(1, 30) if game(k, s) == -1]))\n"
+  },
+  {
+    "id": "author-games-17",
+    "source": "from functools import cache\n@cache\ndef game(k, s):\n    if k + s >= 30:\n        return 0\n    moves = [game(k + 1, s), game(k, s + 1), game(k * 2, s), game(k, s * 3)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nans = [k for k in range(1, 100) if game(k, 7) == 2]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-18",
+    "source": "from functools import cache\n@cache\ndef game(k, s):\n    if k + s >= 30:\n        return 0\n    moves = [game(k + 1, s), game(k, s + 1), game(k * 2, s), game(k, s * 3)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(1, 100) if game(1, s) == -2][0])\n"
+  },
+  {
+    "id": "author-games-19",
+    "source": "from functools import cache\n@cache\ndef game(s, previous):\n    if s >= 43:\n        return 0\n    moves = []\n    if previous != 1: moves.append(game(s + 1, 1))\n    if previous != 2: moves.append(game(s + 2, 2))\n    if previous != 3: moves.append(game(s * 2, 3))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(1, 43) if game(s, 0) == -1][0])\n"
+  },
+  {
+    "id": "author-games-20",
+    "source": "from functools import cache\n@cache\ndef game(s, previous):\n    if s >= 43:\n        return 0\n    moves = []\n    if previous != 1: moves.append(game(s + 1, 1))\n    if previous != 2: moves.append(game(s + 2, 2))\n    if previous != 3: moves.append(game(s * 2, 3))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nans = [s for s in range(1, 43) if game(s, 0) == 2]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-21",
+    "source": "from functools import cache\n@cache\ndef game(s, previous):\n    if s >= 43:\n        return 0\n    moves = []\n    if previous != 1: moves.append(game(s + 1, 1))\n    if previous != 2: moves.append(game(s + 2, 2))\n    if previous != 3: moves.append(game(s * 2, 3))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(1, 43) if game(s, 0) == -2][0])\n"
+  },
+  {
+    "id": "author-games-22",
+    "source": "from functools import cache\n@cache\ndef game(s, used):\n    if s >= 20:\n        return 0\n    moves = [game(s + 2, used), game(s * 2, used)]\n    if not used:\n        moves.append(game(s, True))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(min(s for s in range(1, 20) if game(s, False) != -1 and 1 in [game(2 * s, False), game(s + 2, False), game(s, True)]))\n"
+  },
+  {
+    "id": "author-games-23",
+    "source": "from functools import cache\n@cache\ndef game(s, used):\n    if s >= 20:\n        return 0\n    moves = [game(s + 2, used), game(s * 2, used)]\n    if not used:\n        moves.append(game(s, True))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(*[s for s in range(1, 20) if game(s, False) == 2])\n"
+  },
+  {
+    "id": "author-games-24",
+    "source": "from functools import cache\n@cache\ndef game(s, used):\n    if s >= 20:\n        return 0\n    moves = [game(s + 2, used), game(s * 2, used)]\n    if not used:\n        moves.append(game(s, True))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nans = [s for s in range(1, 20) if game(s, False) < 0]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-25",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 166:\n        return 0\n    codes = [game(nxt) for nxt in moves(s)]\n    if 0 in codes:\n        return 1\n    if min(codes) < 0:\n        return -max(x for x in codes if x < 0) + 1\n    return -max(codes)\ndef moves(s):\n    result = [s + 2, s + 10]\n    k = 2\n    while k * s - s <= 80:\n        result.append(k * s)\n        k += 1\n    return result\nfor s in range(1, 200):\n    for after_petya in moves(s):\n        if game(after_petya) != -1 and 1 in [game(nxt) for nxt in moves(after_petya)]:\n            print(s)\n            raise SystemExit\n"
+  },
+  {
+    "id": "author-games-26",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 166:\n        return 0\n    codes = [game(nxt) for nxt in moves(s)]\n    if 0 in codes:\n        return 1\n    if min(codes) < 0:\n        return -max(x for x in codes if x < 0) + 1\n    return -max(codes)\ndef moves(s):\n    result = [s + 2, s + 10]\n    k = 2\n    while k * s - s <= 80:\n        result.append(k * s)\n        k += 1\n    return result\nans = [s for s in range(1, 200) if game(s) == 2]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-27",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 166:\n        return 0\n    codes = [game(nxt) for nxt in moves(s)]\n    if 0 in codes:\n        return 1\n    if min(codes) < 0:\n        return -max(x for x in codes if x < 0) + 1\n    return -max(codes)\ndef moves(s):\n    result = [s + 2, s + 10]\n    k = 2\n    while k * s - s <= 80:\n        result.append(k * s)\n        k += 1\n    return result\nprint(min(s for s in range(1, 200) if game(s) == -2))\n"
+  },
+  {
+    "id": "author-games-28",
+    "source": "from functools import cache\n@cache\ndef game(s, own_previous, other_previous):\n    if s >= 121:\n        return 0\n    codes = []\n    if own_previous != 1: codes.append(game(s + 2, other_previous, 1))\n    if own_previous != 2: codes.append(game(s + 5, other_previous, 2))\n    if own_previous != 3: codes.append(game(s + 12, other_previous, 3))\n    if own_previous != 4: codes.append(game(s * 2, other_previous, 4))\n    if 0 in codes:\n        return 1\n    if min(codes) < 0:\n        return -max(x for x in codes if x < 0) + 1\n    return -max(codes)\nfor s in range(1, 200):\n    if game(s, 0, 0) != -1 and 1 in [game(s + 2, 0, 1), game(s + 5, 0, 2), game(s + 12, 0, 3), game(s * 2, 0, 4)]:\n        print(s)\n        break\n"
+  },
+  {
+    "id": "author-games-29",
+    "source": "from functools import cache\n@cache\ndef game(s, own_previous, other_previous):\n    if s >= 121:\n        return 0\n    codes = []\n    if own_previous != 1: codes.append(game(s + 2, other_previous, 1))\n    if own_previous != 2: codes.append(game(s + 5, other_previous, 2))\n    if own_previous != 3: codes.append(game(s + 12, other_previous, 3))\n    if own_previous != 4: codes.append(game(s * 2, other_previous, 4))\n    if 0 in codes:\n        return 1\n    if min(codes) < 0:\n        return -max(x for x in codes if x < 0) + 1\n    return -max(codes)\nprint(min(s for s in range(1, 200) if game(s, 0, 0) == 2))\n"
+  },
+  {
+    "id": "author-games-30",
+    "source": "from functools import cache\n@cache\ndef game(s, own_previous, other_previous):\n    if s >= 121:\n        return 0\n    codes = []\n    if own_previous != 1: codes.append(game(s + 2, other_previous, 1))\n    if own_previous != 2: codes.append(game(s + 5, other_previous, 2))\n    if own_previous != 3: codes.append(game(s + 12, other_previous, 3))\n    if own_previous != 4: codes.append(game(s * 2, other_previous, 4))\n    if 0 in codes:\n        return 1\n    if min(codes) < 0:\n        return -max(x for x in codes if x < 0) + 1\n    return -max(codes)\nans = [s for s in range(1, 200) if game(s, 0, 0) == -3]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-31",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 82:\n        return 0\n    moves = [game(s + 10), game(s * 2)]\n    if max(moves) > 0:\n        return -min(x for x in moves if x > 0)\n    if min(moves) < 0:\n        return -min(moves) + 1\n    return 1\nprint(min(s for s in range(1, 82) if game(s) == -1))\n"
+  },
+  {
+    "id": "author-games-32",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 82:\n        return 0\n    moves = [game(s + 10), game(s * 2)]\n    if max(moves) > 0:\n        return -min(x for x in moves if x > 0)\n    if min(moves) < 0:\n        return -min(moves) + 1\n    return 1\nans = [s for s in range(1, 82) if game(s) == 2]\nprint(min(ans), max(ans))\n"
+  },
+  {
+    "id": "author-games-33",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 82:\n        return 0\n    moves = [game(s + 10), game(s * 2)]\n    if max(moves) > 0:\n        return -min(x for x in moves if x > 0)\n    if min(moves) < 0:\n        return -min(moves) + 1\n    return 1\nprint(min(s for s in range(1, 82) if game(s) == -2))\n"
+  },
+  {
+    "id": "author-games-34",
+    "source": "TARGET = 42\ndef moves(s):\n    return (s + 1, s + 3, s + 7) if s < TARGET else (s - 1, s - 3, s - 7)\ndef win1(s):\n    return s != TARGET and any(nxt == TARGET for nxt in moves(s))\ndef lose1(s):\n    return s != TARGET and all(win1(nxt) for nxt in moves(s))\ndef win2(s):\n    return not win1(s) and any(lose1(nxt) for nxt in moves(s))\ndef lose2(s):\n    return all(win1(nxt) or win2(nxt) for nxt in moves(s)) and any(win1(nxt) for nxt in moves(s))\nprint(min(s for s in range(1, 100) if not lose1(s) and any(win1(nxt) for nxt in moves(s))))\n"
+  },
+  {
+    "id": "author-games-35",
+    "source": "TARGET = 42\ndef moves(s):\n    return (s + 1, s + 3, s + 7) if s < TARGET else (s - 1, s - 3, s - 7)\ndef win1(s):\n    return s != TARGET and any(nxt == TARGET for nxt in moves(s))\ndef lose1(s):\n    return s != TARGET and all(win1(nxt) for nxt in moves(s))\ndef win2(s):\n    return not win1(s) and any(lose1(nxt) for nxt in moves(s))\ndef lose2(s):\n    return all(win1(nxt) or win2(nxt) for nxt in moves(s)) and any(win1(nxt) for nxt in moves(s))\nprint(*[s for s in range(1, 100) if win2(s)][:2])\n"
+  },
+  {
+    "id": "author-games-36",
+    "source": "TARGET = 42\ndef moves(s):\n    return (s + 1, s + 3, s + 7) if s < TARGET else (s - 1, s - 3, s - 7)\ndef win1(s):\n    return s != TARGET and any(nxt == TARGET for nxt in moves(s))\ndef lose1(s):\n    return s != TARGET and all(win1(nxt) for nxt in moves(s))\ndef win2(s):\n    return not win1(s) and any(lose1(nxt) for nxt in moves(s))\ndef lose2(s):\n    return all(win1(nxt) or win2(nxt) for nxt in moves(s)) and any(win1(nxt) for nxt in moves(s))\nprint(max(s for s in range(1, 100) if lose2(s)))\n"
+  },
+  {
+    "id": "author-games-37",
+    "source": "from functools import cache\n@cache\ndef game(x, y):\n    if x * x + y * y > 400:\n        return 0\n    moves = [game(x - 10, y + 5), game(x - 5, y - 5), game(x + 5, y - 5)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(z for z in moves if z < 0) + 1\n    return -max(moves)\nprint(len([s for s in range(-100, 100) if 1 + s * s <= 400]))\n"
+  },
+  {
+    "id": "author-games-38",
+    "source": "from functools import cache\n@cache\ndef game(x, y):\n    if x * x + y * y > 400:\n        return 0\n    moves = [game(x - 10, y + 5), game(x - 5, y - 5), game(x + 5, y - 5)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(z for z in moves if z < 0) + 1\n    return -max(moves)\nfirst = [s for s in range(-100, 100) if game(-1, s) == 1]\nsecond = [s for s in range(-100, 100) if game(-1, s) == 2]\nprint(len(first), len(second))\n"
+  },
+  {
+    "id": "author-games-39",
+    "source": "from functools import cache\n@cache\ndef game(x, y):\n    if x * x + y * y > 400:\n        return 0\n    moves = [game(x - 10, y + 5), game(x - 5, y - 5), game(x + 5, y - 5)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(z for z in moves if z < 0) + 1\n    return -max(moves)\nprint(max(s for s in range(-100, 100) if game(-1, s) == -2))\n"
+  },
+  {
+    "id": "author-games-40",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s < 3:\n        return 0 if s % 2 == 0 else 1\n    moves = [game(s // 2)]\n    if s >= 4: moves.append(game(s - 4))\n    if s >= 7: moves.append(game(s - 7))\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(max(s for s in range(3, 30) if game(s) == 2))\n"
+  },
+  {
+    "id": "ege19-vanya-first",
+    "source": "from functools import cache\n@cache\ndef game(a, b):\n    if a + b >= 62:\n        return 0\n    moves = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(min(s for s in range(1, 55) if game(7, s) != -1 and 1 in [game(9, s), game(14, s), game(7, s + 2), game(7, 2 * s)]))\n"
+  },
+  {
+    "id": "ege20-petya-second",
+    "source": "from functools import cache\n@cache\ndef game(a, b):\n    if a + b >= 62:\n        return 0\n    moves = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(min(s for s in range(1, 55) if game(7, s) != -1 and 1 in [game(9, s), game(14, s), game(7, s + 2), game(7, 2 * s)]))\n"
+  },
+  {
+    "id": "ege21-vanya-second",
+    "source": "from functools import cache\n@cache\ndef game(a, b):\n    if a + b >= 62:\n        return 0\n    moves = [game(a + 2, b), game(a * 2, b), game(a, b + 2), game(a, b * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(min(s for s in range(1, 55) if game(7, s) != -1 and 1 in [game(9, s), game(14, s), game(7, s + 2), game(7, 2 * s)]))\n"
+  },
+  {
+    "id": "author-games-41",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 129:\n        return 0\n    moves = [game(s + 1), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(1, 129) if game(s) == -1][0])\n"
+  },
+  {
+    "id": "author-games-42",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 129:\n        return 0\n    moves = [game(s + 1), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint(*[s for s in range(1, 129) if game(s) == 2])\n"
+  },
+  {
+    "id": "author-games-43",
+    "source": "from functools import cache\n@cache\ndef game(s):\n    if s >= 129:\n        return 0\n    moves = [game(s + 1), game(s * 2)]\n    if 0 in moves:\n        return 1\n    if min(moves) < 0:\n        return -max(x for x in moves if x < 0) + 1\n    return -max(moves)\nprint([s for s in range(1, 129) if game(s) == -2][0])\n"
+  }
+]

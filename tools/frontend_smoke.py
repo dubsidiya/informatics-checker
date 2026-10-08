@@ -30,6 +30,13 @@ def main() -> None:
         errors.append("frontend missing CSRF header")
     if "localStorage.getItem(\"solved\")" in app_js:
         errors.append("client still treats localStorage.solved as source of truth")
+    scroll_calls = [line for line in app_js.splitlines() if ".scrollIntoView(" in line]
+    if len(scroll_calls) != 1 or not any("els.result.scrollIntoView" in line for line in scroll_calls):
+        errors.append("student page has unexpected automatic scrollIntoView calls")
+    if "capturePagePosition" not in app_js or "preventScroll" not in app_js:
+        errors.append("student check does not preserve page scroll")
+    if "data-view-solution" not in app_js or "solution_views" not in teacher_js:
+        errors.append("solution review workflow is missing from frontend")
     if "prefers-reduced-motion" not in style:
         errors.append("missing reduced motion")
     if errors:

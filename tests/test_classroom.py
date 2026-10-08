@@ -37,6 +37,14 @@ class TopicBriefTests(unittest.TestCase):
     def test_catalog_covers_ege_topics(self):
         names = {item["topic"] for item in list_topic_cards()}
         for topic in (
+            "\u0415\u0413\u042d 1",
+            "\u0415\u0413\u042d 3",
+            "\u0415\u0413\u042d 4",
+            "\u0415\u0413\u042d 6",
+            "\u0415\u0413\u042d 7",
+            "\u0415\u0413\u042d 10",
+            "\u0415\u0413\u042d 11",
+            "\u0415\u0413\u042d 12",
             "\u0415\u0413\u042d 8",
             "\u0415\u0413\u042d 9",
             "\u0415\u0413\u042d 13",
@@ -45,6 +53,7 @@ class TopicBriefTests(unittest.TestCase):
             "\u0415\u0413\u042d 17",
             "\u0415\u0413\u042d 23",
             "\u0415\u0413\u042d 25",
+            "\u0415\u0413\u042d 22",
         ):
             self.assertIn(topic, names)
 
@@ -261,6 +270,7 @@ class ClassroomApiTests(unittest.TestCase):
         self.assertIn("hard_tasks", summary)
         self.assertIn("inactive", summary)
         self.assertIn("exams", summary)
+        self.assertIn("solution_views", summary)
 
 
 if __name__ == "__main__":

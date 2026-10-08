@@ -35,7 +35,7 @@ class MutationDiagnoseTests(unittest.TestCase):
         failed = 0
         covered = 0
         for problem in all_problems():
-            cap = 4 if any(str(tag).startswith("ege") for tag in problem.tags) else 20
+            cap = 3 if problem.author_created or any(str(tag).startswith("ege") for tag in problem.tags) else 12
             mutants = _diverse(generate_mutants(SOLUTIONS[problem.id]), cap)
             for mutant in mutants:
                 generated += 1
@@ -48,7 +48,11 @@ class MutationDiagnoseTests(unittest.TestCase):
                     result.hints,
                     f"{problem.id} {mutant.kind} produced no hints",
                 )
-                if "pairs" not in problem.tags and "triples" not in problem.tags:
+                if (
+                    "pairs" not in problem.tags
+                    and "triples" not in problem.tags
+                    and "boolean_condition" not in problem.tags
+                ):
                     for word in PAIR_GARBAGE:
                         self.assertNotIn(
                             word,

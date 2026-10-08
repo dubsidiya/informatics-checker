@@ -1,431 +1,287 @@
 [
   {
-    "id": "count-words",
-    "title": "Сколько слов",
+    "id": "bridge-range-count-max",
+    "title": "Сколько чисел и максимум",
     "level": "старт",
-    "topic": "строки",
-    "tags": [
-      "print_once"
-    ],
-    "statement": "Дана строка из слов, разделённых пробелами. Посчитай, сколько в ней слов.",
-    "input_format": "Одна строка со словами через пробелы.",
-    "output_format": "Одно целое число — количество слов.",
-    "examples": [
-      {
-        "stdin": "один два три",
-        "stdout": "3"
-      },
-      {
-        "stdin": "привет",
-        "stdout": "1"
-      }
-    ],
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege17", "closed_range", "two_int_out", "integers_from_input"],
+    "statement": "Даны A и B. Рассмотри каждое целое число от A до B включительно. Выведи два числа: сколько из них чётные и наибольшее чётное. Хотя бы одно чётное число на отрезке есть.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Два целых числа через пробел: количество и максимум.",
+    "examples": [{"stdin": "1 6", "stdout": "3 6"}, {"stdin": "4 4", "stdout": "1 4"}],
     "tests": [
-      {
-        "stdin": "один два три",
-        "stdout": "3",
-        "hidden": false
-      },
-      {
-        "stdin": "привет",
-        "stdout": "1",
-        "hidden": false
-      },
-      {
-        "stdin": "a b c d e",
-        "stdout": "5",
-        "hidden": true
-      },
-      {
-        "stdin": "   лишние   пробелы   ",
-        "stdout": "2",
-        "hidden": true
-      },
-      {
-        "stdin": "",
-        "stdout": "0",
-        "hidden": true
-      }
+      {"stdin": "1 6", "stdout": "3 6", "hidden": false},
+      {"stdin": "4 4", "stdout": "1 4", "hidden": false},
+      {"stdin": "2 3", "stdout": "1 2", "hidden": true},
+      {"stdin": "7 12", "stdout": "3 12", "hidden": true},
+      {"stdin": "-3 2", "stdout": "3 2", "hidden": true}
     ]
   },
   {
-    "id": "reverse-number",
-    "title": "Переверни число",
+    "id": "bridge-two-conditions",
+    "title": "Два условия сразу",
+    "level": "старт",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege5", "single_int_out", "integers_from_input"],
+    "statement": "Дано целое число X. Выведи 1, если оно положительное и делится на 3. Иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "1 или 0.",
+    "examples": [{"stdin": "6", "stdout": "1"}, {"stdin": "-3", "stdout": "0"}],
+    "tests": [
+      {"stdin": "6", "stdout": "1", "hidden": false},
+      {"stdin": "-3", "stdout": "0", "hidden": false},
+      {"stdin": "3", "stdout": "1", "hidden": true},
+      {"stdin": "4", "stdout": "0", "hidden": true},
+      {"stdin": "0", "stdout": "0", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-exactly-one",
+    "title": "Ровно одно условие",
     "level": "средне",
-    "topic": "числа",
-    "tags": [
-      "integers_from_input",
-      "single_int_out",
-      "digits"
-    ],
-    "statement": "Дано неотрицательное целое число. Выведи его цифры в обратном порядке как одно число (ведущие нули результата отбрасываются).",
-    "input_format": "Одно неотрицательное целое число.",
-    "output_format": "Одно целое число — перевёрнутое.",
-    "examples": [
-      {
-        "stdin": "123",
-        "stdout": "321"
-      },
-      {
-        "stdin": "120",
-        "stdout": "21"
-      }
-    ],
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege5", "single_int_out", "integers_from_input"],
+    "statement": "Даны два целых числа A и B. Выведи 1, если ровно одно из них чётное. Если чётные оба или оба нечётные, выведи 0.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "1 или 0.",
+    "examples": [{"stdin": "2 3", "stdout": "1"}, {"stdin": "2 4", "stdout": "0"}],
     "tests": [
-      {
-        "stdin": "123",
-        "stdout": "321",
-        "hidden": false
-      },
-      {
-        "stdin": "120",
-        "stdout": "21",
-        "hidden": false
-      },
-      {
-        "stdin": "5",
-        "stdout": "5",
-        "hidden": true
-      },
-      {
-        "stdin": "100",
-        "stdout": "1",
-        "hidden": true
-      },
-      {
-        "stdin": "98765",
-        "stdout": "56789",
-        "hidden": true
-      }
+      {"stdin": "2 3", "stdout": "1", "hidden": false},
+      {"stdin": "2 4", "stdout": "0", "hidden": false},
+      {"stdin": "5 8", "stdout": "1", "hidden": true},
+      {"stdin": "7 9", "stdout": "0", "hidden": true},
+      {"stdin": "-2 1", "stdout": "1", "hidden": true}
     ]
   },
   {
-    "id": "max-pair-diff",
-    "title": "Максимальная разность соседей",
-    "level": "средне",
-    "topic": "списки",
-    "tags": [
-      "integers_from_input",
-      "single_int_out"
-    ],
-    "statement": "Дан список целых чисел. Найди максимальную по модулю разность соседних элементов и выведи её.",
-    "input_format": "В одной строке числа через пробел.",
-    "output_format": "Одно целое число — максимальная по модулю разность соседей.",
-    "examples": [
-      {
-        "stdin": "1 5 2 9",
-        "stdout": "7"
-      },
-      {
-        "stdin": "10 3",
-        "stdout": "7"
-      }
-    ],
+    "id": "bridge-segment-except",
+    "title": "Отрезок с исключением",
+    "level": "старт",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege5", "single_int_out", "integers_from_input"],
+    "statement": "Дано целое число X. Выведи 1, если оно лежит на отрезке от 10 до 20 включительно, но не равно 15. Иначе выведи 0.",
+    "input_format": "Одно целое число X.",
+    "output_format": "1 или 0.",
+    "examples": [{"stdin": "10", "stdout": "1"}, {"stdin": "15", "stdout": "0"}],
     "tests": [
-      {
-        "stdin": "1 5 2 9",
-        "stdout": "7",
-        "hidden": false
-      },
-      {
-        "stdin": "10 3",
-        "stdout": "7",
-        "hidden": false
-      },
-      {
-        "stdin": "4 4 4",
-        "stdout": "0",
-        "hidden": true
-      },
-      {
-        "stdin": "-1 -5",
-        "stdout": "4",
-        "hidden": true
-      },
-      {
-        "stdin": "0 10 2",
-        "stdout": "10",
-        "hidden": true
-      }
+      {"stdin": "10", "stdout": "1", "hidden": false},
+      {"stdin": "15", "stdout": "0", "hidden": false},
+      {"stdin": "20", "stdout": "1", "hidden": true},
+      {"stdin": "9", "stdout": "0", "hidden": true},
+      {"stdin": "21", "stdout": "0", "hidden": true}
     ]
   },
   {
-    "id": "count-divisible-range",
-    "title": "Сколько чисел делятся на k",
-    "level": "средне",
-    "topic": "циклы",
-    "tags": [
-      "closed_range",
-      "single_int_out"
-    ],
-    "statement": "Даны два целых числа A и B (A ≤ B) и число k. Посчитай, сколько чисел на отрезке [A; B] делятся на k без остатка.",
-    "input_format": "В одной строке три целых числа: A, B, k.",
-    "output_format": "Одно целое число — количество.",
-    "examples": [
-      {
-        "stdin": "1 10 3",
-        "stdout": "3"
-      },
-      {
-        "stdin": "5 5 5",
-        "stdout": "1"
-      }
-    ],
-    "tests": [
-      {
-        "stdin": "1 10 3",
-        "stdout": "3",
-        "hidden": false
-      },
-      {
-        "stdin": "5 5 5",
-        "stdout": "1",
-        "hidden": false
-      },
-      {
-        "stdin": "1 100 7",
-        "stdout": "14",
-        "hidden": true
-      },
-      {
-        "stdin": "-6 6 2",
-        "stdout": "7",
-        "hidden": true
-      },
-      {
-        "stdin": "1 10 1",
-        "stdout": "10",
-        "hidden": true
-      }
-    ]
-  },
-  {
-    "id": "leap-year",
-    "title": "Високосный год",
-    "level": "средне",
-    "topic": "условия",
-    "tags": [
-      "yes_no_out"
-    ],
-    "statement": "Дан год. Определи, високосный ли он. Год високосный, если он делится на 4, но не на 100, либо делится на 400.",
-    "input_format": "Одно целое число — год.",
-    "output_format": "YES, если год високосный, иначе NO.",
-    "examples": [
-      {
-        "stdin": "2020",
-        "stdout": "YES"
-      },
-      {
-        "stdin": "1900",
-        "stdout": "NO"
-      }
-    ],
-    "tests": [
-      {
-        "stdin": "2020",
-        "stdout": "YES",
-        "hidden": false
-      },
-      {
-        "stdin": "1900",
-        "stdout": "NO",
-        "hidden": false
-      },
-      {
-        "stdin": "2000",
-        "stdout": "YES",
-        "hidden": true
-      },
-      {
-        "stdin": "2023",
-        "stdout": "NO",
-        "hidden": true
-      },
-      {
-        "stdin": "2024",
-        "stdout": "YES",
-        "hidden": true
-      }
-    ]
-  },
-  {
-    "id": "second-minimum",
-    "title": "Второй минимум",
-    "level": "сложно",
-    "topic": "поиск",
-    "tags": [
-      "integers_from_input",
-      "single_int_out"
-    ],
-    "statement": "Дан список целых чисел. Найди второе по величине среди различных чисел значение.",
-    "input_format": "В одной строке числа через пробел.",
-    "output_format": "Одно целое число — второй минимум среди различных.",
-    "examples": [
-      {
-        "stdin": "1 5 3 5 2",
-        "stdout": "3"
-      },
-      {
-        "stdin": "7 7",
-        "stdout": "7"
-      }
-    ],
-    "tests": [
-      {
-        "stdin": "1 5 3 5 2",
-        "stdout": "3",
-        "hidden": false
-      },
-      {
-        "stdin": "7 7",
-        "stdout": "7",
-        "hidden": false
-      },
-      {
-        "stdin": "9 8 7",
-        "stdout": "8",
-        "hidden": true
-      },
-      {
-        "stdin": "-1 -3 -2",
-        "stdout": "-2",
-        "hidden": true
-      },
-      {
-        "stdin": "4 4 4 1 4",
-        "stdout": "4",
-        "hidden": true
-      }
-    ]
-  },
-  {
-    "id": "ege8-word-abc",
-    "title": "ЕГЭ 8 — слово с номером",
-    "level": "средне",
-    "topic": "ЕГЭ 8",
-    "tags": [
-      "ege8"
-    ],
-    "statement": "Все четырёхбуквенные слова, составленные из букв А, Б, В, Г, нумеруются по алфавиту начиная с 1 (буквы можно повторять). Определи слово, которое стоит под номером N.",
+    "id": "bridge-last-digit",
+    "title": "Последняя цифра числа",
+    "level": "старт",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege14", "single_int_out", "integers_from_input"],
+    "statement": "Дано целое неотрицательное число N. Выведи его последнюю цифру.",
     "input_format": "Одно целое число N.",
-    "output_format": "Слово из четырёх букв.",
-    "examples": [
-      {
-        "stdin": "1",
-        "stdout": "АААА"
-      },
-      {
-        "stdin": "2",
-        "stdout": "АААБ"
-      }
-    ],
+    "output_format": "Одна цифра от 0 до 9.",
+    "examples": [{"stdin": "17", "stdout": "7"}, {"stdin": "30", "stdout": "0"}],
     "tests": [
-      {
-        "stdin": "1",
-        "stdout": "АААА",
-        "hidden": false
-      },
-      {
-        "stdin": "2",
-        "stdout": "АААБ",
-        "hidden": false
-      },
-      {
-        "stdin": "256",
-        "stdout": "ГГГГ",
-        "hidden": true
-      },
-      {
-        "stdin": "4",
-        "stdout": "АААГ",
-        "hidden": true
-      },
-      {
-        "stdin": "5",
-        "stdout": "ААБА",
-        "hidden": true
-      }
+      {"stdin": "17", "stdout": "7", "hidden": false},
+      {"stdin": "30", "stdout": "0", "hidden": false},
+      {"stdin": "5", "stdout": "5", "hidden": true},
+      {"stdin": "100", "stdout": "0", "hidden": true},
+      {"stdin": "2468", "stdout": "8", "hidden": true}
     ]
   },
   {
-    "id": "ege14-sum-base5",
-    "title": "ЕГЭ 14 — сумма цифр в системе 5",
-    "level": "средне",
-    "topic": "ЕГЭ 14",
-    "tags": [
-      "ege14"
-    ],
-    "statement": "Запиши число 125 в пятеричной системе счисления и найди сумму его цифр.",
-    "input_format": "Ввода нет.",
-    "output_format": "Одно целое число — сумма цифр записи в системе 5.",
-    "examples": [],
+    "id": "bridge-digit-sum",
+    "title": "Сумма цифр",
+    "level": "старт",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege14", "single_int_out", "integers_from_input"],
+    "statement": "Дано целое неотрицательное число N. Найди сумму его цифр.",
+    "input_format": "Одно целое число N.",
+    "output_format": "Одно целое число — сумма цифр.",
+    "examples": [{"stdin": "25", "stdout": "7"}, {"stdin": "100", "stdout": "1"}],
     "tests": [
-      {
-        "stdin": "",
-        "stdout": "1",
-        "hidden": true
-      }
+      {"stdin": "25", "stdout": "7", "hidden": false},
+      {"stdin": "100", "stdout": "1", "hidden": false},
+      {"stdin": "0", "stdout": "0", "hidden": true},
+      {"stdin": "999", "stdout": "27", "hidden": true},
+      {"stdin": "808", "stdout": "16", "hidden": true}
     ]
   },
   {
-    "id": "ege16-fmod",
-    "title": "ЕГЭ 16 — последние две цифры F(n)",
+    "id": "bridge-base-digits",
+    "title": "Запись в системе счисления",
     "level": "средне",
-    "topic": "ЕГЭ 16",
-    "tags": [
-      "ege16"
-    ],
-    "statement": "Алгоритм вычисления функции F(n): F(1)=1, F(2)=1, при n>2: F(n) = F(n-1) + F(n-2). Найди две последние цифры F(50).",
-    "input_format": "Ввода нет.",
-    "output_format": "Двузначное число (с ведущим нулём при необходимости) — F(50) mod 100.",
-    "examples": [],
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege14", "single_int_out", "integers_from_input"],
+    "statement": "Даны целое число N и основание B от 2 до 10. Переведи N в систему счисления с основанием B и выведи сумму цифр полученной записи.",
+    "input_format": "В одной строке два целых числа N и B.",
+    "output_format": "Одно целое число — сумма цифр.",
+    "examples": [{"stdin": "13 2", "stdout": "3"}, {"stdin": "10 10", "stdout": "1"}],
     "tests": [
-      {
-        "stdin": "",
-        "stdout": "25",
-        "hidden": true
-      }
+      {"stdin": "13 2", "stdout": "3", "hidden": false},
+      {"stdin": "10 10", "stdout": "1", "hidden": false},
+      {"stdin": "8 3", "stdout": "4", "hidden": true},
+      {"stdin": "1 2", "stdout": "1", "hidden": true},
+      {"stdin": "25 5", "stdout": "1", "hidden": true}
     ]
   },
   {
-    "id": "ege23-programs",
-    "title": "ЕГЭ 23 — сколько программ 1 в 8",
-    "level": "средне",
-    "topic": "ЕГЭ 23",
-    "tags": [
-      "ege23"
-    ],
-    "statement": "Исполнитель имеет две команды: +1 и *2. Сколько есть программ, которые переводят число 1 в число 8?",
-    "input_format": "Ввода нет.",
-    "output_format": "Одно целое число — количество программ.",
-    "examples": [],
+    "id": "bridge-count-in-list",
+    "title": "Сколько подходящих чисел",
+    "level": "старт",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege17", "single_int_out", "integers_from_input"],
+    "statement": "Дан список целых чисел. Посчитай, сколько из них одновременно делятся на 2 и не делятся на 3.",
+    "input_format": "В одной строке числа списка через пробел.",
+    "output_format": "Одно целое число — количество.",
+    "examples": [{"stdin": "2 3 4 6 8", "stdout": "3"}, {"stdin": "6 12", "stdout": "0"}],
     "tests": [
-      {
-        "stdin": "",
-        "stdout": "10",
-        "hidden": true
-      }
+      {"stdin": "2 3 4 6 8", "stdout": "3", "hidden": false},
+      {"stdin": "6 12", "stdout": "0", "hidden": false},
+      {"stdin": "1", "stdout": "0", "hidden": true},
+      {"stdin": "2 10 14", "stdout": "3", "hidden": true},
+      {"stdin": "-4 9 0", "stdout": "1", "hidden": true}
     ]
   },
   {
-    "id": "ege25-div3-7",
-    "title": "ЕГЭ 25 — ровно 4 делителя",
+    "id": "bridge-neighbor-pairs",
+    "title": "Соседние пары",
     "level": "средне",
-    "topic": "ЕГЭ 25",
-    "tags": [
-      "ege25",
-      "divisors"
-    ],
-    "statement": "Среди целых чисел отрезка [100; 200] найди те, у которых ровно 4 различных делителя. Для каждого выведи само число и наибольший делитель (кроме самого числа) через пробел.",
-    "input_format": "Ввода нет.",
-    "output_format": "По строке: число и его наибольший делитель через пробел.",
-    "examples": [],
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege17", "two_int_out", "integers_from_input", "pairs"],
+    "statement": "Дан список целых чисел. Рассмотри только соседние пары: первый со вторым, второй с третьим и так далее. Пара подходит, если оба числа положительные. Выведи количество подходящих пар и максимальную сумму среди них. Если таких пар нет, выведи 0 0.",
+    "input_format": "В одной строке числа списка через пробел. В списке не меньше двух чисел.",
+    "output_format": "Два целых числа через пробел: количество и максимальная сумма.",
+    "examples": [{"stdin": "1 -2 3 4", "stdout": "1 7"}, {"stdin": "-1 -2", "stdout": "0 0"}],
     "tests": [
-      {
-        "stdin": "",
-        "stdout": "106 53\n111 37\n115 23\n118 59\n119 17\n122 61\n123 41\n125 25\n129 43\n133 19\n134 67\n141 47\n142 71\n143 13\n145 29\n146 73\n155 31\n158 79\n159 53\n161 23\n166 83\n177 59\n178 89\n183 61\n185 37\n187 17\n194 97",
-        "hidden": true
-      }
+      {"stdin": "1 -2 3 4", "stdout": "1 7", "hidden": false},
+      {"stdin": "-1 -2", "stdout": "0 0", "hidden": false},
+      {"stdin": "5 1 2", "stdout": "2 6", "hidden": true},
+      {"stdin": "2 0 3", "stdout": "0 0", "hidden": true},
+      {"stdin": "8 1 9 2", "stdout": "3 11", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-longest-run",
+    "title": "Самая длинная цепочка",
+    "level": "средне",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege24", "single_int_out"],
+    "statement": "Дана строка из заглавных латинских букв. Найди длину самой длинной непрерывной цепочки одинаковых букв. Например, в AAABBC самая длинная цепочка — AAA, её длина 3.",
+    "input_format": "Одна непустая строка.",
+    "output_format": "Одно целое число — длина цепочки.",
+    "examples": [{"stdin": "AAABBC", "stdout": "3"}, {"stdin": "ABC", "stdout": "1"}],
+    "tests": [
+      {"stdin": "AAABBC", "stdout": "3", "hidden": false},
+      {"stdin": "ABC", "stdout": "1", "hidden": false},
+      {"stdin": "A", "stdout": "1", "hidden": true},
+      {"stdin": "BBBB", "stdout": "4", "hidden": true},
+      {"stdin": "ABBAACC", "stdout": "2", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-no-double",
+    "title": "Цепочка без повтора",
+    "level": "средне",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege24", "single_int_out"],
+    "statement": "Дана строка из букв A и B. Найди длину самой длинной непрерывной подстроки, в которой нет двух одинаковых букв подряд.",
+    "input_format": "Одна непустая строка.",
+    "output_format": "Одно целое число — длина подстроки.",
+    "examples": [{"stdin": "ABABA", "stdout": "5"}, {"stdin": "AABBA", "stdout": "2"}],
+    "tests": [
+      {"stdin": "ABABA", "stdout": "5", "hidden": false},
+      {"stdin": "AABBA", "stdout": "2", "hidden": false},
+      {"stdin": "A", "stdout": "1", "hidden": true},
+      {"stdin": "AAA", "stdout": "1", "hidden": true},
+      {"stdin": "ABBAB", "stdout": "3", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-word-number",
+    "title": "Слово по номеру",
+    "level": "средне",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege8"],
+    "statement": "Из букв A, B и C составляют все слова длины 2. Буквы могут повторяться. Слова записывают в алфавитном порядке и нумеруют с 1: AA, AB, AC, BA и так далее. По номеру N выведи соответствующее слово.",
+    "input_format": "Одно целое число N от 1 до 9.",
+    "output_format": "Слово из двух букв.",
+    "examples": [{"stdin": "1", "stdout": "AA"}, {"stdin": "4", "stdout": "BA"}],
+    "tests": [
+      {"stdin": "1", "stdout": "AA", "hidden": false},
+      {"stdin": "4", "stdout": "BA", "hidden": false},
+      {"stdin": "3", "stdout": "AC", "hidden": true},
+      {"stdin": "9", "stdout": "CC", "hidden": true},
+      {"stdin": "6", "stdout": "BC", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-count-words",
+    "title": "Сколько подходящих слов",
+    "level": "средне",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege8", "single_int_out"],
+    "statement": "Из букв A и B составляют все слова длины 3. Буквы могут повторяться. Посчитай, сколько таких слов содержат хотя бы одну букву A.",
+    "input_format": "Ввод не используется.",
+    "output_format": "Одно целое число.",
+    "examples": [{"stdin": "", "stdout": "7"}],
+    "tests": [
+      {"stdin": "", "stdout": "7", "hidden": false},
+      {"stdin": "\n", "stdout": "7", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-command-count",
+    "title": "Сколько способов дойти",
+    "level": "средне",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege23", "single_int_out", "integers_from_input"],
+    "statement": "Исполнитель начинает с числа 1. За один ход он может прибавить 1 или умножить на 2. По числу N выведи, сколькими способами можно получить ровно N. Порядок ходов важен.",
+    "input_format": "Одно целое число N от 1 до 20.",
+    "output_format": "Одно целое число — количество способов.",
+    "examples": [{"stdin": "1", "stdout": "1"}, {"stdin": "3", "stdout": "2"}],
+    "tests": [
+      {"stdin": "1", "stdout": "1", "hidden": false},
+      {"stdin": "3", "stdout": "2", "hidden": false},
+      {"stdin": "2", "stdout": "2", "hidden": true},
+      {"stdin": "4", "stdout": "4", "hidden": true},
+      {"stdin": "6", "stdout": "6", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-recursive-sum",
+    "title": "Рекурсивная сумма",
+    "level": "средне",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege16", "single_int_out", "integers_from_input"],
+    "statement": "Функция задана так: F(1) = 1, а для n > 1 значение F(n) = n + F(n - 1). По числу N выведи F(N).",
+    "input_format": "Одно целое число N от 1 до 100.",
+    "output_format": "Одно целое число — значение функции.",
+    "examples": [{"stdin": "1", "stdout": "1"}, {"stdin": "4", "stdout": "10"}],
+    "tests": [
+      {"stdin": "1", "stdout": "1", "hidden": false},
+      {"stdin": "4", "stdout": "10", "hidden": false},
+      {"stdin": "2", "stdout": "3", "hidden": true},
+      {"stdin": "5", "stdout": "15", "hidden": true},
+      {"stdin": "10", "stdout": "55", "hidden": true}
+    ]
+  },
+  {
+    "id": "bridge-four-divisors",
+    "title": "Ровно четыре делителя",
+    "level": "сложно",
+    "topic": "на пути к ЕГЭ",
+    "tags": ["bridge", "ege25", "two_int_out", "integers_from_input"],
+    "statement": "Даны A и B. Найди все целые числа от A до B включительно, у которых ровно четыре натуральных делителя. Выведи два числа: сколько таких чисел и наибольшее из них. Хотя бы одно такое число есть.",
+    "input_format": "В одной строке два целых числа A и B.",
+    "output_format": "Два целых числа через пробел: количество и максимум.",
+    "examples": [{"stdin": "1 10", "stdout": "3 10"}, {"stdin": "6 8", "stdout": "2 8"}],
+    "tests": [
+      {"stdin": "1 10", "stdout": "3 10", "hidden": false},
+      {"stdin": "6 8", "stdout": "2 8", "hidden": false},
+      {"stdin": "8 8", "stdout": "1 8", "hidden": true},
+      {"stdin": "9 15", "stdout": "3 15", "hidden": true},
+      {"stdin": "14 21", "stdout": "3 21", "hidden": true}
     ]
   }
 ]

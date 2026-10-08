@@ -122,6 +122,31 @@ class ApiTests(unittest.TestCase):
         )
         self.assertEqual(status, 200)
         self.assertEqual(data["status"], "ok")
+        self.assertTrue(data["explanation"]["next_step"].strip())
+        self.assertIn("быстр", data["explanation"]["next_step"].lower())
+
+    def test_playground_runs_code_and_reads_upload(self):
+        status, _, data = self._request(
+            "POST",
+            "/api/playground",
+            {
+                "code": "print(open('anything.txt').read().strip())\n",
+                "filename": "input.txt",
+                "file": "hello",
+            },
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(data["status"], "ok")
+        self.assertEqual(data["stdout"].strip(), "hello")
+
+    def test_playground_rejects_indirect_builtin_access(self):
+        status, _, data = self._request(
+            "POST",
+            "/api/playground",
+            {"code": "print(globals()['__builtins__']['open']('/etc/passwd').read())\n"},
+        )
+        self.assertEqual(status, 200)
+        self.assertEqual(data["status"], "forbidden")
 
     def test_progress_after_solve(self):
         cookie, csrf = self._student("Progress Katya")
@@ -174,6 +199,38 @@ class ApiTests(unittest.TestCase):
     def test_teacher_summary_needs_login(self):
         status, _, data = self._request("GET", "/api/teacher/summary")
         self.assertEqual(status, 401)
+
+    def test_solution_unlocks_after_ten_failures_and_logs_view(self):
+        cookie, csrf = self._student("Solution Student")
+        wrong = {"problem_id": "sum-two", "code": "print(0)"}
+        last = None
+        for _ in range(9):
+            status, _, last = self._request("POST", "/api/check", wrong, cookie=cookie, csrf=csrf)
+            self.assertEqual(status, 200)
+            self.assertFalse(last.get("solution_available"))
+        status, _, last = self._request("POST", "/api/check", wrong, cookie=cookie, csrf=csrf)
+        self.assertEqual(status, 200)
+        self.assertTrue(last.get("solution_available"))
+        status, _, denied = self._request(
+            "POST", "/api/solution/view", {"problem_id": "sum-two"}, cookie=cookie, csrf=csrf
+        )
+        self.assertEqual(status, 200)
+        self.assertIn("annotated_code", denied)
+        self.assertIn("map(int", denied["code"])
+        status, headers, login = self._request("POST", "/api/teacher/login", {"pin": self.pin})
+        self.assertEqual(status, 200)
+        teacher = self._cookie(headers, "teacher")
+        status, _, summary = self._request("GET", "/api/teacher/summary", cookie=teacher)
+        self.assertEqual(status, 200)
+        self.assertTrue(any(item["student"] == "Solution Student" and item["problem_id"] == "sum-two" for item in summary["solution_views"]))
+
+    def test_solution_is_locked_before_ten_failures(self):
+        cookie, csrf = self._student("Early Solution Student")
+        status, _, data = self._request(
+            "POST", "/api/solution/view", {"problem_id": "sum-two"}, cookie=cookie, csrf=csrf
+        )
+        self.assertEqual(status, 403)
+        self.assertEqual(data["failed_attempts"], 0)
 
     def test_teacher_login_and_export(self):
         record_attempt("Export User", "sum-two", "ok", 5, 5, "ok", "print(1)")
