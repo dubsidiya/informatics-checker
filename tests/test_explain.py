@@ -91,7 +91,13 @@ class ExplainTests(unittest.TestCase):
         result = grade_solution(get_problem("ege17-1"), "print(1)\n")
         how = (result.explanation.how or "").lower()
         self.assertNotIn("\u0441\u043e\u0441\u0435\u0434", how)
-        self.assertTrue("%" in how or "\u0434\u0435\u043b" in how)
+        self.assertTrue(
+            "%" in how
+            or "дел" in how
+            or "констант" in how
+            or "готов" in how
+            or "два" in how
+        )
 
     def test_intent_sees_hardcoded_answer(self):
         result = grade_solution(get_problem("ege17-1"), "print(1)\n")

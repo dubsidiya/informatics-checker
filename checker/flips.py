@@ -225,7 +225,16 @@ def _one_number_facts(facts: CodeFacts, problem: Problem, outcome: Outcome) -> l
     if got_n == -exp_n:
         return [hint("Не тот знак", f"Модуль совпал ({int(abs(got_n))}), знак нет. Проверь вычитание и abs.", weight=88)]
     if abs(got_n - exp_n) == 1:
-        return [hint("Ошибка на единицу", f"Получилось {outcome.got_tokens[0]}, ждали {outcome.exp_tokens[0]}. Часто виноват range без n или индекс на 1 короче.", weight=86)]
+        extra = (
+            " Часто виноват range без n или индекс на 1 короче."
+            if facts.has_range or "inclusive_n" in problem.tags or "closed_range" in problem.tags
+            else " Это только разница чисел, не доказательство, что виноват range."
+        )
+        return [hint(
+            "Ошибка на единицу",
+            f"Получилось {outcome.got_tokens[0]}, ждали {outcome.exp_tokens[0]}.{extra}",
+            weight=86,
+        )]
     if exp_n != 0 and (got_n == 2 * exp_n or exp_n == 2 * got_n):
         return [hint("Ответ в два раза больше или меньше", "Дважды учли элемент или делят не ту величину.", weight=84)]
     if facts.true_div and not facts.floor_div and "integer" in " ".join(problem.tags):

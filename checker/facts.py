@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import ast
+import io
 import re
+import tokenize
 from dataclasses import dataclass, field
 
 from checker.models import Problem, TestResult
@@ -62,6 +64,10 @@ class CodeFacts:
     hardcoded_loop: bool = False
     has_if: bool = False
     names: set[str] = field(default_factory=set)
+    two_pointer_compare: bool = False
+    divides_out_twos: bool = False
+    max_calls: int = 0
+    uses_fromkeys: bool = False
 
 
 @dataclass
@@ -84,19 +90,21 @@ class Outcome:
 
 def extract_facts(source: str) -> CodeFacts:
     source = source.replace("\r\n", "\n")
+    # Comments are untrusted student text, not evidence. Match patterns on code only.
+    bare = strip_comments(source)
     try:
         tree = ast.parse(source)
     except SyntaxError:
-        return CodeFacts(source=source, tree=None)
+        return CodeFacts(source=bare, tree=None)
 
     calls = [node for node in ast.walk(tree) if isinstance(node, ast.Call)]
     facts = CodeFacts(
-        source=source,
+        source=bare,
         tree=tree,
         has_print=any(_called(node, "print") for node in calls),
         has_input=any(_called(node, "input") for node in calls),
         input_count=sum(1 for node in calls if _called(node, "input")),
-        has_int=any(_called(node, "int") for node in calls),
+        has_int=_uses_int(calls),
         has_map=any(_called(node, "map") for node in calls),
         has_split=any(
             isinstance(node.func, ast.Attribute) and node.func.attr == "split" for node in calls
@@ -104,18 +112,22 @@ def extract_facts(source: str) -> CodeFacts:
         has_open=any(_called(node, "open") for node in calls),
         has_loop=any(isinstance(node, (ast.For, ast.While)) for node in ast.walk(tree)),
         has_range=any(_called(node, "range") for node in calls),
-        uses_combinations="combinations" in source,
-        uses_permutations="permutations" in source,
+        uses_combinations="combinations" in bare,
+        uses_permutations="permutations" in bare,
         uses_min=any(_called(node, "min") for node in calls),
         uses_max=any(_called(node, "max") for node in calls),
         uses_abs=any(_called(node, "abs") for node in calls),
-        uses_set=any(_called(node, "set") for node in calls) or "set(" in source,
-        uses_bin="bin(" in source,
-        uses_gcd="gcd" in source,
-        reverse_slice="[::-1]" in source or "reversed(" in source,
-        has_lower=".lower(" in source or ".casefold(" in source,
-        last_digit_mod="% 10" in source or "%10" in source,
+        uses_set=any(_called(node, "set") for node in calls) or "set(" in bare,
+        uses_bin="bin(" in bare,
+        uses_gcd="gcd" in bare,
+        reverse_slice="[::-1]" in bare or "reversed(" in bare,
+        has_lower=".lower(" in bare or ".casefold(" in bare,
+        last_digit_mod="% 10" in bare or "%10" in bare,
         names={node.id for node in ast.walk(tree) if isinstance(node, ast.Name)},
+        two_pointer_compare=_two_pointer_compare(tree),
+        divides_out_twos=_divides_out_twos(tree),
+        max_calls=sum(1 for node in calls if _called(node, "max")),
+        uses_fromkeys="fromkeys" in bare or "Counter" in bare,
     )
 
     facts.print_value_counts = [
@@ -124,23 +136,23 @@ def extract_facts(source: str) -> CodeFacts:
     facts.print_inside_loop = _print_inside_loop(tree)
     facts.constant_prints = _constant_prints(tree)
     facts.range_literals = _range_literals(tree)
-    facts.moduli, facts.mod_checks, facts.divisor_lists = _mod_data(tree, source)
+    facts.moduli, facts.mod_checks, facts.divisor_lists = _mod_data(tree, bare)
     facts.nested_fors = _nested_fors(tree)
     facts.consecutive_pair = bool(
-        re.search(r"\[\s*\w+\s*[+-]\s*1\s*\]|zip\s*\([^)]+\[\s*1\s*:", source)
+        re.search(r"\[\s*\w+\s*[+-]\s*1\s*\]|zip\s*\([^)]+\[\s*1\s*:", bare)
     )
-    facts.window3 = bool(re.search(r"\[\s*\w+\s*[+-]\s*2\s*\]", source))
+    facts.window3 = bool(re.search(r"\[\s*\w+\s*[+-]\s*2\s*\]", bare))
     facts.pair_bool = _pair_bool(tree)
     facts.true_div = any(isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div) for node in ast.walk(tree))
     facts.floor_div = any(isinstance(node, ast.BinOp) and isinstance(node.op, ast.FloorDiv) for node in ast.walk(tree))
     facts.bit_and = any(isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitAnd) for node in ast.walk(tree))
     facts.string_repeat = any(isinstance(node, ast.BinOp) and isinstance(node.op, ast.Mult) for node in ast.walk(tree))
     facts.raw_input_add = _raw_input_add(tree)
-    facts.vowels_cyrillic = bool(re.search(r"[аеёиоуыэюя]", source, re.I))
-    facts.vowels_latin_only = bool(re.search(r"[aeiou]", source, re.I)) and not facts.vowels_cyrillic
+    facts.vowels_cyrillic = bool(re.search(r"[аеёиоуыэюя]", bare, re.I))
+    facts.vowels_latin_only = bool(re.search(r"[aeiou]", bare, re.I)) and not facts.vowels_cyrillic
     facts.last_digit_without_abs = facts.last_digit_mod and not facts.uses_abs
-    facts.avg_of_positives = bool(re.search(r">\s*0", source)) and ("sum(" in source or "/" in source)
-    facts.abs_sum = bool(re.search(r"abs\s*\([^)]+\)\s*\+\s*abs\s*\(", source))
+    facts.avg_of_positives = bool(re.search(r">\s*0", bare)) and ("sum(" in bare or "/" in bare)
+    facts.abs_sum = bool(re.search(r"abs\s*\([^)]+\)\s*\+\s*abs\s*\(", bare))
     facts.has_if = any(isinstance(node, ast.If) for node in ast.walk(tree))
     facts.hardcoded_loop = (
         facts.has_print and not facts.has_loop and not facts.has_range
@@ -208,6 +220,103 @@ def closed_range_bounds(statement: str) -> tuple[int, int] | None:
 
 def example_outputs(problem: Problem) -> list[str]:
     return [item.stdout.strip() for item in problem.examples if item.stdout.strip()]
+
+
+def has_task_context(problem: Problem) -> bool:
+    return bool((problem.statement or "").strip() or problem.tags or (problem.title or "").strip())
+
+
+def range_error_supported(facts: CodeFacts, problem: Problem, outcome: Outcome | None) -> bool:
+    """Numeric ±1 is not proof of a range bug (0 vs 1 on ЕГЭ 5 is a Boolean miss)."""
+    if outcome is None or not outcome.off_by_one:
+        return False
+    tags = set(problem.tags)
+    if "ege5" in tags:
+        return False
+    got = (outcome.got or "").strip()
+    exp = (outcome.expected or "").strip()
+    if {got, exp} <= {"0", "1", "True", "False", "true", "false"}:
+        return False
+    text = f"{problem.statement} {problem.title}".lower()
+    return bool(
+        facts.has_range
+        or "inclusive_n" in tags
+        or "closed_range" in tags
+        or "range" in text
+        or "отрезок" in text
+    )
+
+
+def strip_comments(source: str) -> str:
+    if not source:
+        return source
+    try:
+        spans: list[tuple[int, int]] = []
+        for tok in tokenize.generate_tokens(io.StringIO(source).readline):
+            if tok.type == tokenize.COMMENT:
+                start = _source_offset(source, tok.start)
+                end = _source_offset(source, tok.end)
+                spans.append((start, end))
+    except (tokenize.TokenError, IndentationError):
+        return source
+    if not spans:
+        return source
+    out: list[str] = []
+    last = 0
+    for start, end in spans:
+        out.append(source[last:start])
+        out.append(" ")
+        last = end
+    out.append(source[last:])
+    return "".join(out)
+
+
+def _source_offset(source: str, pos: tuple[int, int]) -> int:
+    line, col = pos
+    lines = source.splitlines(keepends=True)
+    return sum(len(item) for item in lines[: max(0, line - 1)]) + col
+
+
+def _uses_int(calls: list[ast.Call]) -> bool:
+    if any(_called(node, "int") for node in calls):
+        return True
+    for node in calls:
+        if not (_called(node, "map") and node.args):
+            continue
+        arg0 = node.args[0]
+        if isinstance(arg0, ast.Name) and arg0.id == "int":
+            return True
+    return False
+
+
+def _two_pointer_compare(tree: ast.AST) -> bool:
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Compare) or not node.comparators:
+            continue
+        left, right = node.left, node.comparators[0]
+        if not (isinstance(left, ast.Subscript) and isinstance(right, ast.Subscript)):
+            continue
+        if (
+            isinstance(left.value, ast.Name)
+            and isinstance(right.value, ast.Name)
+            and left.value.id == right.value.id
+        ):
+            return True
+    return False
+
+
+def _divides_out_twos(tree: ast.AST) -> bool:
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.For, ast.While)):
+            continue
+        for child in ast.walk(node):
+            if isinstance(child, ast.BinOp) and isinstance(child.op, (ast.FloorDiv, ast.Div)):
+                if isinstance(child.right, ast.Constant) and child.right.value == 2:
+                    return True
+            if isinstance(child, ast.AugAssign) and isinstance(child.op, (ast.FloorDiv, ast.Div)):
+                if isinstance(child.value, ast.Constant) and child.value.value == 2:
+                    return True
+    return False
 
 
 def _called(node: ast.Call, name: str) -> bool:

@@ -28,6 +28,8 @@ def main() -> None:
         errors.append("teacher page missing live region")
     if "X-CSRF-Token" not in app_js or "X-CSRF-Token" not in teacher_js:
         errors.append("frontend missing CSRF header")
+    if "function preview(" not in app_js:
+        errors.append("student page missing preview() for diagnosis IO")
     if "localStorage.getItem(\"solved\")" in app_js:
         errors.append("client still treats localStorage.solved as source of truth")
     if "prefers-reduced-motion" not in style:

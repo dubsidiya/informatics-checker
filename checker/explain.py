@@ -55,13 +55,13 @@ def explain_result(problem: Problem, result: GradeResult, source: str = "") -> E
         )
 
     if first.verdict == "TLE":
+        line = first.error_line
         return Explanation(
             headline="Программа думает слишком долго",
-            what=f"Тест {first.index + 1} не уложился во время. Проверяльщик остановил программу, чтобы она не зависла навсегда.",
-            why="Чаще всего виноват бесконечный while, слишком большой перебор или рекурсия без памяти.",
-            how=_how_from_hint(hint)
-            or "Найди цикл, который никогда не заканчивается, или сузь перебор. В №16 и №23 почти всегда нужен @lru_cache или массив.",
-            line=first.error_line or (hint.line if hint else None),
+            what=_tle_what(first),
+            why=_tle_why(problem),
+            how=_how_from_hint(hint) or _tle_how(problem),
+            line=line,
             kind="runtime",
         )
 
@@ -73,7 +73,7 @@ def explain_result(problem: Problem, result: GradeResult, source: str = "") -> E
 
 def _runtime(first: TestResult, hint: Hint | None, source: str) -> Explanation:
     name = _name_from_error(first.error)
-    line = first.error_line or (hint.line if hint else None)
+    line = first.error_line
     where = f" на строке {line}" if line else ""
     kind = first.error_type or "ошибка"
 
@@ -97,8 +97,16 @@ def _runtime(first: TestResult, hint: Hint | None, source: str) -> Explanation:
         why = "Операция вызвана не с тем типом. Часто складывают строку с числом: input() без int, или берут len от числа."
         how = "Преобразуй ввод в числа: `a, b = map(int, input().split())`. Для печати нескольких чисел используй `print(x, y)`."
     elif kind == "ValueError":
-        why = "Значение нельзя преобразовать. int() падает, если в строке не одно число — например «2 3» или пустая строка."
-        how = "Если в строке несколько чисел — сначала split(), потом map(int, ...). int(input()) подходит только для одного числа в строке."
+        err = (first.error or "").lower()
+        if "empty" in err and ("max" in err or "min" in err or "sequence" in err):
+            why = "max или min вызвали от пустого набора. На этом тесте после отбора не осталось ни одного элемента — это видно по сообщению Python, а не по догадке про int()."
+            how = "Сначала собери значения в список. Если он пустой, подумай, не слишком ли узкое условие отбора, и только потом вызывай max/min."
+        elif "invalid literal" in err:
+            why = "Значение нельзя преобразовать. int() падает, если в строке не одно число — например «2 3» или пустая строка."
+            how = "Если в строке несколько чисел — сначала split(), потом map(int, ...). int(input()) подходит только для одного числа в строке."
+        else:
+            why = hint.detail if hint else "Значение нельзя использовать так, как написано. Смотри сообщение Python — оно называет конкретную причину."
+            how = _how_from_hint(hint) or "Прочитай сообщение Python целиком: оно говорит, какое значение не подошло, без угадывания шаблона."
     elif kind == "ZeroDivisionError":
         why = "Деление на ноль. Знаменатель на этом тесте оказался 0."
         how = "Перед делением проверь знаменатель: `if b != 0`."
@@ -126,7 +134,17 @@ def _runtime(first: TestResult, hint: Hint | None, source: str) -> Explanation:
 
 def _wrong_answer(problem: Problem, result: GradeResult, first: TestResult, hint: Hint | None) -> Explanation:
     visible = not first.hidden
-    if visible:
+    what = _wa_what(result, first)
+    why = _wa_why(hint, visible)
+    how = _how_from_hint(hint) or _generic_how(problem, visible)
+    headline = hint.title if hint else "Ответ не тот"
+    kind = hint.kind if hint else "logic"
+    line = hint.line if hint else None
+    return Explanation(headline=headline, what=what, why=why, how=how, line=line, kind=kind)
+
+
+def _wa_what(result: GradeResult, first: TestResult) -> str:
+    if not first.hidden:
         got = (first.got or "").strip() or "ничего"
         exp = (first.expected or "").strip() or "ответ из условия"
         stdin = (first.stdin or "").strip()
@@ -135,27 +153,64 @@ def _wrong_answer(problem: Problem, result: GradeResult, first: TestResult, hint
             what += f" Ввод был: `{_short(stdin)}`."
         elif stdin.startswith("[файл"):
             what += " Данные берутся из файла задачи."
-    else:
-        what = (
-            f"Тест {first.index + 1} скрытый — это полный набор из условия, эталон ученику не показываем. "
-            "Примеры могли пройти, а настоящий ответ задачи — нет."
+        return what
+
+    visible = [item for item in result.tests if not item.hidden]
+    passed = [item for item in visible if item.verdict == "OK"]
+    failed = [item for item in visible if item.verdict != "OK"]
+    if passed and not failed:
+        return (
+            f"Открытые примеры прошли, а скрытый тест {first.index + 1} — нет. "
+            "Эталон скрытой проверки ученику не показываем."
         )
+    if failed:
+        return (
+            f"Уже открытый тест не сошёлся; скрытый тест {first.index + 1} это подтверждает. "
+            "Точный скрытый ввод не показываем."
+        )
+    return (
+        f"Скрытый тест {first.index + 1} не пройден. "
+        "Открытого примера с тем же вводом нет, поэтому не утверждаю, что «примеры прошли»."
+    )
 
-    why = hint.detail if hint else "Ответ не совпал с правильным. Перечитай условие: что именно считают и в каком виде печатают."
-    how = _how_from_hint(hint) or _how_from_detail(hint) or _generic_how(problem, visible)
-    headline = hint.title if hint else "Ответ не тот"
-    kind = hint.kind if hint else "logic"
-    line = hint.line if hint else None
-    return Explanation(headline=headline, what=what, why=why, how=how, line=line, kind=kind)
+
+def _wa_why(hint: Hint | None, visible: bool) -> str:
+    if hint and (hint.detail or "").strip():
+        prefix = "" if visible or hint.kind in {"format", "logic"} else "Это наблюдение по коду, без скрытого эталона. "
+        return prefix + hint.detail
+    if visible:
+        return "Ответ не совпал с правильным. Перечитай условие: что именно считают и в каком виде печатают."
+    return (
+        "Точную школьную ошибку по шаблону не видно. "
+        "Перечитай условие целиком: границы, знаки, что считают и сколько чисел выводить."
+    )
 
 
-def _how_from_detail(hint: Hint | None) -> str:
-    if not hint or not (hint.detail or "").strip():
-        return ""
-    detail = hint.detail.strip()
-    if detail.endswith("."):
-        detail = detail[:-1]
-    return "Сделай именно это: " + detail + ". Остальное в программе не ломай."
+def _tle_what(first: TestResult) -> str:
+    where = f" на строке {first.error_line}" if first.error_line else ""
+    text = f"Тест {first.index + 1} не уложился во время{where}. Проверяльщик остановил программу, чтобы она не зависла."
+    if first.hidden:
+        text += " Ввод этого теста скрытый — не называю конкретное значение, на котором зациклилось."
+    return text
+
+
+def _tle_why(problem: Problem) -> str:
+    tags = set(problem.tags)
+    if "ege16" in tags or "ege23" in tags:
+        return "На больших значениях одни и те же ветки пересчитываются снова. Часто не хватает памяти @lru_cache или массива."
+    if "ege25" in tags:
+        return "Цикл, похоже, слишком широкий. В №25 маску обычно собирают, а не проверяют каждое число до огромной границы."
+    return "Чаще всего виноват while, который не меняет переменную, или слишком большой перебор. Это типичная причина, не доказанный номер строки."
+
+
+def _tle_how(problem: Problem) -> str:
+    tags = set(problem.tags)
+    if "ege16" in tags or "ege23" in tags:
+        return "Проверь, есть ли выход из рекурсии, и запомни уже посчитанные значения: @lru_cache или массив снизу вверх."
+    return (
+        "Найди цикл, который может не закончиться. Проверь крайние значения вроде 0 и 1 на бумаге: "
+        "меняется ли переменная на каждом шаге?"
+    )
 
 
 def _ege17_how(problem: Problem) -> str:
@@ -172,7 +227,10 @@ def _generic_how(problem: Problem, visible: bool) -> str:
     if "ege5" in tags:
         return "Раздели условие на проверки в скобках: «и» — and, «или» — or, «ровно одно» — !=. В конце напечатай int(условие), чтобы получить 1 или 0."
     if "games" in tags:
-        return "Опиши game(a, b) с терминалом `a + b >= порог` и всеми ходами. Кэшируй позиции: +1 — победа своим первым ходом, −1 — соперник выигрывает первым, +2/−2 — вторым. Затем выбери нужный min или max S."
+        return (
+            "Перебери позиции игры. Для №19–21 различи выигрыш первым и вторым ходом, "
+            "затем выбери нужный min или max S — не подставляй готовое число."
+        )
     if "ege24" in tags:
         return "Прочитай строку из файла через open(...). Иди по ней слева направо: храни длину текущей подходящей непрерывной цепочки и обновляй максимум."
     if "ege17" in tags:
@@ -197,11 +255,12 @@ def _generic_how(problem: Problem, visible: bool) -> str:
 def _how_from_hint(hint: Hint | None) -> str:
     if not hint:
         return ""
-    title = hint.title
-    for key, text in HOW_BY_TITLE:
-        if key.lower() in title.lower():
-            return text
-    return ""
+    title = (hint.title or "").lower()
+    matches = [(key, text) for key, text in HOW_BY_TITLE if key.lower() in title]
+    if not matches:
+        return ""
+    matches.sort(key=lambda item: len(item[0]), reverse=True)
+    return matches[0][1]
 
 
 def _syntax_how(explanation: str, line: int | None) -> str:
@@ -234,19 +293,50 @@ def _short(text: str, limit: int = 80) -> str:
 
 
 HOW_BY_TITLE = [
-    ("строка из файла", "Прочитай строку из файла: `s = open('24.txt').read().strip()`. Затем пройди её слева направо и обновляй длину текущей цепочки и максимум."),
-    ("не делится", "Добавь в if все «не делится на …» из условия: `x % k != 0` для каждого такого k."),
-    ("нет проверки", "Допиши в if недостающую проверку из условия. Не выкидывай те, что уже стоят."),
-
-    ("строк", "Сначала преврати ввод в числа: `a, b = map(int, input().split())`, и только потом складывай."),
+    (
+        "строка из файла",
+        "Данные лежат в файле задачи (часто 24.txt). Сначала прочитай строку из файла. "
+        "Потом подумай, как идти по ней слева направо и обновлять длину текущей цепочки — не копируй готовый ответ.",
+    ),
+    (
+        "ответ записан константой",
+        "Число в print не должно быть готовым ответом. От каких данных в условии должен зависеть результат?",
+    ),
+    (
+        "стратег",
+        "В №19–21 нужно перебрать позиции и ходы, а не угадать число. Чем выигрыш первым ходом отличается от выигрыша вторым?",
+    ),
+    (
+        "два числа",
+        "В ответе должно быть два числа через пробел, как просят в условии. Что печатать первым — количество или экстремум?",
+    ),
+    (
+        "ровно одно",
+        "«Ровно одно» значит, что признаки разные: один истинный, другой нет. Чем это отличается от or? В конце нужен 1 или 0, не True/False.",
+    ),
+    (
+        "регистр не приведён",
+        "Для этой задачи заглавные и строчные — одна и та же буква. Что будет с «Abba», если сравнивать как есть?",
+    ),
+    (
+        "не сравнивается с переворотом",
+        "Палиндром не меняется, если прочитать слово задом наперёд. Чем сравнение строки с собой отличается от сравнения с переворотом?",
+    ),
+    (
+        "длина списка, не уникальные",
+        "Сравни, сколько чисел во вводе и сколько среди них разных. Какая структура в Python убирает повторы?",
+    ),
+    ("не делится", "Посмотри в условии все «не делится на …». Какого делителя нет в твоём if?"),
+    ("нет проверки", "Выпиши признаки из условия списком и отметь, какие уже стоят в if. Какого не хватает?"),
+    ("склеились две строки", "После split() куски ещё текст. Что получится, если сложить «2» и «3», и как получить числа?"),
     ("input() вернул строку", "После input() нужен int или map(int, ...). Иначе «2» + «3» склеится в 23."),
     ("складываются строки", "Нельзя писать input() + input(). Сначала int, потом сложение."),
     ("нет вывода", "В конце должен быть print с ответом. Без print проверяльщик считает, что программа ничего не решила."),
     ("ничего не вывела", "print стоит внутри if, который на этом тесте не сработал, либо до print программа ушла в другой ветке."),
     ("формат", "Печатай ровно то, что в примере: те же пробелы, регистр, без подписи «ответ:»."),
     ("напечатан список", "Вместо print(список) напиши print(*список) — числа через пробел, без скобок."),
-    ("ошибка на единицу", "Проверь range: нужен range(1, n + 1), если n должно войти. Для индексов — len(a) - 1, не len(a)."),
-    ("range не включает", "Правый конец отрезка входит в условие. Пиши range(A, B + 1), не range(A, B)."),
+    ("ошибка на единицу", "Выпиши, какие числа даёт твой range на примере из условия. Входит ли последнее нужное число? Для индексов конец — len(a) - 1."),
+    ("range не включает", "Правый конец отрезка входит в условие. Какое последнее число даёт range(A, B), и какое нужно?"),
     ("файл не открывается", "Данные в файле. Напиши open('17.txt') или имя файла из условия — проверяльщик подставит его сам."),
     ("разделитель", "Посмотри файл: если числа через `;`, пиши split(';'). Если через пробел — split() без аргументов."),
     ("пары должны быть соседними", "В №17 пара — data[i] и data[i+1]. Не бери combinations всех элементов."),

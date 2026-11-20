@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from checker.facts import closed_range_bounds, extract_facts, extract_outcome
+from checker.facts import closed_range_bounds, extract_facts, extract_outcome, range_error_supported
 from checker.models import GradeResult, Problem
 import re
 
@@ -124,7 +124,7 @@ def _plan(facts, problem: Problem, tags: set[str], blob: str) -> str:
         return "Ты хотел сложить два введённых значения."
     if facts.has_split and not facts.has_int and facts.has_print:
         return "Ты хотел взять два числа из одной строки и сложить их."
-    if facts.has_input and not facts.has_int and facts.has_print:
+    if "integers_from_input" in tags and facts.has_input and not facts.has_int and facts.has_print:
         return "Ты хотел прочитать ввод и что-то с ним сделать. Сейчас input() остаётся строкой."
 
     if "games" in tags:
@@ -208,7 +208,7 @@ def _gap(facts, problem: Problem, outcome, tags: set[str], blob: str) -> str:
         return ""
     if outcome.format_only:
         return "Сами значения уже те — разъехались пробелы, регистр или лишнее слово вокруг ответа."
-    if outcome.off_by_one:
+    if range_error_supported(facts, problem, outcome):
         return "Ответ рядом: ошибка на единицу. Часто виноват range без +1 или индекс на один шаг дальше."
     if outcome.sign_only:
         return "Модуль числа верный, знак — нет. Проверь abs и что просят: сумму, максимум или модуль."

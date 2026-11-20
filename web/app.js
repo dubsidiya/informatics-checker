@@ -1348,6 +1348,8 @@ function explanationCard(data) {
   const exp = data.explanation;
   if (!exp) return `<div class="banner ${data.status === "ok" ? "ok" : data.status === "syntax" ? "warn" : "bad"}">${escapeHtml(data.message || "")}</div>`;
   const line = exp.line ? `<div class="line">смотри строку ${exp.line}</div>` : "";
+  const kindRu = { ok: "успех", syntax: "синтаксис", runtime: "выполнение", format: "формат", logic: "логика" };
+  const kindLabel = kindRu[exp.kind] || "разбор";
   const tries = data.tries > 1 ? ` · попытка ${data.tries}` : "";
   const failed = (data.tests || []).find((test) => !test.hidden && test.verdict !== "OK");
   const counterexample = failed
@@ -1374,7 +1376,7 @@ function explanationCard(data) {
     : "";
   return `
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
-      <p class="explain-kicker">${exp.intent ? "Понял твой код" : "Разбор для ученика"}${tries}</p>
+      <p class="explain-kicker">${kindLabel} · ${exp.intent ? "понял твой код" : "разбор для ученика"}${tries}</p>
        <h3>${escapeHtml(exp.headline)}</h3>
        ${intent}
        ${thought}
@@ -1415,6 +1417,8 @@ function fileAlias(problem) {
   if (tags.includes("ege24")) return "24.txt";
   return "";
 }
+
+function preview(text) {
   return String(text || "").replaceAll("\n", " ↵ ").trim() || "—";
 }
 

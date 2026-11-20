@@ -7,7 +7,7 @@ the verdict and the task tags.  A helpful coach must not pretend to read a
 student's mind or disclose a hidden test answer.
 """
 
-from checker.facts import extract_facts, extract_outcome
+from checker.facts import extract_facts, extract_outcome, range_error_supported
 from checker.models import GradeResult, Problem
 
 
@@ -23,14 +23,18 @@ def add_coach_turn(problem: Problem, result: GradeResult, source: str) -> GradeR
     error_type = outcome.first.error_type if outcome else ""
     tags = set(problem.tags)
 
-    thought, question, check = _turn(title, error_type, facts, tags, outcome)
+    thought, question, check = _turn(title, error_type, facts, tags, outcome, problem)
     exp.thought = thought
     exp.question = question
     exp.self_check = check
     return result
 
 
-def _turn(title, error_type, facts, tags, outcome) -> tuple[str, str, str]:
+def _turn(title, error_type, facts, tags, outcome, problem) -> tuple[str, str, str]:
+    err = ""
+    if outcome and outcome.first:
+        err = (outcome.first.error or "").lower()
+
     if error_type == "NameError":
         return (
             "Похоже, ты считаешь, что эта переменная уже была создана.",
@@ -42,6 +46,12 @@ def _turn(title, error_type, facts, tags, outcome) -> tuple[str, str, str]:
             "Похоже, ты берёшь следующий элемент, не оставив для него места в конце списка.",
             "На последнем i чему равен i + 1 и существует ли такой индекс?",
             "Для соседних пар проверь на списке из двух чисел: цикл должен выполниться ровно один раз.",
+        )
+    if error_type == "ValueError" and "empty" in err and ("max" in err or "min" in err or "sequence" in err):
+        return (
+            "Похоже, отбор на этом тесте не оставил ни одного элемента, а max/min так вызывать нельзя.",
+            "Какое условие должно выполниться хотя бы для одного значения из примера?",
+            "Сначала собери список, проверь что он не пустой, и только потом вызывай max или min.",
         )
     if error_type in {"TypeError", "ValueError"}:
         return (
@@ -73,29 +83,48 @@ def _turn(title, error_type, facts, tags, outcome) -> tuple[str, str, str]:
             "Для какого самого маленького n функция обязана закончиться сразу?",
             "Выпиши базовые случаи и проверь, что каждый рекурсивный вызов идёт к одному из них.",
         )
-    if "строк" in title or facts.raw_input_add or (facts.has_input and not facts.has_int and facts.has_print):
+    if (
+        facts.raw_input_add
+        or "склеи" in title
+        or "складываются строки" in title
+        or "input() вернул строку" in title
+    ):
         return (
             "Похоже, введённые цифры воспринимаются как текст, а не как числа.",
             "Какой результат в Python у выражения `'2' + '3'`? А какой нужен задаче?",
             "Перед сложением, сравнением или вычитанием преобразуй ввод через int или map(int, ...).",
         )
-    if "range" in title or (outcome and outcome.off_by_one):
+    if "ровно одно" in title or "and требует" in title or "or пропускает" in title:
         return (
-            "Похоже, правую границу или последний индекс ты мысленно включил в range, хотя Python его исключает.",
-            "Какое последнее число даёт твой range при маленьком примере?",
-            "Подставь границу вручную: если она должна участвовать, остановка range должна быть на единицу больше.",
+            "Похоже, «хотя бы одно» и «ровно одно» смешались.",
+            "Подходит ли случай, когда истинны оба признака?",
+            "Для «ровно одно» два признака должны быть разными. В конце нужен 1 или 0.",
         )
-    if "and" in title or "or" in title:
+    if "стоит and" in title or "стоит or" in title or "and вместо" in title or "or вместо" in title:
         return (
             "Похоже, слова условия «оба» и «хотя бы одно» были переведены в логическое выражение не так.",
             "Должен ли пройти случай, где верно только первое условие?",
             "Составь две строки истины: для and нужны оба True, для or достаточно одного True.",
         )
-    if "констант" in title or facts.constant_prints:
+    if "range" in title or range_error_supported(facts, problem, outcome):
+        return (
+            "Похоже, правую границу или последний индекс ты мысленно включил в range, хотя Python его исключает.",
+            "Какое последнее число даёт твой range при маленьком примере?",
+            "Подставь границу вручную: если она должна участвовать, остановка range должна быть на единицу больше.",
+        )
+    if "констант" in title or (
+        facts.constant_prints and not facts.has_loop and not facts.has_open and not facts.has_range and not facts.has_if
+    ):
         return (
             "Похоже, ответ из примера принят за правило для всех входных данных.",
             "Что изменится в программе, если заменить числа во вводе на другие?",
             "Убери готовый ответ из print и проследи, от каких переменных должен зависеть результат.",
+        )
+    if "регистр" in title:
+        return (
+            "Похоже, заглавные и строчные буквы сейчас считаются разными.",
+            "Abba — палиндром или нет, если не трогать регистр?",
+            "Приведи строку к одному регистру до сравнения.",
         )
     if "формат" in title or (outcome and outcome.format_only):
         return (
@@ -103,7 +132,7 @@ def _turn(title, error_type, facts, tags, outcome) -> tuple[str, str, str]:
             "В условии просят одно число, два числа через пробел или слово в точном регистре?",
             "Сравни свой print с образцом посимвольно: без подписей, скобок и лишних строк.",
         )
-    if "ege24" in tags:
+    if "ege24" in tags and facts.has_open:
         return (
             "Похоже, ты уже начал разбирать строку, но потерял правило обновления текущей цепочки.",
             "Что должно стать с текущей длиной, когда встречается неподходящий символ?",
@@ -116,7 +145,7 @@ def _turn(title, error_type, facts, tags, outcome) -> tuple[str, str, str]:
             "Раздели условие на чек-лист и отметь, где каждое из них стоит в if; отдельно сверь, что считаешь и что берёшь как max/min.",
         )
     return (
-        "Похоже, общий замысел есть, но код проверяет не совсем то свойство, которое сформулировано в задаче.",
+        "По коду и тестам видно расхождение с условием, но точную мысль, которая подвела, я не доказываю.",
         "Какой один маленький пример отличит твоё правило от правила из условия?",
         "Придумай крайний случай: граница, ноль, повтор или минимальный размер данных — и пройди его на бумаге до print.",
     )
