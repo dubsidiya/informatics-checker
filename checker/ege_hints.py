@@ -37,7 +37,11 @@ def hint(title: str, detail: str, kind: str = "logic", weight: int = 80) -> tupl
 
 def _ensure(found: list[tuple[int, Hint]], title: str, detail: str, weight: int = 80) -> list[tuple[int, Hint]]:
     if not any(item[0] >= 80 for item in found):
-        found.append(hint(title, detail, weight=weight))
+        found.append(hint(
+            title,
+            "Точную типичную ошибку по шаблону не видно. " + detail,
+            weight=weight,
+        ))
     return found
 
 
@@ -124,13 +128,13 @@ def _ege24(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
     if not facts.has_open:
         found.append(hint(
             "Строка из файла не прочитана",
-            "Данные лежат в файле задачи. Начни с `s = open('24.txt').read().strip()` — проверяльщик сам подставит нужный файл.",
+            "Данные лежат в файле задачи. Сначала прочитай всю строку из файла — проверяльщик сам подставит нужный файл.",
             weight=94,
         ))
     if "longest_run" in problem.tags and not facts.has_loop:
         found.append(hint(
             "Нужно пройти строку посимвольно",
-            "Заведи `cur` и `best`: на C увеличивай cur, на другом символе сбрасывай cur. После каждого шага обновляй best.",
+            "Иди по строке слева направо. Что делать с текущей длиной на подходящем символе и на другом? Где хранить максимум?",
             weight=92,
         ))
     if "sliding_window" in problem.tags and not facts.has_loop:

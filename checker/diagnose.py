@@ -7,6 +7,7 @@ from checker.facts import (
     example_outputs,
     extract_facts,
     extract_outcome,
+    has_task_context,
     parse_div_filters,
 )
 from checker.ege_hints import diagnose_ege
@@ -21,6 +22,17 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
         return []
 
     findings = _common(facts, problem, outcome)
+    if not has_task_context(problem):
+        findings.append(
+            hint(
+                "Не хватает условия задачи",
+                "Формулировки и темы нет, поэтому школьный шаблон ошибки не выбираю. "
+                "Видно только, что вывод не совпал с ожидаемым — без утверждения, какая именно логика виновата.",
+                weight=70,
+            )
+        )
+        return _dedupe(_sorted(findings))[:3]
+
     handler = HANDLERS.get(problem.id)
     if handler:
         findings.extend(handler(facts, problem, outcome))
@@ -130,8 +142,18 @@ def _common(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[
 
     examples = example_outputs(problem)
     if facts.hardcoded_loop and facts.constant_prints:
-        if any(item in examples or item == outcome.expected.strip() for item in facts.constant_prints):
-            found.append(hint("Ответ записан константой", "Программа печатает число из примера, а не считает его. На другом наборе так не сработает.", weight=86))
+        copied_sample = any(
+            item in examples or item == outcome.expected.strip() for item in facts.constant_prints
+        )
+        no_data = not facts.has_input and not facts.has_open
+        if copied_sample or no_data:
+            found.append(
+                hint(
+                    "Ответ записан константой",
+                    "Программа печатает готовое число, а не считает его по вводу или файлу. На другом наборе так не сработает.",
+                    weight=86,
+                )
+            )
 
     if "two_int_out" in tags and len(outcome.got_tokens) == 1 and len(outcome.exp_tokens) == 2:
         if "closed_range" in tags:
@@ -281,7 +303,9 @@ def _min_of_n(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tupl
 
 
 def _power_of_two(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
-    if 2 in facts.moduli and not facts.bit_and and "n - 1" not in facts.source and "n-1" not in facts.source:
+    if facts.divides_out_twos or facts.bit_and:
+        return _yes_no_words(outcome)
+    if 2 in facts.moduli and "n - 1" not in facts.source and "n-1" not in facts.source:
         return [hint("Проверяется чётность, не степень двойки", "6 чётное, но не степень двойки. Нужно n > 0 и n & (n - 1) == 0, либо делить на 2, пока не останется 1.", weight=94)]
     return _yes_no_words(outcome)
 
@@ -335,7 +359,7 @@ def _count_vowels(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[
 
 def _palindrome(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found = []
-    if not facts.reverse_slice:
+    if not facts.reverse_slice and not facts.two_pointer_compare:
         found.append(hint("Строка не сравнивается с переворотом", "Палиндром: s == s[::-1]. Сравнение строки с собой всегда YES.", weight=93))
     if not facts.has_lower:
         found.append(hint("Регистр не приведён", "Abba — палиндром. Сначала s = s.lower(), иначе A и a разные.", weight=80))
@@ -371,8 +395,10 @@ def _to_binary(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tup
 
 
 def _unique_count(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
-    if "len(" in facts.source and not facts.uses_set:
-        return [hint("Считается длина списка, не уникальные", "len(a) — сколько чисел всего. Различных: len(set(a)). Для 1 2 2 3 1 ответ 3, не 5.", weight=94)]
+    if facts.uses_set or facts.uses_fromkeys:
+        return []
+    if "len(" in facts.source:
+        return [hint("Считается длина списка, не уникальные", "len(a) — сколько чисел всего. Для 1 2 2 3 1 ответ 3, не 5. Чем число элементов отличается от числа уникальных — какая роль у set?", weight=94)]
     return []
 
 
@@ -383,7 +409,11 @@ def _prefix_sum(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tu
 
 
 def _second_max(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
-    if facts.uses_max and "[-2]" not in facts.source and "sorted" not in facts.source:
+    if facts.max_calls >= 2 or facts.uses_set or "[-2]" in facts.source:
+        if "sorted" in facts.source and not facts.uses_set:
+            return [hint("Дубликаты максимума не убраны", "Если 5 встречается дважды, sorted(a)[-2] снова 5. Сначала set(a).", weight=92)]
+        return []
+    if facts.uses_max and "sorted" not in facts.source:
         return [hint("Напечатан обычный максимум", "Нужен второй среди различных. На 1 5 3 5 2 max даёт 5, ждать 3. Собери set, отсортируй, возьми предпоследний.", weight=94)]
     if "sorted" in facts.source and not facts.uses_set:
         return [hint("Дубликаты максимума не убраны", "Если 5 встречается дважды, sorted(a)[-2] снова 5. Сначала set(a).", weight=92)]
@@ -398,6 +428,9 @@ def _pair_sum(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tupl
 
 
 def _ege_range(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    if not facts.has_range and not facts.has_loop:
+        # print(число) is not a weak filter — don't invent a missing divisor.
+        return []
     found = []
     must, must_not = parse_div_filters(problem.statement)
     bounds = closed_range_bounds(problem.statement)
