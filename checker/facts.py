@@ -399,6 +399,32 @@ def _numbers_after(pattern: str, text: str) -> list[int]:
     return found
 
 
+def range_misses_end(source: str) -> bool:
+    """True when a range call itself stops before the value the loop is using.
+
+    `for _ in range(n)` counts n times. `range(len(a) - 1)` already stops on the
+    last legal neighbour. A literal window `range(20, 60)` is not an off-by-one.
+    """
+    compact = re.sub(r"\s+", "", source)
+    for match in re.finditer(r"for([A-Za-z_]\w*)inrange\(([^)]*)\)", compact):
+        var, args = match.group(1), match.group(2)
+        if var == "_":
+            continue
+        parts = args.split(",")
+        if len(parts) == 1:
+            if parts[0] in {"n", "N"} and re.search(rf"{re.escape(var)}(?:\+|==|\*)", compact):
+                return True
+            continue
+        end = parts[1]
+        if "+1" in end or "-1" in end or "len(" in end:
+            continue
+        if re.fullmatch(r"-?\d+", end):
+            continue
+        if re.fullmatch(r"[A-Za-z_]\w*", end) or re.fullmatch(r"[A-Za-z_]\w*-\d+", end):
+            return True
+    return False
+
+
 def _unique_keep(items: list[int]) -> list[int]:
     seen: set[int] = set()
     result: list[int] = []

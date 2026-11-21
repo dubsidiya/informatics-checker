@@ -7,7 +7,7 @@
   <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20261007c">
+  <link rel="stylesheet" href="/static/style.css?v=20261121h">
   <link rel="stylesheet" href="/vendor/codemirror/lib/codemirror.min.css">
   <link rel="stylesheet" href="/vendor/codemirror/theme/material.min.css">
   <link rel="stylesheet" href="/vendor/codemirror/addon/hint/show-hint.min.css">
@@ -38,7 +38,7 @@
     <div id="onboard" class="onboard hidden">
       <div>
         <p class="eyebrow">Как работать на уроке</p>
-        <p>Напиши имя → выбери тему слева → «Начать зачёт». Это до 8 задач подряд. Если ошибка — читай три блока: что случилось, почему, что сделать.</p>
+        <p>Напиши имя и нажми «Проверить». Читай заголовок и «Что сделать», поправь одну строку. Вперёд — только «Следующая нерешённая».</p>
       </div>
       <button id="onboard-ok" type="button" class="ghost-btn">Понятно</button>
     </div>
@@ -67,10 +67,10 @@
     </section>
     <div class="filters">
       <div>
-        <p class="filter-label" id="topic-label">Тема</p>
-        <div id="topic-filters" class="chips" role="group" aria-labelledby="topic-label"></div>
+        <p class="filter-label" id="topic-label">Дорожка</p>
+        <ol id="topic-filters" class="path" aria-labelledby="topic-label"></ol>
       </div>
-      <div class="practice-only">
+      <div class="practice-only hidden">
         <p class="filter-label" id="level-label">Уровень</p>
         <div id="level-filters" class="chips" role="group" aria-labelledby="level-label"></div>
       </div>
@@ -106,21 +106,24 @@
         </details>
         <section id="mistake-guide" class="mistake-guide" aria-labelledby="mistake-guide-title"></section>
         <h2 id="title">Загрузка…</h2>
-        <p id="statement"></p>
-        <div id="read-help" class="read-help hidden"></div>
-        <div id="file-box" class="file-box hidden"></div>
-        <div class="meta">
-          <div>
-            <h3>Ввод</h3>
-            <p id="input-format"></p>
+        <details id="statement-fold" open>
+          <summary>Условие</summary>
+          <p id="statement"></p>
+          <div id="read-help" class="read-help hidden"></div>
+          <div id="file-box" class="file-box hidden"></div>
+          <div class="meta">
+            <div>
+              <h3>Ввод</h3>
+              <p id="input-format"></p>
+            </div>
+            <div>
+              <h3>Вывод</h3>
+              <p id="output-format"></p>
+            </div>
           </div>
-          <div>
-            <h3>Вывод</h3>
-            <p id="output-format"></p>
-          </div>
-        </div>
-        <h3>Примеры</h3>
-        <div id="examples" class="examples"></div>
+          <h3>Примеры</h3>
+          <div id="examples" class="examples"></div>
+        </details>
       </section>
 
       <section class="panel editor-wrap">
@@ -129,7 +132,7 @@
           <div class="editor-actions">
             <button id="code-reset" type="button" class="ghost-btn practice-only" title="Вернуть заготовку">Заготовка</button>
             <button id="code-copy" type="button" class="ghost-btn" title="Скопировать код">Копировать</button>
-            <button id="next-task" type="button" class="ghost-btn" title="Следующая нерешённая">Дальше</button>
+            <button id="next-task" type="button" class="ghost-btn" title="Следующая нерешённая">Следующая нерешённая</button>
             <button id="editor-full" type="button" class="ghost-btn" title="На весь экран">На весь экран</button>
             <button id="run" type="button">Проверить</button>
           </div>
@@ -166,7 +169,7 @@
   <script src="/vendor/codemirror/addon/search/jump-to-line.min.js"></script>
   <script src="/vendor/codemirror/addon/search/match-highlighter.min.js"></script>
   <script src="/vendor/codemirror/addon/scroll/scrollpastend.min.js"></script>
-  <script src="/static/theme.js?v=20261007c"></script>
-  <script src="/static/app.js?v=20261007c"></script>
+  <script src="/static/theme.js?v=20261121b"></script>
+  <script src="/static/app.js?v=20261121i"></script>
 </body>
 </html>

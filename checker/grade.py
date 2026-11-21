@@ -130,7 +130,9 @@ def grade_solution(
     first_fail = next((item for item in tests if item.verdict != "OK"), None)
 
     if first_fail is None:
-        return attach_explanation(
+        from checker.lecture_method import lecture_gap
+
+        result = attach_explanation(
             problem,
             GradeResult(
                 status="ok",
@@ -141,6 +143,11 @@ def grade_solution(
             ),
             source,
         )
+        gap = lecture_gap(problem, source)
+        if gap is not None and result.explanation is not None:
+            _headline, _why, how = gap
+            result.explanation.next_step = "можно короче. " + how
+        return result
 
     hint_tests = _student_hint_tests(tests)
     hints = build_hints(source, problem, hint_tests)
@@ -197,7 +204,7 @@ def _student_hint_tests(tests: list[TestResult]) -> list[TestResult]:
                 verdict=item.verdict,
                 stdin="",
                 expected="",
-                got="" if not (item.got or "").strip() else "[скрытый вывод]",
+                got=" ".join("x" for _ in (item.got or "").split()),
                 error="",
                 error_type=item.error_type if item.verdict == "RE" else "",
                 error_line=item.error_line if item.verdict == "RE" else None,

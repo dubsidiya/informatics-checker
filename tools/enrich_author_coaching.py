@@ -98,12 +98,12 @@ def enrich():
         topic=item.get('topic')
         if not item.get('author_created') or topic not in FOCUS: continue
         idx=counters[topic];counters[topic]+=1;focus=FOCUS[topic][idx%len(FOCUS[topic])]
-        title,detail,fast=focus
+        _,_,fast=focus
         marker='Педагогический фокус:'
         statement=item.get('statement','')
         if marker in statement:
             statement=statement.split(marker,1)[0].rstrip()
-        item['statement']=statement+'\n\n'+marker+' '+title+'.'
+        item['statement']=statement
         a=FOCUS[topic][idx%len(FOCUS[topic])]
         b=FOCUS[topic][(idx+1)%len(FOCUS[topic])]
         c=FOCUS[topic][(idx+2)%len(FOCUS[topic])]

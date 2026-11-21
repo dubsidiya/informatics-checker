@@ -1,7 +1,13 @@
 from __future__ import annotations
 
-from checker.facts import CodeFacts, Outcome, parse_div_filters
+import re
+
+from checker.facts import CodeFacts, Outcome, parse_div_filters, range_misses_end
 from checker.models import Hint, Problem
+
+
+def _range_misses_end(source: str) -> bool:
+    return range_misses_end(source)
 
 
 def extra_findings(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
@@ -223,9 +229,12 @@ def _one_number_facts(facts: CodeFacts, problem: Problem, outcome: Outcome) -> l
     if got_n == exp_n:
         return []
     if got_n == -exp_n:
-        return [hint("Не тот знак", f"Модуль совпал ({int(abs(got_n))}), знак нет. Проверь вычитание и abs.", weight=88)]
-    if abs(got_n - exp_n) == 1:
-        return [hint("Ошибка на единицу", f"Получилось {outcome.got_tokens[0]}, ждали {outcome.exp_tokens[0]}. Часто виноват range без n или индекс на 1 короче.", weight=86)]
+        compact = re.sub(r"\s+", "", facts.source)
+        if got_n == -1 and ("else-1" in compact or "else:-1" in compact):
+            return []
+        return [hint("Не тот знак", "Модуль совпал, знак нет. Замени вычитание на сложение или оберни разность в abs.", weight=88)]
+    if abs(got_n - exp_n) == 1 and _range_misses_end(facts.source):
+        return [hint("Ошибка на единицу", "В range не вошло последнее значение: допиши + 1 к концу.", weight=86)]
     if exp_n != 0 and (got_n == 2 * exp_n or exp_n == 2 * got_n):
         return [hint("Ответ в два раза больше или меньше", "Дважды учли элемент или делят не ту величину.", weight=84)]
     if facts.true_div and not facts.floor_div and "integer" in " ".join(problem.tags):

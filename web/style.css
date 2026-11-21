@@ -96,7 +96,7 @@ html, body {
 .page {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 28px 20px 64px;
+  padding: 28px 20px 80vh;
 }
 
 .top {
@@ -263,6 +263,24 @@ textarea:focus-visible,
 }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.path-step {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--muted);
+  font-size: 13px;
+}
+.path-step.current { background: var(--ink); color: var(--paper); font-weight: 700; }
+.path-step.done { color: var(--ok); background: var(--ok-bg); }
+.task-list button.closed { opacity: 0.62; }
 
 .chips button {
   border: 1px solid var(--line);
@@ -643,6 +661,8 @@ body.editor-full .CodeMirror {
 }
 
 .brief p { line-height: 1.5; margin: 0 0 12px; }
+#statement-fold { margin: 0 0 8px; }
+#statement-fold summary { cursor: pointer; font-weight: 650; }
 #statement {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -915,6 +935,32 @@ body.exam-on .coach { background: var(--info-bg); }
   color: var(--muted);
 }
 .explain-card h3 { margin: 0 0 12px; font-size: 22px; }
+.can-shorter {
+  margin: 8px 0 0;
+  color: var(--ok);
+  font-weight: 700;
+}
+.replaced-line {
+  margin: 8px 0 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--code-bg);
+  color: var(--code-fg);
+}
+.replaced-line span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.replaced-line code { font-family: var(--mono); }
+.explain-more { margin-top: 12px; }
+.explain-more summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-weight: 650;
+}
 .problem-provenance {
   margin: -8px 0 14px;
   color: var(--muted);
@@ -1021,7 +1067,7 @@ body.exam-on .coach { background: var(--info-bg); }
   .layout { grid-template-columns: 1fr; }
   .editor-keys ul { columns: 1; }
   .CodeMirror { min-height: 360px; }
-  .page { padding: 16px 12px 80px; }
+  .page { padding: 16px 12px 80vh; }
   .editor-bar { flex-wrap: wrap; align-items: start; }
   #run {
     position: sticky;

@@ -376,6 +376,311 @@ CASES = [
 ]
 
 
+# Headline and «Что сделать» must name the bug. A later hint in the checklist
+# is not enough: the generic numeric comparison used to stay first.
+PRIMARY = [
+    (
+        "archive-ege1-01",
+        "n,m=map(int,input().split())\n"
+        "g=[[] for _ in range(n+1)]\n"
+        "for _ in range(m):\n"
+        " a,b=map(int,input().split())\n"
+        " g[a].append(b)\n"
+        "v=int(input())\n"
+        "print(len(g[v]))\n",
+        "Ребро записано только в одну сторону",
+        "g[b].append(a)",
+        ["range(1, n + 1)", "сочетания"],
+    ),
+    (
+        "archive-ege1-01",
+        "n,m=map(int,input().split())\n"
+        "g=[[] for _ in range(n)]\n"
+        "for _ in range(m):\n"
+        " a,b=map(int,input().split())\n"
+        " g[a-1].append(b-1); g[b-1].append(a-1)\n"
+        "v=int(input())\n"
+        "print(len(g[v]))\n",
+        "Степень взята не из той ячейки",
+        "v - 1",
+        ["range(1, n + 1)", "сочетания"],
+    ),
+    (
+        "archive-ege1-01",
+        "n,m=map(int,input().split())\nprint(m)\n",
+        "Степень не из списка смежности",
+        "len(g[v])",
+        ["сочетания"],
+    ),
+    (
+        "archive-ege6-01",
+        "w,h=map(int,input().split())\nprint(w*h)\n",
+        "Граница попала внутрь",
+        "(w - 1) * (h - 1)",
+        ["дважды", "сочетания"],
+    ),
+    (
+        "archive-ege6-02",
+        "w,h=map(int,input().split())\nprint(w*h)\n",
+        "Посчитана площадь вместо длины пути",
+        "2 * (w + h)",
+        ["сочетания"],
+    ),
+    (
+        "archive-ege6-02",
+        "w,h=map(int,input().split())\nprint(w+h)\n",
+        "В длине пути нет двойки",
+        "2 * (w + h)",
+        ["сочетания"],
+    ),
+    (
+        "archive-ege4-01",
+        "s=input()\n"
+        "code={'A':'0','B':'1','C':'10','D':'11'}\n"
+        "print(''.join(code[ch] for ch in s))\n",
+        "Ведущие нули кода пропали",
+        "02b",
+        ["5.0", "сочетания"],
+    ),
+    (
+        "archive-ege4-01",
+        "s=input()\n"
+        "code={'A':'00','B':'01','C':'10','D':'11'}\n"
+        "bits=''.join(code[ch] for ch in s)\n"
+        "print(format(int(bits,2),'X'))\n",
+        "Напечатана шестнадцатеричная запись",
+        "02b",
+        ["сочетания"],
+    ),
+    (
+        "archive-ege4-03",
+        "bits=input()\nprint(int(bits, 2))\n",
+        "Двоичная строка стала числом",
+        "i + 2",
+        ["сочетания"],
+    ),
+    (
+        "archive-ege7-01",
+        "w, h, c = map(int, input().split())\nprint((w * h * c + 7) // 8)\n",
+        "Число цветов принято за биты",
+        "log2",
+        ["пар", "сочетания", "секунд"],
+    ),
+    (
+        "archive-ege7-01",
+        "import math\nw, h, c = map(int, input().split())\nprint(w * h * math.ceil(math.log2(c)))\n",
+        "Напечатаны биты, не байты",
+        "// 8",
+        ["пар", "сочетания", "секунд"],
+    ),
+    (
+        "archive-ege7-04",
+        "s, v = map(int, input().split())\nprint(s // v)\n",
+        "Секунды округлены вниз",
+        "v - 1",
+        ["пар", "сочетания", "log2"],
+    ),
+    (
+        "archive-ege10-01",
+        "text = open('10.txt').read().lower()\nprint(text.count('портрет'))\n",
+        "Слово ищется как подстрока",
+        "count",
+        ["пар", "сочетания", "range(1, n + 1)", "lower"],
+    ),
+    (
+        "archive-ege10-01",
+        "import re\ntext = open('10.txt').read()\n"
+        "print(len(re.findall(r'(?<![а-яё])портрет(?![а-яё])', text)))\n",
+        "Регистр не нормализован",
+        "lower",
+        ["пар", "сочетания", "range(1, n + 1)", "count"],
+    ),
+    (
+        "archive-ege10-01",
+        "text = open('10.txt').read().lower()\n"
+        "words = text.split()\n"
+        "print(sum(word == 'портрет' for word in words))\n",
+        "Знак препинания прилип к слову",
+        "strip",
+        ["пар", "сочетания", "range(1, n + 1)", "count"],
+    ),
+    (
+        "archive-ege3-09",
+        "rows = [line.strip().split(',') for line in open('3.txt') if line.strip()]\n"
+        "total = 0\n"
+        "for row in rows:\n"
+        "    if len(row) >= 4 and row[0] == 'Иванов' and row[2] == 'in':\n"
+        "        total += int(row[1])\n"
+        "print(total)\n",
+        "Неверный разделитель таблицы",
+        "split(';')",
+        ["пар", "сочетания", "рейс"],
+    ),
+    (
+        "archive-ege3-09",
+        "rows = [line.strip().split(';') for line in open('3.txt') if line.strip()]\n"
+        "print(sum(n == 'Иванов' and k == 'in' for n, c, k, r in rows))\n",
+        "Считаются рейсы, не груз",
+        "int(груз)",
+        ["пар", "сочетания", "split(';')"],
+    ),
+    (
+        "archive-ege3-09",
+        "rows = [line.strip().split(';') for line in open('3.txt') if line.strip()]\n"
+        "print(sum(int(c) for n, c, k, r in rows if n == 'Иванов'))\n",
+        "В сумму попал и вывоз",
+        "'in'",
+        ["пар", "сочетания", "разделитель"],
+    ),
+    (
+        "archive-ege22-11",
+        "n=int(input());ans=0\n"
+        "for _ in range(n):\n"
+        " p,t,*rest=input().split();ans+=int(t)\n"
+        "print(ans)\n",
+        "В сумму попали зависимые процессы",
+        "rest == ['0']",
+        ["пар", "сочетания", "кластер", "нечёт", "критическ", "19", "22", "20"],
+    ),
+    (
+        "archive-ege22-06",
+        "n=int(input());rows={}\n"
+        "for _ in range(n):\n"
+        " p,t,*rest=input().split();deps=[] if rest==['0'] else list(map(int,rest[0].split(';')));rows[int(p)]=(int(t),deps)\n"
+        "from functools import lru_cache\n"
+        "@lru_cache(None)\n"
+        "def finish(p):\n"
+        " t,d=rows[p];return t+max((finish(x) for x in d),default=0)\n"
+        "print(max(finish(p) for p in rows))\n",
+        "Считается путь по зависимостям, не сумма",
+        "ans += int(t)",
+        ["пар", "сочетания", "кластер", "нечёт", "75", "55", "50"],
+    ),
+    (
+        "archive-ege22-36",
+        "n=int(input())\n"
+        "ans=0\n"
+        "for _ in range(n):\n"
+        " p,t,*rest=input().split()\n"
+        " if rest == ['0']:\n"
+        "  ans += 1\n"
+        "print(ans)\n",
+        "Посчитаны процессы без зависимости",
+        "rest != ['0']",
+        ["пар", "сочетания", "кластер", "нечёт", "критическ"],
+    ),
+    (
+        "archive-ege22-36",
+        "n=int(input());ans=0\n"
+        "for _ in range(n):\n"
+        " p,t,*rest=input().split();ans+=0 if rest==['0'] else 1\n"
+        "print(n-ans)\n",
+        "Из числа процессов вычли зависимые",
+        "print(ans)",
+        ["пар", "сочетания", "кластер", "нечёт", "критическ"],
+    ),
+    (
+        "archive-ege22-01",
+        "n=int(input());ans=0\n"
+        "for _ in range(n):\n"
+        " p,t,*rest=input().split();ans+=int(t)\n"
+        "print(ans)\n",
+        "Критический путь не вычисляется",
+        "finish[p]",
+        ["пар", "сочетания", "кластер", "нечёт", "23", "13", "22"],
+    ),
+    (
+        "archive-ege11-01",
+        "v, n = map(int, input().split())\n"
+        "print(v * n)\n",
+        "Число значений принято за биты",
+        "log2",
+        ["пар", "сочетания", "кластер", "нечёт", "150", "80"],
+    ),
+    (
+        "archive-ege11-16",
+        "import math\n"
+        "a, n = map(int, input().split())\n"
+        "print(math.ceil(math.log2(a)) * n)\n",
+        "Биты не переведены в целые байты",
+        "// 8",
+        ["пар", "сочетания", "кластер", "нечёт", "10"],
+    ),
+    (
+        "ege24-long-c",
+        "s = open('long-c-1.txt').read()\nprint(len(s))\n",
+        "Нужно пройти строку посимвольно",
+        "cur",
+        ["map(int, input().split())"],
+    ),
+    (
+        "ege8-10",
+        "from itertools import permutations\n"
+        "letters='АОУ'\n"
+        "target='ОАОАО'\n"
+        "for i,word in enumerate(permutations(letters,5),1):\n"
+        "    if ''.join(word)==target:\n"
+        "        print(i); break\n",
+        "Буквы могут повторяться",
+        "product",
+        ["пар", "сочетания", "кластер", "нечёт"],
+    ),
+    (
+        "ege16-1",
+        "f=[0]*20\n"
+        "f[1]=1\n"
+        "for n in range(2,20):\n"
+        "    f[n]=2*f[n-1]\n"
+        "print(f[19])\n",
+        "В формуле потеряно + n + 3",
+        "формул",
+        ["input()"],
+    ),
+    (
+        "sum-until-zero",
+        "n = int(input())\nprint(n * (n + 1) // 2)\n",
+        "Чтение не до нуля",
+        "while x != 0",
+        ["пар", "сочетания", "кластер", "нечёт", "7"],
+    ),
+    (
+        "product-until-zero",
+        "x = int(input())\np = 0\nwhile x != 0:\n    p *= x\n    x = int(input())\nprint(p)\n",
+        "Произведение начато с нуля",
+        "p = 1",
+        ["пар", "сочетания", "кластер", "нечёт", "6", "-10"],
+    ),
+    (
+        "divisors-from-two",
+        "x = int(input())\nfor i in range(2, x + 1):\n    if x % i == 0:\n        print(i)\n        break\n",
+        "Напечатан только первый делитель",
+        "break",
+        ["пар", "сочетания", "кластер", "нечёт", "13"],
+    ),
+    (
+        "keep-evens",
+        "print(*[x for x in map(int, input().split()) if x % 2 == 1])\n",
+        "Оставлены нечётные",
+        "% 2 == 0",
+        ["пар", "сочетания", "кластер", "-2"],
+    ),
+    (
+        "prime-factors",
+        "x = int(input())\nprint(*[i for i in range(2, x + 1) if x % i == 0])\n",
+        "Кратность простого не снята",
+        "x //= i",
+        ["пар", "сочетания", "кластер", "нечёт", "13"],
+    ),
+    (
+        "all-divisors",
+        "x = int(input())\nprint(*[i for i in range(1, x + 1) if x % i == 0])\n",
+        "Делители ищут от 2 до корня",
+        "** 0.5",
+        ["пар", "сочетания", "кластер", "нечёт", "9"],
+    ),
+]
+
+
 class DiagnoseTests(unittest.TestCase):
     def test_every_problem_has_a_case(self):
         ids = {item.id for item in all_problems()}
@@ -395,6 +700,19 @@ class DiagnoseTests(unittest.TestCase):
                 )
                 for token in banned:
                     self.assertNotIn(token.lower(), text, f"{problem_id} unexpectedly mentions {token}")
+
+    def test_primary_explanation_names_the_bug(self):
+        for problem_id, source, title, must, banned in PRIMARY:
+            with self.subTest(problem_id=problem_id, title=title):
+                result = grade_solution(get_problem(problem_id), source)
+                self.assertEqual(result.status, "fail", problem_id)
+                explanation = result.explanation
+                self.assertIsNotNone(explanation)
+                self.assertEqual(explanation.headline, title)
+                blob = f"{explanation.headline} {explanation.why} {explanation.how}".lower()
+                self.assertIn(must.lower(), blob, blob)
+                for token in banned:
+                    self.assertNotIn(token.lower(), blob, f"{title} unexpectedly mentions {token}: {blob}")
 
 
 if __name__ == "__main__":

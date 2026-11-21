@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import ast
+import re
+
 from checker.facts import (
     CodeFacts,
     Outcome,
@@ -31,13 +34,18 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
 
     findings.extend(diagnose_ege(facts, problem, outcome))
     findings.extend(extra_findings(facts, problem, outcome))
-    findings.extend(_task_specific_findings(facts, problem, outcome))
+    findings.extend(_task_specific_findings(facts, problem, outcome, findings))
 
-    if outcome.first.hidden and outcome.first.verdict == "WA" and "two_int_out" in problem.tags:
+    if (
+        outcome.first.hidden
+        and outcome.first.verdict == "WA"
+        and "two_int_out" in problem.tags
+        and len((outcome.first.got or "").split()) == 1
+    ):
         findings.append(
             hint(
                 "В условии два числа",
-                "Нужно напечатать два числа через пробел, как просят в задании, а не одно.",
+                "Замени печать одного числа на `print(количество, максимум)`.",
                 weight=99,
             )
         )
@@ -64,7 +72,10 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
 
 
 def _task_specific_findings(
-    facts: CodeFacts, problem: Problem, outcome: Outcome
+    facts: CodeFacts,
+    problem: Problem,
+    outcome: Outcome,
+    prior: list[tuple[int, Hint]] | None = None,
 ) -> list[tuple[int, Hint]]:
     """Attach one task-level misconception, not just a topic-level recipe.
 
@@ -72,25 +83,76 @@ def _task_specific_findings(
     selector uses observable facts only; it never infers a student's intent
     from hidden answers and never exposes a hidden expected value.
     """
-    if not problem.mistake_hints:
+    if not problem.mistake_hints or outcome.empty:
         return []
+    precise = any(weight >= 90 for weight, _item in (prior or []))
     fallback: dict[str, str] | None = None
     for raw in problem.mistake_hints:
         title = raw.get("title", "Типичная ошибка именно в этой задаче").strip()
         detail = raw.get("detail", "Сверь шаги решения с формулировкой этой задачи.").strip()
+        if title == "Ввод прочитан не тем типом" and (
+            facts.has_int
+            or facts.has_map
+            or problem.topic == "строки"
+            or not _problem_reads_input(problem)
+        ):
+            continue
+        if not _mistake_claim_visible(title, facts, problem):
+            continue
         item = {"title": title, "detail": detail, "signal": raw.get("signal", "always")}
-        if fallback is None:
+        gated = item["signal"].startswith("when-")
+        if fallback is None and not gated:
             fallback = item
-        if _mistake_signal_matches(item["signal"], facts, outcome):
-            return [hint(title, detail, weight=91)]
-    return [hint(fallback["title"], fallback["detail"], weight=88)] if fallback else []
+        if _mistake_signal_matches(item["signal"], facts, outcome, problem):
+            weight = 91
+            if precise and item["signal"] in {"always", "algorithm", "logic"}:
+                weight = 74
+            return [hint(title, detail, weight=weight)]
+    if fallback and not (precise and fallback["signal"] in {"always", "algorithm", "logic"}):
+        return [hint(fallback["title"], fallback["detail"], weight=88)]
+    return []
 
 
-def _mistake_signal_matches(signal: str, facts: CodeFacts, outcome: Outcome) -> bool:
+def _mistake_claim_visible(title: str, facts: CodeFacts, problem: Problem) -> bool:
+    low = title.lower()
+    if "импликац" in low:
+        arrows = problem.statement.count("→")
+        return bool(arrows) and facts.source.count("<=") < arrows
+    if "концам отрезка" in low or "длину считают" in low:
+        return "длин" in problem.statement.lower() and not re.search(
+            r"[A-Za-z_]\w*\s*-\s*[A-Za-z_]\w*", facts.source
+        )
+    if "килобайт" in low and "1024" in facts.source and "1000" not in facts.source:
+        return False
+    if "одну сторону" in low:
+        compact = facts.source.replace(" ", "")
+        if "g[a].append(b)" in compact and "g[b].append(a)" in compact:
+            return False
+    if "кэш" in low and ("lru_cache" in facts.source or "@cache" in facts.source):
+        return False
+    if "цвет" in low and "бит" in low and "log2" in facts.source:
+        return False
+    return True
+
+
+def _problem_reads_input(problem: Problem) -> bool:
+    """stdin in the tests means the task really reads input. «Ввода нет» does not."""
+    if any((case.stdin or "").strip() for case in problem.tests):
+        return True
+    if any((item.stdin or "").strip() for item in problem.examples):
+        return True
+    return "ввода нет" not in (problem.input_format or "").lower()
+
+
+def _mistake_signal_matches(
+    signal: str, facts: CodeFacts, outcome: Outcome, problem: Problem
+) -> bool:
     signal = (signal or "always").lower()
     if signal in {"always", "algorithm", "logic"}:
         return True
     if signal in {"input", "read"}:
+        if not _problem_reads_input(problem):
+            return False
         return not facts.has_input and not facts.has_open
     if signal in {"output", "format"}:
         return outcome.empty or outcome.format_only or not facts.has_print
@@ -106,6 +168,15 @@ def _mistake_signal_matches(signal: str, facts: CodeFacts, outcome: Outcome) -> 
         return facts.has_open is False
     if signal in {"boolean", "condition"}:
         return facts.has_if or "and" in facts.source or "or" in facts.source
+    if signal == "when-missing-mod":
+        return "дел" in problem.statement.lower() and "%" not in facts.source
+    if signal == "when-missing-log2":
+        compact = facts.source.replace(" ", "")
+        return "log2" not in facts.source and "**" not in compact
+    if signal == "when-missing-ends":
+        return "длин" in problem.statement.lower() and not re.search(
+            r"[A-Za-z_]\w*\s*-\s*[A-Za-z_]\w*", facts.source
+        )
     return False
 
 
@@ -142,8 +213,18 @@ def _common(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[
     if not facts.has_print:
         found.append(hint("Нет вывода", "В программе нет print. Проверяющая система читает только напечатанное.", weight=95))
 
+    found.extend(_print_edits(facts))
+    found.extend(_input_edits(facts))
+    found.extend(_bad_input_split(facts, problem))
+    found.extend(_inclusive_range_edit(facts, problem))
+    found.extend(_same_neighbour(facts, problem))
+
     if outcome.empty and facts.has_print:
-        found.append(hint("Программа ничего не вывела", "print не сработал на этом тесте. Проверь, не стоит ли он внутри if, который не выполняется.", weight=90))
+        if facts.has_if:
+            detail = "print есть, но на этом тесте он ничего не напечатал. Проверь, не стоит ли он внутри if, который не выполняется."
+        else:
+            detail = "print() без значения даёт пустой ответ. Напечатай само число или слово: print(ответ)."
+        found.append(hint("Программа ничего не вывела", detail, weight=90))
 
     if outcome.format_only:
         found.append(hint("Ответ верный, формат нет", "Лишние пробелы, пустая строка или другой регистр. Печатай ровно то, что просят в условии.", kind="format", weight=92))
@@ -196,6 +277,118 @@ def _common(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[
         found.append(hint("print стоит внутри цикла", "Счётчик или сумму выведи один раз после цикла, не на каждом шаге.", kind="format", weight=85))
 
     return found
+
+
+def _print_nodes(facts: CodeFacts) -> list[ast.Call]:
+    if facts.tree is None:
+        return []
+    return [
+        node
+        for node in ast.walk(facts.tree)
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "print"
+    ]
+
+
+def _print_edits(facts: CodeFacts) -> list[tuple[int, Hint]]:
+    found: list[tuple[int, Hint]] = []
+    for node in _print_nodes(facts):
+        if not node.args and not node.keywords:
+            found.append(hint(
+                "Пустой print()",
+                "Замени `print()` на `print` с выражением ответа.",
+                weight=97,
+            ))
+            break
+        words = [
+            arg.value
+            for arg in node.args
+            if isinstance(arg, ast.Constant) and isinstance(arg.value, str) and arg.value.strip()
+        ]
+        if words and len(node.args) > len(words):
+            word = words[0]
+            found.append(hint(
+                "В print есть лишнее слово",
+                f"Замени `print('{word}', ...)` на `print(...)` без '{word}'.",
+                weight=97,
+            ))
+            break
+    return found
+
+
+def _bad_input_split(facts: CodeFacts, problem: Problem) -> list[tuple[int, Hint]]:
+    compact = facts.source.replace(" ", "")
+    if "input().split(';')" not in compact and 'input().split(",")' not in facts.source and "input().split(',')" not in compact:
+        return []
+    files = " ".join(problem.files)
+    if ".csv" in files or "csv" in problem.statement.lower():
+        return []
+    return [hint(
+        "Не тот split у input",
+        "Замени `input().split(';')` на `input().split()`.",
+        weight=97,
+    )]
+
+
+def _input_edits(facts: CodeFacts) -> list[tuple[int, Hint]]:
+    if "map(int" in facts.source and re.search(r"=\s*input\(\)\s*(?:#.*)?$", facts.source, re.M):
+        return [hint(
+            "input() без int",
+            "Замени `input()` на `int(input())`.",
+            weight=97,
+        )]
+    bare = any(
+        re.search(r"=\s*input\(\)\.split\(\)", line) and "int" not in line
+        for line in facts.source.splitlines()
+    )
+    if re.search(r"list\(\s*input\(\)\.split\(\)\s*\)", facts.source):
+        return [hint(
+            "Часть ввода осталась строкой",
+            "Замени `list(input().split())` на `list(map(int, input().split()))`.",
+            weight=97,
+        )]
+    if not bare:
+        return []
+    # A line of text is a number-bug when this file never converts input,
+    # or when another read is already map(int and this one was left as text.
+    has_int = re.search(r"(?<![\w.])int\s*\(", facts.source) is not None
+    has_map_int = "map(int" in facts.source
+    if has_int and not has_map_int:
+        return []
+    return [hint(
+        "Часть ввода осталась строкой",
+        "Замени `input().split()` на `map(int, input().split())`.",
+        weight=97,
+    )]
+
+
+def _inclusive_range_edit(facts: CodeFacts, problem: Problem) -> list[tuple[int, Hint]]:
+    blob = problem.statement.lower()
+    if "включительно" not in blob and "closed_range" not in problem.tags:
+        return []
+    compact = re.sub(r"\s+", "", facts.source)
+    match = re.search(r"range\(([A-Za-z_]\w*),([A-Za-z_]\w*(?:-\d+)?)\)", compact)
+    if not match:
+        return []
+    start, end = match.group(1), match.group(2)
+    base = re.sub(r"-\d+$", "", end)
+    return [hint(
+        "range не включает конец отрезка",
+        f"Замени `range({start}, {end})` на `range({start}, {base} + 1)`.",
+        weight=97,
+    )]
+
+
+def _same_neighbour(facts: CodeFacts, problem: Problem) -> list[tuple[int, Hint]]:
+    compact = re.sub(r"\s+", "", facts.source)
+    if "a[i]+a[i]" not in compact and "a[i]+a[i]" not in facts.source:
+        return []
+    if "сосед" not in problem.statement.lower() and "пар" not in problem.statement.lower():
+        return []
+    return [hint(
+        "В сумму попал тот же сосед",
+        "Замени `a[i] + a[i]` на `a[i] + a[i + 1]`.",
+        weight=97,
+    )]
 
 
 def _yes_no_words(outcome: Outcome) -> list[tuple[int, Hint]]:
@@ -261,13 +454,17 @@ def _sum_two(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple
 def _sum_1_n(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found = []
     if facts.has_range and "n + 1" not in facts.source and "n+1" not in facts.source:
-        found.append(hint("range не включает N", "range(n) даёт 0 ... n-1. Для N=5 сумма будет 10, а не 15. Нужен range(1, n + 1) или n * (n + 1) // 2.", weight=93))
-    if outcome.off_by_one:
-        found.append(hint("Ошибка на единицу", "Для суммы 1...N обычно виноват диапазон: забыли n или начали с 0.", weight=80))
+        found.append(hint("range не включает N", "Замени `range(n)` на `range(1, n + 1)`.", weight=93))
     return found
 
 
 def _max_three(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    if "input().split()" in facts.source and not facts.has_int and not facts.has_map:
+        return [hint(
+            "max сравнивает строки",
+            "Замени `max(input().split())` на `max(map(int, input().split()))`.",
+            weight=97,
+        )]
     if facts.uses_min and not facts.uses_max:
         return [hint("Ищется минимум, не максимум", "В условии нужно наибольшее из трёх. Сейчас вызывается min.", weight=94)]
     return []
@@ -392,7 +589,7 @@ def _palindrome(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tu
 def _fizz_count(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found = []
     if " and " in facts.source and " or " not in facts.source:
-        found.append(hint("Стоит and вместо or", "Нужны числа, кратные 3 или 5. and оставляет только кратные 15: для N=10 получится 0 вместо 5.", weight=95))
+        found.append(hint("Стоит and вместо or", "Замени `and` на `or`: нужны числа, кратные 3 или 5, а не только 15.", weight=95))
     missing = [item for item in (3, 5) if item not in facts.moduli]
     if missing:
         found.append(hint(f"Нет проверки на {missing[0]}", f"Считай числа, кратные 3 или 5. В коде нет % {missing[0]}.", weight=90))
@@ -437,6 +634,100 @@ def _second_max(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tu
     return []
 
 
+def _sum_until_zero(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    if "while" not in facts.source:
+        return [hint(
+            "Чтение не до нуля",
+            "Числа идут до отдельного нуля, а не по одному N. Нужен while x != 0 и новый int(input()) внутри.",
+            weight=96,
+        )]
+    return []
+
+
+def _product_until_zero(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    compact = facts.source.replace(" ", "")
+    if "p=0" in compact or "p*=0" in compact:
+        return [hint(
+            "Произведение начато с нуля",
+            "Ноль в начале обнуляет всё произведение. Накопитель до цикла равен 1.",
+            weight=96,
+        )]
+    if "while" not in facts.source:
+        return [hint(
+            "Чтение не до нуля",
+            "Числа идут до отдельного нуля. Нужен while x != 0, а произведение копится умножением.",
+            weight=96,
+        )]
+    return []
+
+
+def _keep_evens(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    compact = facts.source.replace(" ", "")
+    if "%2==1" in compact or "%2!=0" in compact:
+        return [hint(
+            "Оставлены нечётные",
+            "Остаток 1 бывает у нечётных. Чётные отбирают условием x % 2 == 0.",
+            weight=96,
+        )]
+    if "%2" not in compact and "filter" not in facts.source:
+        return [hint(
+            "Чётные не отобраны",
+            "В списке должны остаться только чётные. Нужен filter или if x % 2 == 0.",
+            weight=96,
+        )]
+    return []
+
+
+def _prime_factors(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    compact = facts.source.replace(" ", "")
+    divides = "//=" in compact or "//i" in compact
+    if not divides:
+        return [hint(
+            "Кратность простого не снята",
+            "Найденный множитель нужно убрать из числа: x //= i. Иначе двойка попадёт один раз.",
+            weight=96,
+        )]
+    return []
+
+
+def _checks_up_to_root(source: str) -> bool:
+    compact = source.replace(" ", "")
+    return "**0.5" in compact or "sqrt(" in source
+
+
+def _all_divisors(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    compact = facts.source.replace(" ", "")
+    if not _checks_up_to_root(facts.source):
+        return [hint(
+            "Делители ищут от 2 до корня",
+            "Полный проход до x только показывает идею. В списке сразу лежат 1 и x, а цикл идёт до корня и кладёт пару i и x // i.",
+            weight=96,
+        )]
+    if "[1," not in compact and "[1]" not in compact:
+        return [hint(
+            "В список не попала единица",
+            "Единица — делитель. Её кладут в список вместе с самим числом до цикла.",
+            weight=96,
+        )]
+    return []
+
+
+def _divisors_from_two(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    if facts.tree is not None and any(isinstance(node, ast.Break) for node in ast.walk(facts.tree)):
+        return [hint(
+            "Напечатан только первый делитель",
+            "break останавливает цикл на первом подходящем i. Здесь нужны все делители.",
+            weight=96,
+        )]
+    if not _checks_up_to_root(facts.source):
+        return [hint(
+            "Делители ищут от 2 до корня",
+            "Цикл до самого x на лекции был черновиком. Проверяй i от 2 до корня и добавляй пару x // i. Единицу не клади.",
+            weight=96,
+        )]
+    return []
+
+
 def _pair_sum(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found = [] if facts.consecutive_pair else _yes_no_words(outcome)
     if facts.consecutive_pair and not facts.nested_fors and "seen" not in facts.source:
@@ -468,6 +759,15 @@ def _ege_range(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tup
             f"Нет проверки «делится на {missing_must[0]}»",
             f"По условию число должно делиться на {', '.join(str(item) for item in missing_must)}. Без этого отбирается другой набор.",
             weight=94,
+        ))
+
+    if " or " in facts.source and " and " not in facts.source and (
+        "дел" in problem.statement.lower() or "кратн" in problem.statement.lower()
+    ):
+        found.append(hint(
+            "В отборе or вместо and",
+            "Замени `or` на `and`: число должно и делиться, и не делиться — как написано в отборе.",
+            weight=97,
         ))
 
     if bounds:
@@ -595,6 +895,12 @@ HANDLERS = {
     "prefix-sum": _prefix_sum,
     "second-max": _second_max,
     "pair-sum": _pair_sum,
+    "sum-until-zero": _sum_until_zero,
+    "product-until-zero": _product_until_zero,
+    "divisors-from-two": _divisors_from_two,
+    "keep-evens": _keep_evens,
+    "prime-factors": _prime_factors,
+    "all-divisors": _all_divisors,
     "ege17-1": _ege_range,
     "ege17-2": _ege_range,
     "ege17-243": _ege_file,

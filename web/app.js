@@ -50,6 +50,16 @@ const els = {
 };
 
 const LEVELS = ["все", "старт", "средне", "сложно"];
+const PATH_TOPICS = [
+  "ввод-вывод",
+  "условия",
+  "циклы",
+  "числа",
+  "строки",
+  "списки",
+  "поиск",
+  "на пути к ЕГЭ",
+];
 let problems = [];
 let topicCards = [];
 let currentId = null;
@@ -356,26 +366,24 @@ function renderLearningProgress() {
   const stuck = problems
     .filter((item) => !solvedIds.has(item.id) && (problemStats[item.id]?.fails || 0) >= 3)
     .sort((a, b) => (problemStats[b.id]?.fails || 0) - (problemStats[a.id]?.fails || 0));
-  const topic = currentProblem?.topic || (topicFilter !== "все" ? topicFilter : "");
-  const recommendations = problems
-    .filter((item) => !solvedIds.has(item.id) && item.id !== currentId)
-    .sort((a, b) => {
-      const score = (item) => (item.topic === topic ? 100 : 0) + (item.level === currentProblem?.level ? 20 : 0)
-        + Math.min(30, (problemStats[item.id]?.fails || 0) * 5);
-      return score(b) - score(a);
-    })
-    .slice(0, 3);
+  const recommendations = examMode
+    ? problems
+      .filter((item) => !solvedIds.has(item.id) && item.id !== currentId && examIds.includes(item.id))
+      .slice(0, 3)
+    : [];
   els.progressCard.classList.remove("hidden");
   els.progressHeading.textContent = stuck.length ? "Разберём то, где было сложно" : "Продолжим обучение?";
   els.progressSummary.textContent = `Сдано ${solvedIds.size} задач · начато ${attempted}.`;
-  const items = [...stuck.slice(0, 1), ...recommendations]
-    .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
-    .slice(0, 3);
+  const items = examMode
+    ? [...stuck.filter((item) => examIds.includes(item.id)).slice(0, 1), ...recommendations]
+      .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
+      .slice(0, 3)
+    : [];
   els.progressRecommendations.innerHTML = items.length
     ? items.map((item) => `<button type="button" class="progress-task" data-progress-task="${escapeAttr(item.id)}">
         <strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}${problemStats[item.id]?.fails ? ` · ${problemStats[item.id].fails} ошибок` : ""}</small>
       </button>`).join("")
-    : `<span class="muted">Все доступные задачи решены — отличный результат.</span>`;
+    : `<span class="muted">${examMode ? "Все доступные задачи решены — отличный результат." : "Дальше — кнопка «Следующая нерешённая»."}</span>`;
 }
 
 async function syncProgress() {
@@ -588,35 +596,77 @@ function skipExamTask() {
 }
 
 
+function pathProblems() {
+  const rank = new Map(PATH_TOPICS.map((topic, index) => [topic, index]));
+  return problems
+    .filter((item) => rank.has(item.topic))
+    .sort((a, b) => rank.get(a.topic) - rank.get(b.topic));
+}
+
+function pathFrontier() {
+  return pathProblems().find((item) => !solvedSet().has(item.id)) || null;
+}
+
+function pathAllows(id) {
+  const items = pathProblems();
+  const known = items.find((item) => item.id === id);
+  if (!known) return false;
+  if (solvedSet().has(id)) return true;
+  const frontier = items.find((item) => !solvedSet().has(item.id));
+  return !!frontier && frontier.id === id;
+}
+
+function pathVisible() {
+  const items = pathProblems();
+  const solved = solvedSet();
+  const frontier = items.findIndex((item) => !solved.has(item.id));
+  const currentIndex = items.findIndex((item) => item.id === currentId);
+  let end = frontier === -1 ? items.length : frontier + 1;
+  // The next unsolved stays closed until «Следующая нерешённая» opens it.
+  if (currentIndex >= 0 && (frontier === -1 || frontier > currentIndex)) {
+    end = currentIndex + 1;
+  }
+  const shown = items.slice(0, end);
+  const q = searchQuery.trim().toLowerCase();
+  return shown.filter((item) => {
+    const searchOk = !q || item.title.toLowerCase().includes(q) || item.id.toLowerCase().includes(q);
+    const solvedOk = !hideSolved || !solved.has(item.id);
+    const errorsOk = !repeatErrorsMode || ((problemStats[item.id]?.fails || 0) > 0 && !solved.has(item.id));
+    return searchOk && solvedOk && errorsOk;
+  });
+}
+
 function filteredProblems() {
+  if (!examMode) return pathVisible();
   const q = searchQuery.trim().toLowerCase();
   const solved = solvedSet();
-  const pool = examMode ? examProblems() : problems;
-  const examTopicNow = examMode ? examTopic : topicFilter;
+  const pool = examProblems();
   return pool.filter((item) => {
-    const topicOk = examMode || examTopicNow === "все" || item.topic === examTopicNow;
-    const levelOk = examMode || levelFilter === "все" || item.level === levelFilter;
     const searchOk = !q
       || item.title.toLowerCase().includes(q)
       || item.id.toLowerCase().includes(q)
       || (item.topic || "").toLowerCase().includes(q);
     const solvedOk = !hideSolved || !solved.has(item.id);
     const errorsOk = !repeatErrorsMode || ((problemStats[item.id]?.fails || 0) > 0 && !solved.has(item.id));
-    return topicOk && levelOk && searchOk && solvedOk && errorsOk;
+    return searchOk && solvedOk && errorsOk;
   });
 }
 
 function renderChips() {
-  const topics = examMode
-    ? [examTopic]
-    : ["все", ...[...new Set(problems.map((item) => item.topic))]];
-  const activeTopic = examMode ? examTopic : topicFilter;
-  els.topics.innerHTML = topics.map((topic) => `
-    <button type="button" data-topic="${escapeAttr(topic)}" aria-pressed="${topic === activeTopic}" class="${topic === activeTopic ? "active" : ""}">${escapeHtml(topic)}</button>
-  `).join("");
-  els.levels.innerHTML = LEVELS.map((level) => `
-    <button type="button" data-level="${escapeAttr(level)}" aria-pressed="${level === levelFilter}" class="${level === levelFilter ? "active" : ""}">${escapeHtml(level)}</button>
-  `).join("");
+  const items = pathProblems();
+  const solved = solvedSet();
+  const frontier = pathFrontier();
+  const currentTopic = examMode
+    ? examTopic
+    : (frontier ? frontier.topic : PATH_TOPICS[PATH_TOPICS.length - 1]);
+  const topics = examMode ? [examTopic] : PATH_TOPICS;
+  els.topics.innerHTML = topics.map((topic) => {
+    const group = items.filter((item) => item.topic === topic);
+    const done = !examMode && group.length > 0 && group.every((item) => solved.has(item.id));
+    const cls = done ? "done" : topic === currentTopic ? "current" : "ahead";
+    return `<li class="path-step ${cls}">${escapeHtml(topic)}</li>`;
+  }).join("");
+  if (els.levels) els.levels.innerHTML = "";
   if (els.startExam) {
     els.startExam.textContent = examMode ? "Идёт зачёт" : "Начать зачёт · 8 задач";
     els.startExam.disabled = examMode;
@@ -627,17 +677,26 @@ function renderChips() {
 function renderList() {
   const items = filteredProblems();
   const solved = solvedSet();
-  els.count.textContent = `${items.length} · сдано ${items.filter((item) => solved.has(item.id)).length}`;
+  if (examMode) {
+    els.count.textContent = `${items.length} · сдано ${items.filter((item) => solved.has(item.id)).length}`;
+  } else {
+    const all = pathProblems();
+    const done = all.filter((item) => solved.has(item.id)).length;
+    els.count.textContent = `сдано ${done} из ${all.length}`;
+  }
   renderProgress();
+  renderLearningProgress();
   els.list.innerHTML = "";
   for (const item of items) {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.id = item.id;
+    const closed = solved.has(item.id) && item.id !== currentId;
     button.setAttribute("aria-pressed", String(item.id === currentId));
     if (item.id === currentId) button.setAttribute("aria-current", "true");
     button.className = [
       item.id === currentId ? "active" : "",
+      closed ? "closed" : "",
       examSkip.has(item.id) ? "skipped" : "",
       !solved.has(item.id) && (problemStats[item.id]?.fails || 0) >= 3 ? "stuck" : "",
     ].filter(Boolean).join(" ");
@@ -645,9 +704,10 @@ function renderList() {
     const mark = solved.has(item.id) ? "<i>✓</i>" : examSkip.has(item.id) ? "<i>~</i>" : "";
     const authorMark = item.author_created ? " · тренировка" : "";
     const extra = `${authorMark}${fails && !solved.has(item.id) ? ` · ${fails} попыток` : ""}`;
+    const place = examMode ? `${item.topic} · ${item.level}` : item.level;
     button.innerHTML = `
       <span class="task-title">${mark}${escapeHtml(item.title)}</span>
-      <small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}${extra}</small>
+      <small>${escapeHtml(place)}${extra}</small>
     `;
     button.addEventListener("click", () => openProblem(item.id, true));
     els.list.appendChild(button);
@@ -697,6 +757,10 @@ async function boot() {
   if (!me || !me.ok) await syncProgress();
   const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   let start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
+  if (!examMode) {
+    const frontier = pathFrontier();
+    start = fromHash && pathAllows(fromHash) ? fromHash : (frontier ? frontier.id : pathProblems()[0]?.id);
+  }
   if (examMode) {
     const solved = solvedSet();
     const items = examProblems();
@@ -1144,6 +1208,11 @@ function setupEditor() {
 }
 
 async function openProblem(id, updateHash) {
+  if (!examMode && problems.length && id && !pathAllows(id)) {
+    const frontier = pathFrontier();
+    if (!frontier) return;
+    id = frontier.id;
+  }
   if (currentId && currentId !== id) {
     persistCode();
   }
@@ -1171,6 +1240,7 @@ async function openProblem(id, updateHash) {
     els.level.textContent = `${problem.topic} · ${problem.level}`;
     renderCoach(problem.topic);
     els.title.textContent = problem.title;
+    revealStatement();
     els.statement.textContent = problem.statement;
     const oldProvenance = document.querySelector(".problem-provenance");
     if (oldProvenance) oldProvenance.remove();
@@ -1303,12 +1373,15 @@ async function check() {
     if (data.status === "ok") {
       markSolved(currentId);
       examSkip.delete(currentId);
+      localStorage.removeItem(ladderKey());
       renderList();
       renderProgress();
       pingExamProgress();
+    } else {
+      data.tries = sameErrorTries(data);
     }
     saveResult(currentId, data);
-    renderResult(data, checkPagePosition);
+    renderResult(data, { scrollToCard: true, x: checkPagePosition.x, y: checkPagePosition.y });
   } catch (error) {
     if (requestGeneration !== checkGeneration) return;
     els.result.classList.remove("hidden");
@@ -1340,77 +1413,15 @@ function renderResult(data, savedPosition = capturePagePosition()) {
     : "";
 
   if (data.status === "ok") {
-    els.result.innerHTML = `
-      <button type="button" class="show-result ghost-link" data-show-result="1">Показать разбор</button>
-      ${explain}
-      <div class="banner ok">${escapeHtml(data.message)}</div>
-      <p>Пройдено тестов: ${data.passed} из ${data.total}.</p>
-      ${examBit}
-    `;
-    restorePageScroll(savedPosition);
+    els.result.innerHTML = `${explain}${examBit}`;
+    settleAfterCheck(savedPosition);
     renderExamBar();
     return;
   }
 
-  if (data.status === "syntax" && data.syntax) {
-    els.result.innerHTML = `
-      <button type="button" class="show-result ghost-link" data-show-result="1">Показать разбор</button>
-      ${explain}
-      ${data.syntax.snippet ? `<pre class="snippet">${escapeHtml(data.syntax.snippet)}</pre>` : ""}
-    `;
-    if (editor && data.syntax.line) {
-      editor.setCursor({ line: data.syntax.line - 1, ch: Math.max(0, (data.syntax.column || 1) - 1) });
-      focusWithoutScrolling(editor);
-    }
-    restorePageScroll(savedPosition);
-    return;
-  }
-
-  const tests = (data.tests || []).map((test) => `
-    <tr>
-      <td>${test.index + 1}${test.hidden ? " · скрытый" : ""}</td>
-      <td><span class="pill ${test.verdict}">${test.verdict}</span></td>
-      <td><code>${test.hidden ? "скрыт" : escapeHtml(preview(test.stdin))}</code></td>
-      <td><code>${test.hidden ? "скрыт" : escapeHtml(preview(test.expected))}</code></td>
-      <td><code>${test.hidden ? (test.verdict === "OK" ? "совпало" : escapeHtml(test.error || "не совпало")) : escapeHtml(test.verdict === "OK" ? (test.got || "").trim() : (test.got || test.error || "—"))}</code></td>
-    </tr>
-  `).join("");
-
-  const extraHints = (data.hints || []).slice(1).map((hint) => `
-    <article class="hint-card ${hint.kind}">
-      <h4>${escapeHtml(hint.title)}</h4>
-      <p>${escapeHtml(hint.detail)}</p>
-      ${hint.line ? `<div class="line">смотри строку ${hint.line}</div>` : ""}
-    </article>
-  `).join("");
-
-  const trace = (data.trace || []).map((step) => {
-    const locals = Object.entries(step.locals || {})
-      .map(([key, value]) => `${key} = ${value}`)
-      .join(", ");
-    return `<div class="trace"><b>стр. ${step.line}</b> ${escapeHtml(locals || "—")}</div>`;
-  }).join("");
-
-  els.result.innerHTML = `
-    <button type="button" class="show-result ghost-link" data-show-result="1">Показать разбор</button>
-    ${explain}
-    ${solutionBit}
-    <details class="more-checks">
-      <summary>Тесты и ещё подсказки</summary>
-      <table class="tests">
-        <thead>
-          <tr><th>#</th><th>Вердикт</th><th>Ввод</th><th>Ожидали</th><th>Получили</th></tr>
-        </thead>
-        <tbody>${tests}</tbody>
-      </table>
-      ${extraHints}
-      ${trace ? `<h3 class="trace-head">Ход программы на упавшем тесте</h3>${trace}` : ""}
-    </details>
-  `;
-  if (data.explanation && data.explanation.line && editor) {
-    editor.setCursor({ line: data.explanation.line - 1, ch: 0 });
-  }
-  restorePageScroll(savedPosition);
+  els.result.innerHTML = `${explain}${solutionBit}`;
+  placeCursor(data);
+  settleAfterCheck(savedPosition);
 }
 
 function renderSolution(data, options = {}) {
@@ -1462,6 +1473,59 @@ function scrollResultIntoView() {
   els.result.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+function revealStatement() {
+  const fold = document.getElementById("statement-fold");
+  if (fold) fold.open = true;
+}
+
+function collapseStatement() {
+  const fold = document.getElementById("statement-fold");
+  if (fold) fold.open = false;
+}
+
+function lineFromExplanation(data) {
+  const exp = data && data.explanation;
+  if (exp && Number.isInteger(exp.line) && exp.line > 0) return exp.line;
+  if (data && data.syntax && data.syntax.line) return data.syntax.line;
+  if (!editor) return 0;
+  const how = (exp && exp.how) || "";
+  const snippets = [...how.matchAll(/`([^`]+)`/g)]
+    .map((match) => match[1].replace(/\s+/g, ""))
+    .filter((snippet) => snippet);
+  const lines = editor.getValue().split("\n");
+  for (const needle of snippets) {
+    for (let index = 0; index < lines.length; index += 1) {
+      if (lines[index].replace(/\s+/g, "").includes(needle)) return index + 1;
+    }
+  }
+  return 0;
+}
+
+function placeCursor(data) {
+  if (!editor) return;
+  const line = lineFromExplanation(data);
+  if (!line) return;
+  editor.setCursor({ line: line - 1, ch: 0 });
+  focusWithoutScrolling(editor);
+}
+
+function settleAfterCheck(savedPosition) {
+  if (savedPosition && savedPosition.scrollToCard) {
+    collapseStatement();
+    const jump = () => {
+      if (!els.result || els.result.classList.contains("hidden")) return;
+      const top = els.result.getBoundingClientRect().top + window.scrollY - 12;
+      window.scrollTo(0, Math.max(0, top));
+    };
+    jump();
+    requestAnimationFrame(jump);
+    setTimeout(jump, 60);
+    setTimeout(jump, 180);
+    return;
+  }
+  restorePageScroll(savedPosition);
+}
+
 function focusWithoutScrolling(cm) {
   const field = cm && typeof cm.getInputField === "function" ? cm.getInputField() : null;
   if (field && typeof field.focus === "function") {
@@ -1474,52 +1538,133 @@ function focusWithoutScrolling(cm) {
   }
 }
 
-function explanationCard(data) {
-  const exp = data.explanation;
-  if (!exp) return `<div class="banner ${data.status === "ok" ? "ok" : data.status === "syntax" ? "warn" : "bad"}">${escapeHtml(data.message || "")}</div>`;
-  const line = exp.line ? `<div class="line">смотри строку ${exp.line}</div>` : "";
-  const tries = data.tries > 1 ? ` · попытка ${data.tries}` : "";
-  const failed = (data.tests || []).find((test) => !test.hidden && test.verdict !== "OK");
-  const counterexample = failed
-    ? `<div class="counterexample"><span>Проверим на конкретном примере</span>
-        <code>ввод: ${escapeHtml(preview(failed.stdin))}</code>
-        <code>нужно: ${escapeHtml(preview(failed.expected))}</code>
-        <code>получилось: ${escapeHtml(preview(failed.got || failed.error || "ничего"))}</code>
-      </div>`
-    : "";
+function replacedLineBlock(data) {
+  if (!data || Number(data.tries) < 3 || !editor) return "";
+  const how = (data.explanation && data.explanation.how) || "";
+  const match = /Замени `([^`]+)` на `([^`]+)`/.exec(how);
+  if (!match) return "";
+  const lineNo = lineFromExplanation(data);
+  if (!lineNo) return "";
+  const sourceLine = editor.getLine(lineNo - 1);
+  if (!sourceLine || !sourceLine.includes(match[1])) return "";
+  const next = sourceLine.replace(match[1], match[2]);
+  if (!next || next === sourceLine) return "";
+  return `<div class="replaced-line"><span>Эта строка после замены</span><code>${escapeHtml(next)}</code></div>`;
+}
+
+function ladderKey() {
+  return `ladder:${studentName() || "_"}:${currentId}`;
+}
+
+function sameErrorTries(data) {
+  const sig = (data.explanation && data.explanation.headline) || data.message || "";
+  let prev = {};
+  try {
+    prev = JSON.parse(localStorage.getItem(ladderKey()) || "{}");
+  } catch {
+    prev = {};
+  }
+  const tries = prev.sig === sig ? (Number(prev.tries) || 0) + 1 : 1;
+  localStorage.setItem(ladderKey(), JSON.stringify({ sig, tries }));
+  return tries;
+}
+
+function shorterHint(exp) {
+  const text = ((exp && exp.next_step) || "").trim();
+  if (!/можно короче/i.test(text)) return "";
+  return `<p class="can-shorter">${escapeHtml(text)}</p>`;
+}
+
+function openFailure(data) {
+  return (data.tests || []).find((test) => !test.hidden && test.verdict && test.verdict !== "OK") || null;
+}
+
+function counterexampleBlock(test) {
+  if (!test) return "";
+  return `<div class="counterexample">
+      <code>ввод: ${escapeHtml(preview(test.stdin))}</code>
+      <code>нужно: ${escapeHtml(preview(test.expected))}</code>
+      <code>получилось: ${escapeHtml(preview(test.got || test.error || "ничего"))}</code>
+    </div>`;
+}
+
+function explainBlock(label, text, extraClass) {
+  if (!text) return "";
+  const cls = extraClass ? `explain-block ${extraClass}` : "explain-block";
+  return `<div class="${cls}"><span>${label}</span><p>${escapeHtml(text)}</p></div>`;
+}
+
+function testsTable(data) {
+  const rows = (data.tests || []).map((test) => `
+    <tr>
+      <td>${test.index + 1}${test.hidden ? " · скрытый" : ""}</td>
+      <td><span class="pill ${test.verdict}">${test.verdict}</span></td>
+      <td><code>${test.hidden ? "скрыт" : escapeHtml(preview(test.stdin))}</code></td>
+      <td><code>${test.hidden ? "скрыт" : escapeHtml(preview(test.expected))}</code></td>
+      <td><code>${test.hidden ? (test.verdict === "OK" ? "совпало" : escapeHtml(test.error || "не совпало")) : escapeHtml(test.verdict === "OK" ? (test.got || "").trim() : (test.got || test.error || "—"))}</code></td>
+    </tr>
+  `).join("");
+  if (!rows) return "";
+  return `<table class="tests">
+      <thead><tr><th>#</th><th>Вердикт</th><th>Ввод</th><th>Ожидали</th><th>Получили</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function explainMore(exp, data) {
   const checks = (data.hints || []).slice(0, 3).map((hint) => `
     <li><b>${escapeHtml(hint.title)}</b><span>${escapeHtml(hint.detail)}</span></li>
   `).join("");
-  const intent = exp.intent
-    ? `<div class="explain-block intent"><span>Как я прочитал твой замысел</span><p>${escapeHtml(exp.intent)}</p></div>`
+  const trace = (data.trace || []).map((step) => {
+    const locals = Object.entries(step.locals || {})
+      .map(([key, value]) => `${key} = ${value}`)
+      .join(", ");
+    return `<div class="trace"><b>стр. ${step.line}</b> ${escapeHtml(locals || "—")}</div>`;
+  }).join("");
+  const snippet = data.syntax && data.syntax.snippet
+    ? `<pre class="snippet">${escapeHtml(data.syntax.snippet)}</pre>`
     : "";
-  const thought = exp.thought
-    ? `<div class="explain-block thought"><span>Возможная мысль, которая подвела</span><p>${escapeHtml(exp.thought)}</p></div>`
-    : "";
-  const question = exp.question
-    ? `<div class="coach-question"><span>Вопрос преподавателя</span><p>${escapeHtml(exp.question)}</p></div>`
-    : "";
-  const selfCheck = exp.self_check
-    ? `<div class="explain-block self-check-step"><span>Самопроверка перед запуском</span><p>${escapeHtml(exp.self_check)}</p></div>`
-    : "";
-  const nextStep = exp.next_step
-    ? `<div class="explain-block next-step"><span>Как можно решить быстрее в следующий раз</span><p>${escapeHtml(exp.next_step)}</p></div>`
-    : "";
+  const tries = data.tries > 1 ? `<p class="explain-kicker">попытка ${data.tries}</p>` : "";
+  const inner = [
+    tries,
+    explainBlock("Как я прочитал твой замысел", exp.intent, "intent"),
+    explainBlock("Возможная мысль, которая подвела", exp.thought, "thought"),
+    explainBlock("Что случилось", exp.what),
+    explainBlock("Почему так", exp.why),
+    explainBlock("Как можно решить быстрее в следующий раз", exp.next_step, "next-step"),
+    exp.question ? `<div class="coach-question"><span>Вопрос преподавателя</span><p>${escapeHtml(exp.question)}</p></div>` : "",
+    explainBlock("Самопроверка перед запуском", exp.self_check, "self-check-step"),
+    checks ? `<div class="self-check"><h4>Проверь перед следующей попыткой</h4><ul>${checks}</ul></div>` : "",
+    exp.line ? `<div class="line">смотри строку ${exp.line}</div>` : "",
+    snippet,
+    testsTable(data),
+    trace ? `<h3 class="trace-head">Ход программы на упавшем тесте</h3>${trace}` : "",
+  ].join("");
+  if (!inner.trim()) return "";
+  return `<details class="explain-more"><summary>подробнее</summary>${inner}</details>`;
+}
+
+function explanationCard(data) {
+  const exp = data.explanation;
+  if (!exp) {
+    return `<div class="banner ${data.status === "ok" ? "ok" : data.status === "syntax" ? "warn" : "bad"}">${escapeHtml(data.message || "")}</div>`;
+  }
+  if (data.status === "ok") {
+    return `
+      <article class="explain-card ok">
+        <h3>Задача сдана</h3>
+        ${shorterHint(exp)}
+      </article>
+    `;
+  }
+  const failed = openFailure(data);
   return `
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
-      <p class="explain-kicker">${exp.intent ? "Понял твой код" : "Разбор для ученика"}${tries}</p>
-       <h3>${escapeHtml(exp.headline)}</h3>
-       ${intent}
-       ${thought}
-       <div class="explain-block"><span>Что случилось</span><p>${escapeHtml(exp.what)}</p></div>
-       <div class="explain-block"><span>Почему так</span><p>${escapeHtml(exp.why)}</p></div>
-       ${nextStep}
-       ${question}
-       <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how)}</p></div>
-       ${selfCheck}
-      ${counterexample}
-      ${checks ? `<div class="self-check"><h4>Проверь перед следующей попыткой</h4><ul>${checks}</ul></div>` : ""}
-      ${line}
+      <h3>${escapeHtml(exp.headline)}</h3>
+      <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how || "")}</p></div>
+      ${replacedLineBlock(data)}
+      ${counterexampleBlock(failed)}
+      ${explainMore(exp, data)}
     </article>
   `;
 }
@@ -1744,6 +1889,7 @@ els.code.addEventListener("keydown", (event) => {
 window.addEventListener("hashchange", () => {
   const id = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   if (id && id !== currentId && problems.some((item) => item.id === id)) {
+    if (!examMode && !pathAllows(id)) return;
     openProblem(id, false);
   }
 });
@@ -1780,11 +1926,11 @@ function resetCode() {
 
 function openNextUnsolved() {
   const solved = solvedSet();
-  const items = filteredProblems();
-  if (!items.length) return;
-  const idx = items.findIndex((item) => item.id === currentId);
-  const wanted = (item) => !solved.has(item.id) && (!examMode || !examSkip.has(item.id));
   if (examMode) {
+    const items = filteredProblems();
+    if (!items.length) return;
+    const idx = items.findIndex((item) => item.id === currentId);
+    const wanted = (item) => !solved.has(item.id) && !examSkip.has(item.id);
     const later = items.slice(idx + 1);
     const next = later.find(wanted)
       || items.find((item) => wanted(item) && item.id !== currentId)
@@ -1792,25 +1938,11 @@ function openNextUnsolved() {
     if (next) openProblem(next.id, true);
     return;
   }
-  const candidates = items.filter((item) => wanted(item) && item.id !== currentId);
-  if (!candidates.length) {
-    const fallback = items.slice(idx + 1)[0];
-    if (fallback) openProblem(fallback.id, true);
-    return;
-  }
-  const currentTopic = currentProblem?.topic || topicFilter;
-  const currentLevel = currentProblem?.level || levelFilter;
-  const score = (item) => {
-    const stats = problemStats[item.id] || {};
-    const fails = Number(stats.fails || 0);
-    let value = 0;
-    if (fails >= 3) value += 1000 + fails * 20;
-    if (item.topic === currentTopic) value += 300;
-    if (item.level === currentLevel) value += 100;
-    if (item.id === items[(idx + 1 + items.length) % items.length]?.id) value += 20;
-    return value;
-  };
-  const next = candidates.sort((a, b) => score(b) - score(a))[0];
+  const items = pathProblems();
+  if (!items.length) return;
+  const idx = items.findIndex((item) => item.id === currentId);
+  const next = items.slice(Math.max(idx, 0) + 1).find((item) => !solved.has(item.id))
+    || items.find((item) => !solved.has(item.id) && item.id !== currentId);
   if (next) openProblem(next.id, true);
 }
 

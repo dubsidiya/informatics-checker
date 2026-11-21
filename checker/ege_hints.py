@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import re
 
 from checker.facts import CodeFacts, Outcome
@@ -14,7 +15,7 @@ def diagnose_ege(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[t
         return _ege3(facts, problem, outcome)
     if "ege4" in tags:
         return _ege4(facts, problem, outcome)
-    if "ege2" in tags:
+    if "ege2" in tags or "author_ege2" in tags:
         return _ege2(facts, problem, outcome)
     if "ege15" in tags:
         return _ege15(facts, problem, outcome)
@@ -67,8 +68,62 @@ def _archive_fallback(problem: Problem, text: str) -> list[tuple[int, Hint]]:
     return _ensure([], "Архивный приём применён иначе", text, weight=82)
 
 
+def _subscript_edge_pairs(facts: CodeFacts) -> list[tuple[str, str]]:
+    if facts.tree is None:
+        return []
+    pairs: list[tuple[str, str]] = []
+    for node in ast.walk(facts.tree):
+        if not isinstance(node, ast.Call) or not node.args:
+            continue
+        func = node.func
+        if not isinstance(func, ast.Attribute) or func.attr not in {"append", "add"}:
+            continue
+        if not isinstance(func.value, ast.Subscript):
+            continue
+        index = func.value.slice
+        arg = node.args[0]
+        if isinstance(index, ast.Name) and isinstance(arg, ast.Name):
+            pairs.append((index.id, arg.id))
+    return pairs
+
+
+def _one_direction(facts: CodeFacts) -> bool:
+    pairs = _subscript_edge_pairs(facts)
+    if not pairs:
+        return False
+    return not any((right, left) in pairs for left, right in pairs)
+
+
+def _shifted_degree_read(source: str) -> bool:
+    compact = source.replace(" ", "")
+    if "a-1" not in compact and "b-1" not in compact:
+        return False
+    return "g[v]" in compact and "g[v-1]" not in compact
+
+
 def _ege1(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
+    statement = problem.statement.lower()
+    asks_degree = "степен" in statement
+    needs_neighbors = any(word in statement for word in ("степен", "компонент", "путь", "треугольник"))
+    if asks_degree and ".append" not in facts.source and ".add(" not in facts.source:
+        found.append(hint(
+            "Степень не из списка смежности",
+            "Число M — сколько рёбер во всём графе. Степень вершины v — это сколько раз она встретилась в рёбрах.",
+            weight=96,
+        ))
+    elif asks_degree and _shifted_degree_read(facts.source):
+        found.append(hint(
+            "Степень взята не из той ячейки",
+            "Рёбра записаны в g[a - 1], а печать идёт из g[v]. Это уже другая вершина.",
+            weight=96,
+        ))
+    elif needs_neighbors and _one_direction(facts):
+        found.append(hint(
+            "Ребро записано только в одну сторону",
+            "Граф неориентированный: из ребра a—b в список должны попасть обе дуги, сейчас записана одна.",
+            weight=96,
+        ))
     if not facts.has_loop:
         found.append(hint("Граф не обработан", "Прочитай все M рёбер и построй список смежности или множество рёбер.", weight=92))
     if "append" not in facts.source and "set(" not in facts.source and "edges" not in facts.source:
@@ -78,54 +133,235 @@ def _ege1(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[in
 
 def _ege3(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
+    statement = problem.statement.lower()
+    src = facts.source
+    asks_sum = "суммарн" in statement
+    asks_import = "привез" in statement or "тип `in`" in statement
+    if " or " in src and " and " not in src:
+        found.append(hint(
+            "В фильтре таблицы or вместо and",
+            "Замени `or` на `and` в условии строки.",
+            weight=97,
+        ))
     if not facts.has_open:
         found.append(hint("Таблица не прочитана", "Открой подключённый `3.txt` и обработай каждую строку.", weight=94))
-    if facts.has_open and "split(';')" not in facts.source and 'split(";")' not in facts.source:
-        found.append(hint("Неверный разделитель таблицы", "Поля записи разделены точкой с запятой: используй split(';').", weight=90))
+    if facts.has_open and "split(';')" not in src and 'split(";")' not in src:
+        found.append(hint(
+            "Неверный разделитель таблицы",
+            "Поля записи разделены точкой с запятой. Замени split(',') или split() на split(';').",
+            weight=96,
+        ))
+    elif asks_sum and not facts.has_int:
+        found.append(hint(
+            "Считаются рейсы, не груз",
+            "sum(условие) даёт число строк. В сумму нужно само число груза: sum(int(груз) for ... if условие).",
+            weight=96,
+        ))
+    elif asks_import and "'in'" not in src and '"in"' not in src:
+        found.append(hint(
+            "В сумму попал и вывоз",
+            "Привоз — это тип in. Допиши в фильтр `and k == 'in'`, иначе вывоз тоже попадёт в сумму.",
+            weight=96,
+        ))
     return _ensure(found, "Записи таблицы отобраны иначе", "Сверь поле фильтра, тип операции и то, что считается: сумма, количество или различные значения.")
 
 
 def _ege4(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
-    if "format(" not in facts.source and "bin(" not in facts.source and "int(" not in facts.source:
+    statement = problem.statement.lower()
+    src = facts.source
+    asks_bits = "двоичную запись" in statement or "двоичная запись" in statement
+    if asks_bits and any(mark in src for mark in ("'X'", '"X"', "'x'", '"x"', "hex(")):
+        found.append(hint(
+            "Напечатана шестнадцатеричная запись",
+            "Условие просит саму двоичную строку. format(..., 'X') превращает её в другое основание.",
+            weight=96,
+        ))
+    elif asks_bits and "02b" not in src and "zfill" not in src and "'00'" not in src and '"00"' not in src:
+        found.append(hint(
+            "Ведущие нули кода пропали",
+            "У буквы A код 00, не 0. Без ведущих нулей коды 0, 1, 10, 11 слипаются и теряют длину.",
+            weight=96,
+        ))
+    if "расшифр" in statement and "int(" in src and "[" not in src:
+        found.append(hint(
+            "Двоичная строка стала числом",
+            "int(bits, 2) даёт одно число. Буквы восстанавливаются кусками по два символа.",
+            weight=96,
+        ))
+    if "format(" not in src and "bin(" not in src and "int(" not in src:
         found.append(hint("Не выполнен перевод кода", "Используй format/bin для двоичной записи или int(bits, 2) для чтения кода.", weight=90))
-    if "байт" in problem.statement.lower() and "//" not in facts.source:
+    if "байт" in statement and "//" not in src:
         found.append(hint("Байты округляются вниз", "Минимальный размер в байтах: (число_бит + 7) // 8.", weight=92))
     return _ensure(found, "Кодирование посчитано иначе", "Сверь длину кода символа, основание системы и единицы результата.")
 
 
 def _ege6(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
-    if "внутр" in problem.statement.lower() and "- 1" not in facts.source and "-1" not in facts.source:
-        return [hint("Граница попала внутрь", "Точки на линии не считаются внутренними: для W×H это (W-1)*(H-1).", weight=92)]
+    found: list[tuple[int, Hint]] = []
+    statement = problem.statement.lower()
+    compact = facts.source.replace(" ", "")
+    asks_length = "длин" in statement and "пут" in statement
+    doubled = "2*" in compact or "*2" in compact
+    if "внутр" in statement and "-1" not in compact and "- 1" not in facts.source:
+        found.append(hint(
+            "Граница попала внутрь",
+            "Точки на линии не считаются внутренними. Для прямоугольника W×H внутри лежит (W-1)*(H-1), не W*H.",
+            weight=96,
+        ))
+    elif asks_length and "*" in compact and "+" not in compact and not doubled:
+        found.append(hint(
+            "Посчитана площадь вместо длины пути",
+            "Произведение сторон — площадь. Длина обхода прямоугольника по границе вдвое больше суммы сторон.",
+            weight=96,
+        ))
+    elif asks_length and not doubled:
+        found.append(hint(
+            "В длине пути нет двойки",
+            "Сумма w + h — только две стороны. Обход границы проходит ширину и высоту дважды.",
+            weight=96,
+        ))
+    if found:
+        return found
     return _archive_fallback(problem, "Сверь, что требуется: площадь, периметр, точки внутри или точки на границе.")
 
 
+def _has_bit_length(source: str) -> bool:
+    return "log2" in source or "log(" in source or "**" in source or "while" in source
+
+
+def _seconds_rounded_down(source: str) -> bool:
+    compact = source.replace(" ", "")
+    if "//" not in compact or "ceil" in compact:
+        return False
+    return re.search(r"\+\w+-1\)//", compact) is None
+
+
 def _ege7(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    if outcome.empty:
+        return []
     found: list[tuple[int, Hint]] = []
-    if "log2" not in facts.source and "**" not in facts.source and "while" not in facts.source:
-        found.append(hint("Не найдено число бит", "Для A вариантов нужно ceil(log2(A)) бит, а не A бит.", weight=92))
-    if "байт" in problem.statement.lower() and "//" not in facts.source:
+    statement = problem.statement.lower()
+    src = facts.source
+    asks_bytes = "байт" in statement
+    asks_colors = "цвет" in statement
+    asks_seconds = "секунд" in statement
+    if asks_colors and not _has_bit_length(src):
+        found.append(hint(
+            "Число цветов принято за биты",
+            "На цвет нужно не само C, а сколько бит его кодирует. Замени множитель c на math.ceil(math.log2(c)).",
+            weight=96,
+        ))
+    elif asks_bytes and "log2" in src and "//" not in src:
+        found.append(hint(
+            "Напечатаны биты, не байты",
+            "Произведение дало биты. В print поставь (биты + 7) // 8.",
+            weight=96,
+        ))
+    elif asks_seconds and _seconds_rounded_down(src):
+        found.append(hint(
+            "Секунды округлены вниз",
+            "s // v отбрасывает неполную секунду. Минимальное целое число секунд — (s + v - 1) // v.",
+            weight=96,
+        ))
+    if asks_bytes and "//" not in src:
         found.append(hint("Не округлено до байта", "Минимум байтов считается как (bits+7)//8.", weight=90))
+    compact = re.sub(r"\s+", "", src)
+    if _has_bit_length(src) and ("1000" in compact) and "1024" not in compact:
+        found.append(hint(
+            "Килобайт принят за 1000",
+            "1 Кбайт = 1024 байт. Деление или умножение на 1000 даёт другой объём.",
+            weight=96,
+        ))
     return _ensure(found, "Объём информации посчитан иначе", "Сначала посчитай биты одного объекта, потом умножь на количество и переведи в байты.")
+
+
+def _punctuation_stuck(source: str, statement: str) -> bool:
+    if "split(" not in source or "findall" in source or "strip(" in source or "isalpha(" in source:
+        return False
+    return "препинан" in statement or "пунктуац" in statement or "точн" in statement
 
 
 def _ege10(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
+    statement = problem.statement.lower()
+    src = facts.source
+    ignores_case = "без учёта регистра" in statement or "без учета регистра" in statement
     if not facts.has_open:
         found.append(hint("Текст не открыт", "Для №10 открой подключённый файл через open('10.txt').read().", weight=94))
-    if "lower" not in facts.source:
-        found.append(hint("Регистр не нормализован", "Если поиск без регистра, приведи текст и слово к lower().", weight=88))
-    if "split" not in facts.source and "findall" not in facts.source:
+    if ".count(" in src and "findall" not in src and "split(" not in src:
+        found.append(hint(
+            "Слово ищется как подстрока",
+            "text.count считает кусок внутри другого слова. Замени его на сравнение целого слова из findall.",
+            weight=96,
+        ))
+    elif ignores_case and "lower(" not in src and "casefold(" not in src:
+        found.append(hint(
+            "Регистр не нормализован",
+            "В условии поиск без регистра. Допиши .lower() к прочитанному тексту.",
+            weight=96,
+        ))
+    elif _punctuation_stuck(src, statement):
+        found.append(hint(
+            "Знак препинания прилип к слову",
+            "split() оставляет запятую на слове, и «слово,» не равно «слово». Перед сравнением очисти его через strip.",
+            weight=96,
+        ))
+    if any(word in statement for word in ("различн", "уникаль", "разные слова")) and "set(" not in src:
+        found.append(hint(
+            "Повторы слов не убраны",
+            "В условии нужны разные слова. Список с повторами длиннее. Оберни слова в set.",
+            weight=96,
+        ))
+    if "split(" not in src and "findall" not in src and ".count(" not in src:
         found.append(hint("Слова не выделены", "Отдели слово от пунктуации и окончаний через split/strip или регулярное выражение.", weight=88))
     return _ensure(found, "Текст отбирается иначе", "Сверь точное совпадение, регистр и знаки препинания.")
 
 
+def _ege11_needs_code_bits(statement: str) -> bool:
+    if "возможных кодов" in statement or "достаточно" in statement:
+        return False
+    if "бит на измерение" in statement or "бит на одну запись" in statement:
+        return False
+    return any(word in statement for word in ("возможных значений", "видов сигналов", "размер алфавита"))
+
+
 def _ege11(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
+    if outcome.empty:
+        return []
     found: list[tuple[int, Hint]] = []
-    if "log2" not in facts.source and "**" not in facts.source and "while" not in facts.source:
-        found.append(hint("Не найден размер кода", "Для A вариантов нужен минимум b, при котором 2**b >= A.", weight=92))
-    if "байт" in problem.statement.lower() and "//" not in facts.source:
-        found.append(hint("Биты не переведены в целые байты", "Округляй вверх: (bits+7)//8.", weight=90))
+    statement = problem.statement.lower()
+    src = facts.source
+    compact = re.sub(r"\s+", "", src)
+    value_bits = "возможных значений" in statement and "в битах" in statement
+    if value_bits and "log2" not in src and "**" not in src and "v*n" in compact:
+        found.append(hint(
+            "Число значений принято за биты",
+            "V — сколько разных значений, а не число бит на одно измерение. На одно значение нужен ceil(log2(V)).",
+            weight=96,
+        ))
+    elif (
+        _ege11_needs_code_bits(statement)
+        and "log2" not in src
+        and "**" not in src
+        and "while" not in src
+    ):
+        found.append(hint(
+            "Не найден размер кода",
+            "Для числа вариантов нужен минимум b, при котором 2**b не меньше этого числа. Сейчас в формулу подставлено само количество вариантов.",
+            weight=92,
+        ))
+    if "байт" in statement and "log2" in src and "//" not in src:
+        found.append(hint(
+            "Биты не переведены в целые байты",
+            "Выражение с log2 даёт биты. Неполный последний байт тоже входит в объём.",
+            weight=96,
+        ))
+    if "log2" in src and ("//1000" in compact or "*1000" in compact or "/1000" in compact):
+        found.append(hint(
+            "Килобайт принят за 1000",
+            "1 Кбайт = 1024 байт и 1 Мбайт = 1024 Кбайт. Деление на 1000 даёт другой объём.",
+            weight=96,
+        ))
     return _ensure(found, "Объём кодирования посчитан иначе", "Сверь число вариантов, бит на объект, количество объектов и единицы.")
 
 
@@ -138,13 +374,85 @@ def _ege12(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
     return _ensure(found, "Редактор получил другую строку", "Сверь порядок замен и условие остановки цикла.")
 
 
+def _ege22_kind(statement: str) -> str:
+    text = statement.lower()
+    if "строго последовательно" in text or "суммарную длительность всех" in text:
+        return "sum_all"
+    if "максимальный идентификатор" in text and "независим" in text:
+        return "max_id"
+    if "независим" in text and "сумм" in text:
+        return "sum_indep"
+    if "хотя бы одна зависимость" in text:
+        return "count_dep"
+    if "предшественник" in text and "максимальн" in text:
+        return "max_preds"
+    if "без учёта зависимостей" in text or "без учета зависимостей" in text:
+        return "max_duration"
+    if "критический путь" in text:
+        return "slack"
+    if "время завершения" in text:
+        return "critical"
+    return "other"
+
+
+def _compact_src(source: str) -> str:
+    return re.sub(r"\s+", "", source).replace('"', "'")
+
+
 def _ege22(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
-    if "lru_cache" not in facts.source and "cache" not in facts.source and "max(" not in facts.source:
-        found.append(hint("Критический путь не вычисляется", "Время процесса равно его длительности плюс максимум времени предшественников.", weight=92))
-    if "open" not in facts.source and not facts.has_input:
+    src = facts.source
+    compact = _compact_src(src)
+    kind = _ege22_kind(problem.statement)
+    sees_zero = "['0']" in compact or "=='0'" in compact
+
+    if kind == "sum_indep" and "+=int(t)" in compact and not sees_zero:
+        found.append(hint(
+            "В сумму попали зависимые процессы",
+            "Независимый процесс в строке записан как 0, а не как список. Сейчас к сумме прибавляется каждая длительность.",
+            weight=96,
+        ))
+    elif kind == "sum_all" and ("lru_cache" in src or "def finish" in src or "@cache" in src):
+        found.append(hint(
+            "Считается путь по зависимостям, не сумма",
+            "В коде время процесса берётся от предшественников. Здесь все длительности просто складываются, одна за другой.",
+            weight=96,
+        ))
+    elif (
+        kind == "count_dep"
+        and "print(n-ans)" in compact
+        and re.search(r"else1(?!\d)", compact)
+        and "rest==['0']" in compact
+    ):
+        found.append(hint(
+            "Из числа процессов вычли зависимые",
+            "ans уже считает процессы, у которых вместо нуля стоит список. Вычитать ans из n значит напечатать остальные.",
+            weight=96,
+        ))
+    elif kind == "count_dep" and "!=['0']" not in compact and (
+        "ifrest==['0']:ans+=1" in compact or "ans+=1ifrest==['0']" in compact
+    ):
+        found.append(hint(
+            "Посчитаны процессы без зависимости",
+            "Ноль на месте списка означает, что зависимостей нет. Прибавление сейчас стоит на этой ветке.",
+            weight=96,
+        ))
+    elif kind == "critical" and "lru_cache" not in src and "@cache" not in src and "max(" not in src:
+        found.append(hint(
+            "Критический путь не вычисляется",
+            "Время процесса равно его длительности плюс максимум времени предшественников.",
+            weight=96,
+        ))
+
+    if "open" not in src and not facts.has_input:
         found.append(hint("Таблица процессов не прочитана", "Пройди все строки с ID, длительностью и зависимостями.", weight=90))
-    return _ensure(found, "Зависимости процессов обработаны иначе", "Независимые процессы идут параллельно; зависимый стартует после завершения всех предшественников.")
+    if kind == "critical":
+        return _ensure(
+            found,
+            "Зависимости процессов обработаны иначе",
+            "Зависимый процесс стартует после всех предшественников; время процесса — его длительность плюс их максимум.",
+        )
+    return found
 
 
 def _ensure(found: list[tuple[int, Hint]], title: str, detail: str, weight: int = 80) -> list[tuple[int, Hint]]:
@@ -163,15 +471,86 @@ def _lines(text: str) -> list[str]:
 
 def _ege2(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
-    if not facts.has_loop:
-        found.append(hint("Нет перебора таблицы", "Для №2 нужно перебрать значения 0/1 и перестановки переменных; без цикла легко пропустить вариант.", weight=92))
-    if "permut" not in facts.source and "product" not in facts.source:
-        found.append(hint("Не виден перебор порядков", "Используй `itertools.permutations('xyzw')` или четыре вложенных цикла, чтобы проверить порядок столбцов.", weight=88))
-    return _ensure(found, "Порядок переменных не совпал", "Проверь импликацию `(not p) or q`, эквивалентность `p == q` и различность строк фрагмента.")
+    statement = problem.statement.lower()
+    src = facts.source
+    compact = re.sub(r"\s+", "", src)
+    arrows = problem.statement.split("Импликация")[0].count("→")
+    if arrows and src.count("<=") < arrows:
+        found.append(hint(
+            "Импликация записана как равенство",
+            "Замени `==` на `<=`. p → q пишется `p <= q`: у False значение 0, у True значение 1.",
+            weight=97,
+        ))
+    if "∨" in problem.statement and " or " not in src and " and " in src:
+        found.append(hint(
+            "В формуле ∨ записана как and",
+            "Там, где в формуле стоит ∨, замени `and` на `or`.",
+            weight=97,
+        ))
+    columns = any(word in statement for word in ("фрагмент", "столбц", "перестанов"))
+    if columns:
+        if not facts.has_loop:
+            found.append(hint("Нет перебора таблицы", "Для №2 нужно перебрать значения 0/1 и перестановки переменных; без цикла легко пропустить вариант.", weight=92))
+        if "permut" not in src and "product" not in src:
+            found.append(hint(
+                "Не виден перебор порядков",
+                "Сначала `product([0, 1], repeat=...)` по пустым клеткам, потом `permutations` столбцов.",
+                weight=88,
+            ))
+        if found:
+            return found
+        return _ensure(found, "Порядок переменных не совпал", "Импликация пишется `p <= q`. Пустые клетки перебирает product, порядок столбцов — permutations.")
+    if "or z" in statement and not re.search(r"\bor\b", src) and "andz" in compact:
+        found.append(hint(
+            "В формуле and вместо or",
+            "В условии между скобкой и z стоит or. Сейчас в коде на этом месте and.",
+            weight=96,
+        ))
+    elif "not y" in statement and not re.search(r"\bnot\b", src) and "andy" in compact:
+        found.append(hint(
+            "В формуле потеряно not",
+            "В формуле перед y стоит not. Сейчас y входит без not.",
+            weight=96,
+        ))
+    return found
 
 
 def _ege15(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
+    statement = problem.statement
+    src = facts.source
+    compact = re.sub(r"\s+", "", src)
+    without_mod = re.sub(r"%\s*[A-Za-z0-9_]+\s*==\s*0", "", src)
+    if re.search(r"[A-Za-z0-9_]\s*==\s*x\s*==", src) or "==x==" in compact:
+        found.append(hint(
+            "Принадлежность отрезку через равенство",
+            "Точка лежит на [a; b], если a <= x <= b. Запись a == x == b оставляет только одну точку.",
+            weight=96,
+        ))
+    elif ("→" in statement or "импликац" in statement.lower()) and "==" in without_mod and "<=" not in src:
+        found.append(hint(
+            "Импликация записана как равенство",
+            "p → q пишут p <= q. Равенство истинно только когда обе стороны совпали.",
+            weight=96,
+        ))
+    if "∨" in statement and not re.search(r"\bor\b", src) and re.search(r"\band\b", src):
+        found.append(hint(
+            "В формуле ∨ записана как and",
+            "В условии между частями стоит ∨. Замени `and` на `or`.",
+            weight=97,
+        ))
+    if "∧" in statement and not re.search(r"\band\b", src) and re.search(r"\bor\b", src):
+        found.append(hint(
+            "В формуле ∧ записана как or",
+            "В условии между частями стоит ∧. Замени `or` на `and`.",
+            weight=97,
+        ))
+    if re.search(r"\w+\s*==\s*x\b", src) and ("→" in statement or "импликац" in statement.lower() or "∈" in statement):
+        found.append(hint(
+            "Граница отрезка через равенство",
+            "Замени `== x` на `<= x` в записи отрезка.",
+            weight=97,
+        ))
     if not facts.has_loop:
         found.append(hint("Нет перебора отрезков", "Перебери возможные концы A и точки x: один угаданный отрезок не доказывает максимальность.", weight=92))
     if not facts.has_if:
@@ -181,6 +560,12 @@ def _ege15(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
 
 def _ege18(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     found: list[tuple[int, Hint]] = []
+    if re.search(r"\]\s*-\s*[A-Za-z_]", facts.source) or re.search(r"\[[rc]\s*-\s*1\]", facts.source):
+        found.append(hint(
+            "Шаг по таблице со знаком минус",
+            "Замени `r - 1` на `r + 1` в переходе по таблице.",
+            weight=97,
+        ))
     if not facts.has_open:
         found.append(hint("Файл поля не прочитан", "Таблица лежит в подключённом файле: прочитай непустые строки через open(...), затем split().", weight=92))
     if not facts.has_loop:
@@ -217,6 +602,17 @@ def _ege5(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[in
     statement = problem.statement.lower()
     found: list[tuple[int, Hint]] = []
     got, expected = outcome.got.strip(), outcome.expected.strip()
+    if (
+        " и " in statement
+        and "ровно одно" not in statement
+        and " or " in facts.source
+        and " and " not in facts.source
+    ):
+        found.append(hint(
+            "В формуле or вместо and",
+            "Замени `or` на `and`.",
+            weight=97,
+        ))
 
     if got.lower() in {"true", "false"} and expected in {"0", "1"}:
         found.append(hint(
@@ -283,6 +679,12 @@ def _ege5(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[in
 def _ege24(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     src = facts.source
     found: list[tuple[int, Hint]] = []
+    if re.search(r"cur\s*=\s*cur\s*-\s*1", src) or re.search(r"cur\s*=\s*cur\s+if", src):
+        found.append(hint(
+            "Шаг цепочки не прибавляет единицу",
+            "Замени `cur - 1` или `cur = cur if` на `cur = cur + 1 if`.",
+            weight=97,
+        ))
     if not facts.has_open:
         found.append(hint(
             "Строка из файла не прочитана",
@@ -324,6 +726,13 @@ def _games(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
     src = facts.source
     statement = problem.statement.lower()
     found: list[tuple[int, Hint]] = []
+    if re.search(r"\b[sS]\s*-\s*\d+", src):
+        found.append(hint(
+            "Ход записан с минусом",
+            "Замени `s - 1` на `s + 1`. В ходах нет вычитания.",
+            weight=97,
+        ))
+    uses_signed = bool(re.search(r"return\s+-|==\s*-1|==\s*-2", src))
     if facts.constant_prints and not facts.has_loop and "def " not in src:
         found.append(hint(
             "Ответ напечатан, но стратегия не проверяется",
@@ -342,7 +751,13 @@ def _games(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
             "В условии сказано, что Петя мог ошибиться: достаточно существования одного его хода, после которого Ваня выигрывает сразу. Используй any(...), не all(...).",
             weight=94,
         ))
-    if "не может выиграть первым" in statement and "== 2" not in src and "==2" not in src and "r == 2" not in src:
+    if (
+        "не может выиграть первым" in statement
+        and not uses_signed
+        and "== 2" not in src
+        and "==2" not in src
+        and "r == 2" not in src
+    ):
         found.append(hint(
             "Нужна победа именно вторым ходом",
             "Для №20 не подходят позиции, где Петя выигрывает сразу. В кодировке позиций ищи +2: есть стратегия второго хода, но нет выигрыша первым.",
@@ -374,7 +789,7 @@ def _ege8(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[in
         found.append(hint(
             "Буквы могут повторяться",
             "permutations берёт каждую букву один раз. Если буквы слова можно брать снова, нужен product(..., repeat=n) или вложенные циклы.",
-            weight=90,
+            weight=92,
         ))
     if "combinatorics" in problem.tags and "product" not in src and "permutations" not in src and not facts.nested_fors and "for " not in src:
         found.append(hint(
@@ -423,6 +838,14 @@ def _ege9(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[in
     src = facts.source.replace(" ", "")
     files = " ".join(problem.files)
     found: list[tuple[int, Hint]] = []
+    if outcome.empty:
+        return []
+    if " and " not in facts.source and " or " in facts.source and "треугольник" in problem.statement.lower():
+        found.append(hint(
+            "В условии строки or вместо and",
+            "Замени `or` на `and`: неравенство треугольника и равные стороны проверяются вместе.",
+            weight=97,
+        ))
     if not facts.has_open:
         found.append(hint(
             "Файл таблицы не открывается",
@@ -433,15 +856,15 @@ def _ege9(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[in
     txt_file = ".txt" in files
     if csv_file and facts.has_open and ("split(',')" in src or 'split(",")' in src):
         found.append(hint(
-            "Разделитель, скорее всего, точка с запятой",
-            "В выгрузке Полякова числа разделены ';'. split(',') на такой строке даст один кусок.",
-            weight=88,
+            "В csv нужна точка с запятой",
+            "Числа в этом csv разделены ';'. split(',') оставляет всю строку одним куском, и int падает.",
+            weight=96,
         ))
     if txt_file and facts.has_open and ("split(',')" in src or "split(';')" in src or 'split(";")' in src):
         found.append(hint(
-            "В этом файле числа через пробел или таб",
-            "Для 9-258.txt пиши line.split() без запятой и точки с запятой.",
-            weight=88,
+            "В txt нужны пробелы",
+            "В этом txt числа разделены пробелом. split(';') или split(',') здесь не режет строку.",
+            weight=96,
         ))
     if "макс" in problem.statement.lower() and facts.uses_min and not facts.uses_max:
         found.append(hint("Ищется минимум, не максимум", "В условии просят максимальную сумму/значение, а в коде min.", weight=86))
@@ -455,6 +878,18 @@ def _ege9(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[in
 def _ege13(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     src = facts.source
     found: list[tuple[int, Hint]] = []
+    if re.search(r"\bor\s+0\s*<=", src):
+        found.append(hint(
+            "В проверке октета or вместо and",
+            "Замени `or` на `and`: блок годится, только если он не пустой и число от 0 до 255.",
+            weight=97,
+        ))
+    if re.search(r"0\s*==\s*int\s*\(", src):
+        found.append(hint(
+            "Октет сравнивается через равенство",
+            "Замени `0 == int(...)` на `0 <= int(...)`.",
+            weight=97,
+        ))
     got, exp = outcome.got.strip(), outcome.expected.strip()
     got_digits = re.sub(r"\D", "", got)
     exp_digits = re.sub(r"\D", "", exp)
@@ -544,11 +979,28 @@ def _ege16(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
                 ))
         except (ValueError, IndexError):
             pass
-    if src.count("def ") >= 1 and "lru_cache" not in src and "for " not in src and "F[" not in src and "f[" not in src:
+    heavy = bool(re.search(r"\d{4,}", problem.statement)) or "10**" in problem.statement or "10^" in problem.statement
+    if heavy and src.count("def ") >= 1 and "lru_cache" not in src and "for " not in src and "F[" not in src and "f[" not in src:
         found.append(hint(
             "Рекурсия без памяти",
             "На больших n наивная рекурсия не успеет или упрётся в глубину. Считай снизу вверх массивом или @lru_cache.",
             weight=88,
+        ))
+    compact_code = re.sub(r"\s+", "", src).lower()
+    compact_statement = re.sub(
+        r"\s+",
+        "",
+        problem.statement.replace("·", "*").replace("–", "-").replace("−", "-").replace("—", "-"),
+    ).lower()
+    if (
+        "+n+3" in compact_statement
+        and "+n+3" not in compact_code
+        and ("f[n-1]" in compact_code or "f(n-1)" in compact_code)
+    ):
+        found.append(hint(
+            "В формуле потеряно + n + 3",
+            "Замени правую часть return на `2 * f(n - 1) + n + 3`.",
+            weight=97,
         ))
     return _ensure(
         found,
@@ -561,6 +1013,12 @@ def _ege23(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
     src = facts.source
     found: list[tuple[int, Hint]] = []
     statement = problem.statement.lower()
+    if re.search(r"\b[xy]\s*-\s*\d+", src) and any(word in statement for word in ("прибавь", "умнож")):
+        found.append(hint(
+            "Шаг уходит от цели",
+            "Замени `x - 1` на `x + 1` в рекурсивном вызове. Меньше цели — сумма веток, равно цели — 1, иначе 0.",
+            weight=97,
+        ))
     if "не содерж" in statement or "без " in statement:
         if "if " not in src or ("==" not in src and "!=" not in src):
             found.append(hint(
@@ -575,10 +1033,19 @@ def _ege23(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
                 "Если программа должна пройти через число X, считай пути start→X и X→end отдельно и перемножи.",
                 weight=80,
             ))
-    if "lru_cache" not in src and "a[" not in src and "dp" not in src.lower() and "f[" not in src.lower():
+    heavy = bool(re.search(r"\b\d{3,}\b", problem.statement))
+    if (
+        heavy
+        and outcome.first.verdict == "TLE"
+        and "lru_cache" not in src
+        and "@cache" not in src
+        and "a[" not in src
+        and "dp" not in src.lower()
+        and "f[" not in src.lower()
+    ):
         found.append(hint(
             "Считай динамикой или с кэшем",
-            "Число программ считают рекурсией с @lru_cache или массивом dp[x] += dp[prev]. Без памяти на 23.343 легко не уложиться во время.",
+            "На большом n поставь `@lru_cache(None)` над функцией и прогрей её циклом.",
             weight=82,
         ))
     return _ensure(
@@ -591,6 +1058,12 @@ def _ege23(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[i
 def _ege25(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
     src = facts.source
     found: list[tuple[int, Hint]] = []
+    if re.search(r"range\(\s*2\s*,\s*[xn]\s*\+\s*1\s*\)", src) and "0.5" not in src and "sqrt" not in src:
+        found.append(hint(
+            "Делители ищут до самого числа",
+            "Замени `range(2, x + 1)` на `range(2, int(x ** 0.5) + 1)` и при `x % i == 0` добавь пару `x // i`.",
+            weight=97,
+        ))
     got_lines = _lines(outcome.got)
     exp_lines = _lines(outcome.expected)
     if len(exp_lines) > 1 and len(got_lines) == 1:

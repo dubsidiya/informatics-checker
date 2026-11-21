@@ -122,7 +122,7 @@ def main() -> None:
         statement = str(item.get("statement") or "")
         if marker in statement:
             statement = statement.split(marker, 1)[0].rstrip()
-        item["statement"] = f"{statement}\n\n{marker} {a[0]}."
+        item["statement"] = statement
         item["mistake_hints"] = [
             {"title": a[0], "detail": a[1], "signal": "always"},
             {"title": b[0], "detail": b[1], "signal": "always"},

@@ -1,7 +1,116 @@
 from __future__ import annotations
 
+import re
+
 from checker.diagnose import diagnose
+from checker.facts import range_misses_end
 from checker.models import Hint, Problem, TestResult, TraceStep
+
+
+# A bare numeric or text mismatch is true, but it hides the bug the topic
+# checker already saw in the code. These titles are allowed to become the
+# headline the student reads in «Что сделать».
+_GENERIC_WA_TITLES = frozenset({
+    "На этом тесте получается другое число",
+    "Текстовый ответ отличается",
+    "Ошибка на единицу",
+    "Ответ в два раза больше или меньше",
+    "Число совпало, текст нет",
+    "В выводе есть лишний текст",
+    "Программа ничего не вывела",
+    "Оба числа ответа другие",
+    "Количество совпало, второе число нет",
+    "Второе число совпало, счётчик нет",
+    "Последнее число не вошло в сумму",
+})
+_FACT_HINTS_AHEAD = frozenset({
+    "Степень не из списка смежности",
+    "Степень взята не из той ячейки",
+    "Ребро записано только в одну сторону",
+    "Граница попала внутрь",
+    "Посчитана площадь вместо длины пути",
+    "В длине пути нет двойки",
+    "Напечатана шестнадцатеричная запись",
+    "Ведущие нули кода пропали",
+    "Двоичная строка стала числом",
+    "Число цветов принято за биты",
+    "Напечатаны биты, не байты",
+    "Секунды округлены вниз",
+    "Слово ищется как подстрока",
+    "Регистр не нормализован",
+    "Знак препинания прилип к слову",
+    "Неверный разделитель таблицы",
+    "Считаются рейсы, не груз",
+    "В сумму попал и вывоз",
+    "В сумму попали зависимые процессы",
+    "Считается путь по зависимостям, не сумма",
+    "Из числа процессов вычли зависимые",
+    "Посчитаны процессы без зависимости",
+    "Критический путь не вычисляется",
+    "Число значений принято за биты",
+    "Биты не переведены в целые байты",
+    "В формуле and вместо or",
+    "В формуле потеряно not",
+    "Чтение не до нуля",
+    "Произведение начато с нуля",
+    "Напечатан только первый делитель",
+    "Делители считаются с единицы",
+    "Оставлены нечётные",
+    "Чётные не отобраны",
+    "Кратность простого не снята",
+    "В список не попала единица",
+    "Делители ищут от 2 до корня",
+    "Импликация записана как равенство",
+    "Принадлежность отрезку через равенство",
+    "В формуле ∨ записана как and",
+    "Повторы слов не убраны",
+    "Килобайт принят за 1000",
+    "В csv нужна точка с запятой",
+    "В txt нужны пробелы",
+    "Склеились две строки",
+    "Вычитание вместо сложения",
+    "В формуле минус вместо плюса",
+    "В формуле пропал + 1",
+    "В print есть лишнее слово",
+    "Пустой print()",
+    "Часть ввода осталась строкой",
+    "input() без int",
+    "max сравнивает строки",
+    "В формуле or вместо and",
+    "Получилось «хотя бы одно», а нужно «оба»",
+    "Нужны оба условия",
+    "Нужно ровно одно положительное",
+    "Шаг уходит от цели",
+    "Ход записан с минусом",
+    "Граница отрезка через равенство",
+    "В проверке октета or вместо and",
+    "Октет сравнивается через равенство",
+    "Шаг цепочки не прибавляет единицу",
+    "Делители ищут до самого числа",
+    "Из клетки вычитают, а не прибавляют",
+    "В формуле ∧ записана как or",
+    "В условии строки or вместо and",
+    "В отборе or вместо and",
+    "В сумму попал тот же сосед",
+    "range не включает конец отрезка",
+    "Буквы могут повторяться",
+    "В формуле потеряно + n + 3",
+    "Нужно пройти строку посимвольно",
+    "Стоит and вместо or",
+    "range не доходит до n",
+    "В фильтре таблицы or вместо and",
+    "Не тот split у input",
+    "Шаг по таблице со знаком минус",
+})
+
+
+def _prefer_fact_hint(generic: list[Hint], topic: list[Hint]) -> list[Hint]:
+    if not generic or generic[0].title not in _GENERIC_WA_TITLES:
+        return generic
+    for item in topic:
+        if item.title in _FACT_HINTS_AHEAD:
+            return [item, *generic]
+    return generic
 
 
 RUNTIME_HINTS = {
@@ -83,13 +192,23 @@ def build_hints(
             )
         )
         hints.extend(_runtime_specific_hints(first))
-    if first.verdict in {"WA", "RE"}:
+    if first.verdict in {"WA", "RE", "TLE"}:
         # Give priority to observable output mistakes (off-by-one, sign,
         # two-number order, YES/NO and similar) before broad topic hints.
-        # This specialised handler existed already but was not connected.
+        # A fact-based topic title may still go first: otherwise the student
+        # is told to fix range when the graph edge was stored one way.
+        topic_hints = diagnose(source, problem, tests)
+        wa_hints = []
+        named = [
+            item for item in topic_hints
+            if item.title not in _GENERIC_WA_TITLES and item.title != "Программа ничего не вывела"
+        ]
         if first.verdict == "WA" and not first.hidden:
-            hints.extend(_wrong_answer_hints(first, problem))
-        hints.extend(diagnose(source, problem, tests))
+            wa_hints = _wrong_answer_hints(first, problem, source)
+        elif first.verdict == "WA" and not normalize(first.got or "") and not named:
+            wa_hints = _wrong_answer_hints(first, problem, source)
+        hints.extend(_prefer_fact_hint(wa_hints, topic_hints))
+        hints.extend(topic_hints)
 
     visible_ok = [item for item in tests if not item.hidden]
     hidden_fail = [item for item in tests if item.hidden and item.verdict != "OK"]
@@ -105,7 +224,22 @@ def build_hints(
     return _dedupe(hints)
 
 
-def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
+def _range_misses_end(source: str) -> bool:
+    return range_misses_end(source)
+
+
+def _untyped_split(source: str) -> bool:
+    return bool(re.search(r"=\s*input\(\)\.split\(\)", source))
+
+
+def _real_sign_bug(source: str, got_n: float) -> bool:
+    compact = re.sub(r"\s+", "", source)
+    if got_n == -1 and ("else-1" in compact or "else:-1" in compact):
+        return False
+    return True
+
+
+def _wrong_answer_hints(test: TestResult, problem: Problem, source: str = "") -> list[Hint]:
     hints: list[Hint] = []
     got = test.got
     expected = test.expected
@@ -115,7 +249,7 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
             Hint(
                 kind="logic",
                 title="Программа ничего не вывела",
-                detail="Проверяющая система читает то, что напечатал print. Если расчёт есть, но print забыт — ответ считается пустым.",
+                detail="Проверяльщик читает то, что напечатал print. Пустой print() или print без значения даёт пустой ответ.",
             )
         )
         return hints
@@ -145,28 +279,32 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
                     detail="Возможно, напечатано 5.0 вместо 5 или есть подпись вроде «ответ: 5». Нужно только число.",
                 )
             )
-        elif got_n == exp_n - 1 or got_n == exp_n + 1:
+        elif (got_n == exp_n - 1 or got_n == exp_n + 1) and _range_misses_end(source):
             hints.append(
                 Hint(
                     kind="logic",
                     title="Ошибка на единицу",
-                    detail="Ответ отличается на 1. Обычно виноват диапазон: range(n) вместо range(1, n + 1), или индекс len(a) вместо len(a) - 1.",
+                    detail="В range не хватает последнего значения. Если n должно войти, пиши range(1, n + 1) или range(A, B + 1).",
                 )
             )
-        elif "inclusive_n" in problem.tags and _looks_like_missing_last(got_n, exp_n, test.stdin):
+        elif (
+            "inclusive_n" in problem.tags
+            and _range_misses_end(source)
+            and _looks_like_missing_last(got_n, exp_n, test.stdin)
+        ):
             hints.append(
                 Hint(
                     kind="logic",
                     title="Последнее число не вошло в сумму",
-                    detail="Для N=5 сумма 1+2+3+4+5 = 15. Если получилось 10, цикл шёл до 4. Используй range(1, n + 1).",
+                    detail="Цикл не дошёл до n. Замени конец range на `n + 1`.",
                 )
             )
-        elif exp_n != 0 and abs(got_n) == abs(exp_n) and got_n != exp_n:
+        elif exp_n != 0 and abs(got_n) == abs(exp_n) and got_n != exp_n and _real_sign_bug(source, got_n):
             hints.append(
                 Hint(
                     kind="logic",
                     title="Не тот знак",
-                    detail="Модуль числа верный, знак нет. Проверь, не теряется ли минус при чтении или в условии.",
+                    detail="Число совпало по модулю, но знак другой. Если в условии модуль, оберни выражение в abs.",
                 )
             )
         elif exp_n != 0 and (got_n == exp_n * 2 or got_n * 2 == exp_n):
@@ -174,7 +312,7 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
                 Hint(
                     kind="logic",
                     title="Ответ в два раза больше или меньше",
-                    detail="Часто дважды считают один и тот же элемент или делят не ту величину.",
+                    detail="Ответ отличается ровно в два раза. Ищи лишнюю двойку: * 2, / 2 или пропущенный abs.",
                 )
             )
         else:
@@ -208,7 +346,7 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
         "EVEN",
         "ODD",
     }:
-        if compact(got).upper() != compact(expected).upper():
+        if compact(got).upper() != compact(expected).upper() and not _untyped_split(source):
             hints.append(
                 Hint(
                     kind="logic",
@@ -216,7 +354,11 @@ def _wrong_answer_hints(test: TestResult, problem: Problem) -> list[Hint]:
                     detail="Программа отвечает YES, когда нужно NO, или наоборот. Проверь if: не перепутаны ли == и !=, not, in.",
                 )
             )
-        return hints
+            return hints
+        if _untyped_split(source):
+            pass
+        else:
+            return hints
 
     if got.strip().startswith(("[", "(")) and not expected.strip().startswith(("[", "(")):
         hints.append(
@@ -418,12 +560,12 @@ def _count_wrong_value_ok(got_count: str, exp_count: str, tags: set[str]) -> str
     if "closed_range" in tags:
         if more:
             return (
-                f"Максимум тот же, а чисел больше ({got_count} вместо {exp_count}). "
-                "Фильтр слабее условия: в if не хватает какого-то «не делится на …»."
+                "Максимум тот же, а чисел больше. "
+                "Замени в if пропущенное `x % k != 0`."
             )
         return (
-            f"Максимум тот же, а чисел меньше ({got_count} вместо {exp_count}). "
-            "Фильтр строже условия или range не включает конец отрезка: для [A; B] пиши range(A, B + 1)."
+            "Максимум тот же, а чисел меньше. "
+            "Замени конец range на `B + 1`, если отрезок включительный."
         )
 
     if "pairs" in tags or "triples" in tags:
@@ -436,27 +578,15 @@ def _count_wrong_value_ok(got_count: str, exp_count: str, tags: set[str]) -> str
         elif "exactly_one" in tags:
             how = " «Ровно одно» — два условия через != / xor, не оба сразу."
         if more:
-            return (
-                f"Второе число верное, а {who} больше ({got_count} вместо {exp_count}). "
-                f"Условие отбора шире, чем в задаче.{how}"
-            )
-        return (
-            f"Второе число верное, а {who} меньше ({got_count} вместо {exp_count}). "
-            f"Условие отбора уже, чем в задаче.{how}"
-        )
+            return f"Второе число верное, а {who} больше. Условие отбора шире.{how}"
+        return f"Второе число верное, а {who} меньше. Условие отбора уже.{how}"
 
-    direction = "больше" if more else "меньше"
-    return (
-        f"Второе число совпало, первое нет ({got_count} вместо {exp_count}, {direction} эталона). "
-        "Отобран другой набор элементов — перечитай фильтр в условии."
-    )
+    return "Второе число совпало, а первое нет. Замени оператор в фильтре на тот, что в условии: and или or."
 
 
 def _both_wrong(tags: set[str]) -> str:
     if "closed_range" in tags:
-        return (
-            "И количество, и максимум другие. Сверь range(A, B + 1) и полный список делителей из условия."
-        )
+        return "И количество, и максимум другие. Замени конец range на `B + 1`, если отрезок включительный."
     if "pairs" in tags:
         return (
             "Оба числа другие. Пара в №17 — это соседние элементы data[i] и data[i+1], "
@@ -483,12 +613,8 @@ def _looks_like_missing_last(got: float, expected: float, stdin: str) -> bool:
 
 
 def _compare_numbers(got: float, expected: float, test: TestResult) -> str:
-    shown_in = _preview(test.stdin.replace("\n", " / "))
-    return (
-        f"На вводе `{shown_in}` ожидалось { _as_int(expected) }, "
-        f"программа напечатала { _as_int(got) }. "
-        "Посмотри трассировку: на какой строке переменная стала не той."
-    )
+    _ = (got, expected, test)
+    return "Число на этом тесте другое. Замени в строке с ответом тот оператор, который не совпадает с действием: `+` или `-`."
 
 
 def _as_int(value: float) -> str:

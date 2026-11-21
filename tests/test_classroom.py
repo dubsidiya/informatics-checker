@@ -59,18 +59,16 @@ class TopicBriefTests(unittest.TestCase):
 
 
 class RetryExplainTests(unittest.TestCase):
-    def test_third_try_adds_simpler_how(self):
+    def test_third_try_does_not_glue_advice_into_how(self):
         problem = get_problem("sum-two")
         result = grade_solution(problem, "a, b = input().split()\nprint(a + b)\n")
         self.assertEqual(result.status, "fail")
         first = result.explanation.how
         deepen_explanation(problem, result, 3)
         self.assertEqual(result.tries, 3)
-        self.assertGreater(len(result.explanation.how), len(first))
-        self.assertIn(
-            "\u0443\u0436\u0435 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u043b",
-            result.explanation.how,
-        )
+        self.assertEqual(result.explanation.how, first)
+        self.assertNotIn("уже проверял", result.explanation.how)
+        self.assertNotIn("Разбор ещё проще", result.explanation.how)
 
     def test_retry_how_empty_on_first(self):
         problem = get_problem("sum-two")

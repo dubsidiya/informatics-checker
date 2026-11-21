@@ -70,12 +70,17 @@ def explain_result(problem: Problem, result: GradeResult, source: str = "") -> E
         )
 
     if first.verdict == "RE":
-        return _runtime(first, hint, source)
+        return _runtime(first, result.hints, source, problem)
 
     return _wrong_answer(problem, result, first, hint)
 
 
-def _runtime(first: TestResult, hint: Hint | None, source: str) -> Explanation:
+def _runtime(first: TestResult, hints: list[Hint] | Hint | None, source: str, problem: Problem | None = None) -> Explanation:
+    if isinstance(hints, Hint) or hints is None:
+        hint_list = [hints] if isinstance(hints, Hint) else []
+    else:
+        hint_list = list(hints)
+    hint = hint_list[0] if hint_list else None
     name = _name_from_error(first.error)
     line = first.error_line or (hint.line if hint else None)
     where = f" на строке {line}" if line else ""
@@ -95,15 +100,64 @@ def _runtime(first: TestResult, hint: Hint | None, source: str) -> Explanation:
             else "Посмотри строку с ошибкой: это имя должно появиться раньше."
         )
     elif kind == "IndexError":
-        why = "Обращение к элементу за границей списка. Индексы идут с 0 до len(список) − 1. Пустой список или i == len(a) как раз дают эту ошибку."
-        how = "Перед обращением проверь длину: `if i + 1 < len(a)`. Для пар в №17 цикл `for i in range(len(data) - 1)`."
+        why = "Обращение к элементу за границей списка. Индексы идут с 0 до len(список) − 1."
+        how = _index_how(source, problem)
+        if "range(n + 1)" in how or "range(n+1)" in how.replace(" ", ""):
+            return Explanation(
+                headline="Список смежности короче графа",
+                what=what,
+                why=why,
+                how=how,
+                line=line,
+                kind="runtime",
+            )
     elif kind == "TypeError":
-        why = "Операция вызвана не с тем типом. Часто складывают строку с числом: input() без int, или берут len от числа."
-        how = "Преобразуй ввод в числа: `a, b = map(int, input().split())`. Для печати нескольких чисел используй `print(x, y)`."
+        why = "Операция вызвана не с тем типом. Часто это строка вместо числа или минус между строками."
+        how = _type_how(source, first.error or "")
+        headline = "input() остался строкой" if "int(input())" in how or "map(int" in how else "Минус между строками" if how.startswith("Замени `-`") else "Программа упала"
+        return Explanation(headline=headline, what=what, why=why, how=how, line=line, kind="runtime")
     elif kind == "ValueError":
+        precise = next(
+            (
+                item
+                for item in hint_list
+                if _hint_about(item, ("точкой с запятой", "нужны пробелы", "нужна точка"))
+            ),
+            None,
+        )
+        if precise:
+            why = precise.detail
+            how = _how_from_hint(precise) or precise.detail
+            return Explanation(
+                headline=precise.title,
+                what=what,
+                why=why,
+                how=how,
+                line=line,
+                kind="runtime",
+            )
         why = "Значение нельзя преобразовать. int() падает, если в строке не одно число — например «2 3» или пустая строка."
-        how = "Если в строке несколько чисел — сначала split(), потом map(int, ...). int(input()) подходит только для одного числа в строке."
+        how = _value_how(source, problem)
+        if how.startswith("Замени"):
+            return Explanation(
+                headline="Неверный разделитель",
+                what=what,
+                why=why,
+                how=how,
+                line=line,
+                kind="runtime",
+            )
     elif kind == "ZeroDivisionError":
+        concrete = _concrete_hint(hint_list, kind)
+        if concrete is not None:
+            return Explanation(
+                headline=concrete.title,
+                what=what,
+                why=concrete.detail,
+                how=_how_from_hint(concrete) or concrete.detail,
+                line=line or concrete.line,
+                kind=concrete.kind or "runtime",
+            )
         why = "Деление на ноль. Знаменатель на этом тесте оказался 0."
         how = "Перед делением проверь знаменатель: `if b != 0`."
     elif kind == "EOFError":
@@ -113,8 +167,18 @@ def _runtime(first: TestResult, hint: Hint | None, source: str) -> Explanation:
         why = "У объекта нет такого метода. У числа нет .split() — сначала нужна строка. У строки нет .append()."
         how = "Посмотри тип переменной на этой строке. Если это число — .split() нельзя; если строка — .append() нельзя."
     elif kind == "RecursionError":
-        why = "Рекурсия ушла слишком глубоко: нет выхода или он не достигается."
-        how = "Добавь условие выхода и память: @lru_cache или считай снизу вверх массивом."
+        concrete = _concrete_hint(hint_list, kind)
+        if concrete is not None:
+            return Explanation(
+                headline=concrete.title,
+                what=what,
+                why=concrete.detail,
+                how=_how_from_hint(concrete) or concrete.detail,
+                line=line or concrete.line,
+                kind=concrete.kind or "runtime",
+            )
+        why = "Рекурсия ушла слишком глубоко: шаг уходит от условия выхода или выхода нет."
+        how = _recursion_how(source)
     elif kind == "PermissionError":
         why = "Программа пыталась записать в файл. На проверяльщике open() только читает готовый файл задачи."
         how = "Пиши open('17.txt') без режима записи. Файл задачи уже подставлен."
@@ -126,6 +190,75 @@ def _runtime(first: TestResult, hint: Hint | None, source: str) -> Explanation:
         how = _how_from_hint(hint) or "Открой строку с ошибкой и исправь то, на что указывает сообщение Python."
 
     return Explanation(headline="Программа упала", what=what, why=why, how=how, line=line, kind="runtime")
+
+
+def _concrete_hint(hints: list[Hint], error_type: str = "") -> Hint | None:
+    from checker.logic import _FACT_HINTS_AHEAD, _GENERIC_WA_TITLES
+
+    banned = set(_GENERIC_WA_TITLES)
+    if error_type == "RecursionError":
+        banned.update({"Пустой print()", "В print есть лишнее слово"})
+    for item in hints:
+        if not item or item.title in banned or item.title in _GENERIC_RUNTIME:
+            continue
+        if item.title in _FACT_HINTS_AHEAD or _how_from_hint(item):
+            return item
+    return None
+
+
+_GENERIC_RUNTIME = frozenset({
+    "Программа упала",
+    "Ошибка выполнения",
+})
+
+
+def _type_how(source: str, error: str) -> str:
+    if "str" in error and re.search(r"operand type\(s\) for -", error):
+        return "Замени `-` на `+`."
+    if "string formatting" in error or "not all arguments converted" in error:
+        return "Замени `input() % ...` на `int(input()) % ...`."
+    if re.search(r"=\s*input\(\)\.split\(\)", source):
+        return "Замени `input().split()` на `map(int, input().split())`."
+    wrapped = re.search(r"(?<![\w])int\s*\(\s*input\s*\(", source) or "map(int" in source
+    if "input()" in source and not wrapped:
+        if "split" in source:
+            return "Замени `input().split()` на `map(int, input().split())`."
+        return "Замени `input()` на `int(input())`."
+    return "Оберни строку в `int(...)` перед арифметикой."
+
+
+def _value_how(source: str, problem: Problem | None) -> str:
+    files = " ".join(problem.files) if problem is not None else ""
+    statement = (problem.statement if problem is not None else "").lower()
+    if ("split(';')" in source or 'split(";")' in source) and ".csv" not in files and "csv" not in statement:
+        return "Замени `split(';')` на `split()`."
+    if "split(',')" in source or 'split(",")' in source:
+        if ".csv" in files or "csv" in statement:
+            return "Замени `split(',')` на `split(';')`."
+        return "Замени `split(',')` на `split()`."
+    if "int(input())" in source.replace(" ", "") and "split" not in source:
+        return "Замени `int(input())` на `a, b = map(int, input().split())`."
+    return "Если в строке несколько чисел — сначала split(), потом map(int, ...). int(input()) подходит только для одного числа в строке."
+
+
+def _index_how(source: str, problem: Problem | None) -> str:
+    tags = set(problem.tags) if problem is not None else set()
+    compact = source.replace(" ", "")
+    if "ege1" in tags or "g[" in compact:
+        if "range(n)" in compact and "range(n+1)" not in compact:
+            return "Замени `range(n)` на `range(n + 1)`: вершина n не влезает в список."
+        return "Индекс вершины вылез за список смежности. Замени границу списка на `range(n + 1)`."
+    if "ege17" in tags:
+        return "Перед обращением проверь длину: `if i + 1 < len(a)`. Для пар в №17 цикл `for i in range(len(data) - 1)`."
+    return "Индекс вылез за конец списка. Для соседей пиши `range(len(a) - 1)`."
+
+
+def _recursion_how(source: str) -> str:
+    if re.search(r"\b[sx]\s*-\s*\d+", source):
+        return "Замени шаг с минусом на плюс: `x - 1` на `x + 1` или `s - 1` на `s + 1`."
+    if "lru_cache" in source or "@cache" in source:
+        return "Кэш уже стоит. Замени шаг, который уводит вызов от условия выхода."
+    return "Добавь условие выхода. Если ветки уже ведут к цели, поставь `@lru_cache(None)` над функцией."
 
 
 def _wrong_answer(problem: Problem, result: GradeResult, first: TestResult, hint: Hint | None) -> Explanation:
@@ -173,6 +306,18 @@ def _ege17_how(problem: Problem) -> str:
 
 def _generic_how(problem: Problem, visible: bool) -> str:
     tags = set(problem.tags)
+    if "ege4" in tags:
+        return "Код одной буквы фиксированной длины: `format(index, '02b')`. Если просят двоичную строку, не переводи её в hex. Чтобы расшифровать, бери куски по 2 символа."
+    if "ege6" in tags:
+        return "Внутри прямоугольника точек (w - 1) * (h - 1). Длина обхода по границе — `2 * (w + h)`. Площадь — `w * h`."
+    if "ege7" in tags:
+        return "Если в условии цвета, бери `math.ceil(math.log2(c))`, не само c. Байты — это `(биты + 7) // 8`. Секунды вверх: `(s + v - 1) // v`."
+    if "ege10" in tags:
+        return "Открой `10.txt`. Точное слово бери из `re.findall`, не через `text.count`. Без учёта регистра допиши `.lower()`, запятую сними через `strip`."
+    if "ege3" in tags:
+        return "Открой `3.txt` и дели строку через `split(';')`. Сумма груза — `sum(int(груз) for ...)`, привоз оставь фильтром `k == 'in'`."
+    if "ege1" in tags:
+        return "Для ребра a—b запиши обе связи: `g[a].append(b)` и `g[b].append(a)`. Степень вершины v — это `len(g[v])`, не число M."
     if "ege5" in tags:
         return "Раздели условие на проверки в скобках: «и» — and, «или» — or, «ровно одно» — !=. В конце напечатай int(условие), чтобы получить 1 или 0."
     if "games" in tags:
@@ -196,6 +341,15 @@ def _generic_how(problem: Problem, visible: bool) -> str:
     if visible:
         return "Пройди пример из условия вручную на бумаге и сравни со своим print. Часто виноваты формат, range или то, что считают не ту величину."
     return "Не подгоняй программу под пример. Перечитай условие целиком: границы, знаки, что считается парой и сколько чисел выводить."
+
+
+def _hint_about(hint: Hint | None, words: tuple[str, ...]) -> Hint | None:
+    if not hint:
+        return None
+    blob = f"{hint.title} {hint.detail}".lower()
+    if any(word in blob for word in words):
+        return hint
+    return None
 
 
 def _how_from_hint(hint: Hint | None) -> str:
@@ -238,23 +392,68 @@ def _short(text: str, limit: int = 80) -> str:
 
 
 HOW_BY_TITLE = [
+    ("списка смежности", "Построй список смежности и напечатай `len(g[v])`, а не M. M — число рёбер всего графа."),
+    ("не из той ячейки", "Печатай `len(g[v - 1])`: рёбра лежат в ячейках `a - 1`, а `g[v]` — это уже следующая вершина."),
+    ("только в одну сторону", "Рядом с `g[a].append(b)` допиши `g[b].append(a)`."),
+    ("попала внутрь", "Замени формулу на `print((w - 1) * (h - 1))`. Точки на самой границе не считай."),
+    ("площадь вместо длины", "Замени `w * h` на `print(2 * (w + h))`: это длина обхода по границе."),
+    ("нет двойки", "Допиши двойку: `print(2 * (w + h))`. Сумма w + h — только половина пути."),
+    ("цветов принято за биты", "Замени множитель `c` на `math.ceil(math.log2(c))` и добавь `import math`."),
+    ("биты, не байты", "Замени print на `print((биты + 7) // 8)`."),
+    ("секунды округлены", "Замени `s // v` на `(s + v - 1) // v`."),
+    ("ищется как подстрока", "Замени `text.count('слово')` на `sum(word == 'слово' for word in re.findall(r'[а-яё]+', text))`."),
+    ("регистр не нормализован", "Допиши `.lower()` сразу после чтения: `text = open('10.txt').read().lower()`."),
+    ("препинания прилип", "Перед сравнением очисти слово: `word = word.strip('.,!?;:«»')`."),
+    ("неверный разделитель", "Замени `split(',')` или `split()` на `split(';')`."),
+    ("рейсы, не груз", "Замени `sum(условие)` на `sum(int(груз) for ... if условие)`."),
+    ("попал и вывоз", "Допиши в фильтр привоз: `and k == 'in'`."),
+    ("попали зависимые", "Замени `ans += int(t)` на `ans += int(t) if rest == ['0'] else 0`."),
+    ("путь по зависимостям", "Убери `@lru_cache` и `def finish`. В цикле напиши `ans += int(t)` и в конце оставь `print(ans)`."),
+    ("вычли зависимые", "Замени `print(n - ans)` на `print(ans)`."),
+    ("процессы без зависимости", "Замени `rest == ['0']` на `rest != ['0']`."),
+    ("путь не вычисляется", "Замени `ans += int(t)` на `finish[p] = int(t) + max((finish[x] for x in deps), default=0)` и печатай `max(finish.values())`."),
+    ("значений принято", "Замени `print(v * n)` на `print(math.ceil(math.log2(v)) * n)` и добавь `import math`."),
+    ("формуле and вместо or", "Замени `and z` на `or z`."),
+    ("∨ записана как and", "Там, где в формуле стоит ∨, замени `and` на `or`."),
+    ("записана как равенство", "Замени `==` в импликации на `<=`. p → q пишется `p <= q`."),
+    ("отрезку через равенство", "Замени `a == x == b` на `a <= x <= b`."),
+    ("повторы слов не убраны", "Оберни слова в множество: `print(len(set(words)))`."),
+    ("принят за 1000", "Замени `1000` на `1024`: 1 Кбайт = 1024 байт."),
+    ("нужна точка с запятой", "Замени `split(',')` на `split(';')`."),
+    ("нужны пробелы", "Замени `split(';')` или `split(',')` на `split()` без аргументов."),
+    ("потеряно not", "Замени `and y` на `and not y`."),
+    ("чтение не до нуля", "Замени цикл на `while x != 0:` и после прибавления или умножения снова напиши `x = int(input())`."),
+    ("произведение начато с нуля", "Замени `p = 0` на `p = 1`."),
+    ("только первый делитель", "Убери `break` после `print(i)`."),
+    ("считаются с единицы", "Замени `range(1, x + 1)` на `range(2, x + 1)`."),
+    ("оставлены нечётные", "Замени `x % 2 == 1` на `x % 2 == 0`."),
+    ("чётные не отобраны", "Оставь отбор `filter(f, числа)` или `if x % 2 == 0`, где f возвращает истину для чётного x."),
+    ("кратность простого не снята", "После `a.append(i)` допиши `x //= i`."),
+    ("не попала единица", "До цикла положи в список единицу и само число: `l = [1, x]`."),
+    ("ищут от 2 до корня", "Замени цикл до x на `for i in range(2, int(x ** 0.5) + 1):`. При `x % i == 0` добавь и `i`, и `x // i`, затем напечатай `sorted(set(список))`."),
+    ("не переведены в целые", "Замени `print(math.ceil(math.log2(a)) * n)` на `print((math.ceil(math.log2(a)) * n + 7) // 8)`."),
+    ("шестнадцатеричная запись", "Убери `format(..., 'X')` и напечатай склейку `format(index, '02b')`."),
+    ("нули кода", "Пиши `format(alphabet.index(ch), '02b')`. У A код 00, не 0."),
+    ("стала числом", "Режь строку по два символа: `alphabet[int(bits[i:i + 2], 2)]`, где `alphabet = 'ABCD'`."),
     ("строка из файла", "Прочитай строку из файла: `s = open('24.txt').read().strip()`. Затем пройди её слева направо и обновляй длину текущей цепочки и максимум."),
     ("не делится", "Добавь в if все «не делится на …» из условия: `x % k != 0` для каждого такого k."),
     ("нет проверки", "Допиши в if недостающую проверку из условия. Не выкидывай те, что уже стоят."),
 
-    ("строк", "Сначала преврати ввод в числа: `a, b = map(int, input().split())`, и только потом складывай."),
+    ("склеились две строки", "Сначала преврати ввод в числа: `a, b = map(int, input().split())`, и только потом складывай."),
     ("input() вернул строку", "После input() нужен int или map(int, ...). Иначе «2» + «3» склеится в 23."),
     ("складываются строки", "Нельзя писать input() + input(). Сначала int, потом сложение."),
     ("нет вывода", "В конце должен быть print с ответом. Без print проверяльщик считает, что программа ничего не решила."),
-    ("ничего не вывела", "print стоит внутри if, который на этом тесте не сработал, либо до print программа ушла в другой ветке."),
+    ("ничего не вывела", "В конце напиши print(ответ). Пустой print() проверяльщик читает как пустую строку."),
     ("формат", "Печатай ровно то, что в примере: те же пробелы, регистр, без подписи «ответ:»."),
     ("напечатан список", "Вместо print(список) напиши print(*список) — числа через пробел, без скобок."),
-    ("ошибка на единицу", "Проверь range: нужен range(1, n + 1), если n должно войти. Для индексов — len(a) - 1, не len(a)."),
-    ("range не включает", "Правый конец отрезка входит в условие. Пиши range(A, B + 1), не range(A, B)."),
+    ("ошибка на единицу", "В вызове range допиши конец: range(1, n + 1) или range(A, B + 1), чтобы последнее значение вошло."),
+    ("range не включает N", "Замени `range(n)` на `range(1, n + 1)`."),
     ("файл не открывается", "Данные в файле. Напиши open('17.txt') или имя файла из условия — проверяльщик подставит его сам."),
     ("разделитель", "Посмотри файл: если числа через `;`, пиши split(';'). Если через пробел — split() без аргументов."),
     ("пары должны быть соседними", "В №17 пара — data[i] и data[i+1]. Не бери combinations всех элементов."),
     ("все пары, не соседние", "Один проход: for i in range(len(data) - 1). Два вложенных for дают все пары, это другая задача."),
+    ("стоит and вместо or", "Замени `and` на `or`."),
+    ("не доходит до n", "Замени `range(1, n)` на `range(1, n + 1)`."),
     ("стоит and", "«Хотя бы одно» — это or. and оставляет только случаи, где условие у обоих сразу."),
     ("стоит or", "«Оба» — это and. or наберёт лишние пары."),
     ("последняя цифра без abs", "Для отрицательных пиши abs(x) % 10, иначе -17 % 10 в Python даст не 7."),
@@ -268,6 +467,30 @@ HOW_BY_TITLE = [
     ("не должно быть точки", "В этой задаче IP просят одной строкой цифр, без точек."),
     ("маску удобно", "Перебери длину префикса и сравни сеть: ip_network(f'{узел}/{p}', strict=False)."),
     ("систему", "Чтобы перевести число в систему b: пока n > 0, цифры это n % b, затем n //= b."),
+    ("+ n + 3", "Замени правую часть return на `2 * f(n - 1) + n + 3`."),
+    ("лишнее слово", "Убери слово из print и оставь `print` только с ответом."),
+    ("пустой print", "Замени `print()` на `print` с выражением ответа."),
+    ("осталась строкой", "Замени `input().split()` на `map(int, input().split())`."),
+    ("input() без int", "Замени `input()` на `int(input())`."),
+    ("сравнивает строки", "Замени `max(input().split())` на `max(map(int, input().split()))`."),
+    ("вычитание вместо сложения", "Замени `-` на `+`."),
+    ("минус вместо плюса", "Замени `(n - 1)` на `(n + 1)`."),
+    ("пропал + 1", "Замени `n * n // 2` на `n * (n + 1) // 2`."),
+    ("or вместо and", "Замени `or` на `and`."),
+    ("нужно «оба»", "Замени `or` на `and`."),
+    ("уходит от цели", "Замени `x - 1` на `x + 1` в рекурсивном вызове."),
+    ("записан с минусом", "Замени `s - 1` на `s + 1`."),
+    ("граница отрезка через равенство", "Замени `== x` на `<= x`."),
+    ("октет сравнивается", "Замени `0 == int(...)` на `0 <= int(...)`."),
+    ("октета or", "Замени `or` на `and` в проверке блока адреса."),
+    ("цепочки не прибавляет", "Замени `cur - 1` или `cur = cur if` на `cur = cur + 1 if`."),
+    ("до самого числа", "Замени `range(2, x + 1)` на `range(2, int(x ** 0.5) + 1)` и добавь пару `x // i`."),
+    ("вычитают, а не прибавляют", "Замени `-` на `+` при переходе в клетку."),
+    ("шаг по таблице со знаком минус", "Замени `r - 1` на `r + 1`."),
+    ("не тот split у input", "Замени `input().split(';')` на `input().split()`."),
+    ("в фильтре таблицы or", "Замени `or` на `and` в условии строки."),
+    ("записана как or", "Замени `or` на `and`."),
+    ("тот же сосед", "Замени `a[i] + a[i]` на `a[i] + a[i + 1]`."),
     ("последние цифры", "Огромное F(n) не нужно целиком. Бери ответ % 10**k, где k — сколько цифр просят."),
     ("рекурсия без памяти", "Поставь @lru_cache(None) над функцией или считай массив снизу вверх. Иначе не уложишься во время."),
     ("запрещённое число", "Если текущее значение равно запрещённому, возвращай 0 — этот путь не считается."),
@@ -283,13 +506,7 @@ HOW_BY_TITLE = [
 
 
 def deepen_explanation(problem: Problem, result: GradeResult, tries: int) -> GradeResult:
-    from checker.topics import retry_how
-
+    """Count the attempt. Later tries change the screen, not this paragraph."""
+    del problem
     result.tries = max(1, int(tries or 1))
-    exp = result.explanation
-    if not exp or result.status == "ok":
-        return result
-    extra = retry_how(problem, result.tries)
-    if extra and extra not in (exp.how or ""):
-        exp.how = ((exp.how or "").rstrip() + " " + extra).strip()
     return result
