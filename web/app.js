@@ -366,24 +366,26 @@ function renderLearningProgress() {
   const stuck = problems
     .filter((item) => !solvedIds.has(item.id) && (problemStats[item.id]?.fails || 0) >= 3)
     .sort((a, b) => (problemStats[b.id]?.fails || 0) - (problemStats[a.id]?.fails || 0));
-  const recommendations = examMode
-    ? problems
-      .filter((item) => !solvedIds.has(item.id) && item.id !== currentId && examIds.includes(item.id))
-      .slice(0, 3)
-    : [];
+  const topic = currentProblem?.topic || (topicFilter !== "все" ? topicFilter : "");
+  const recommendations = problems
+    .filter((item) => !solvedIds.has(item.id) && item.id !== currentId)
+    .sort((a, b) => {
+      const score = (item) => (item.topic === topic ? 100 : 0) + (item.level === currentProblem?.level ? 20 : 0)
+        + Math.min(30, (problemStats[item.id]?.fails || 0) * 5);
+      return score(b) - score(a);
+    })
+    .slice(0, 3);
   els.progressCard.classList.remove("hidden");
   els.progressHeading.textContent = stuck.length ? "Разберём то, где было сложно" : "Продолжим обучение?";
   els.progressSummary.textContent = `Сдано ${solvedIds.size} задач · начато ${attempted}.`;
-  const items = examMode
-    ? [...stuck.filter((item) => examIds.includes(item.id)).slice(0, 1), ...recommendations]
-      .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
-      .slice(0, 3)
-    : [];
+  const items = [...stuck.slice(0, 1), ...recommendations]
+    .filter((item, index, all) => all.findIndex((other) => other.id === item.id) === index)
+    .slice(0, 3);
   els.progressRecommendations.innerHTML = items.length
     ? items.map((item) => `<button type="button" class="progress-task" data-progress-task="${escapeAttr(item.id)}">
         <strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}${problemStats[item.id]?.fails ? ` · ${problemStats[item.id].fails} ошибок` : ""}</small>
       </button>`).join("")
-    : `<span class="muted">${examMode ? "Все доступные задачи решены — отличный результат." : "Дальше — кнопка «Следующая нерешённая»."}</span>`;
+    : `<span class="muted">Все доступные задачи решены — отличный результат.</span>`;
 }
 
 async function syncProgress() {
@@ -637,36 +639,36 @@ function pathVisible() {
 }
 
 function filteredProblems() {
-  if (!examMode) return pathVisible();
   const q = searchQuery.trim().toLowerCase();
   const solved = solvedSet();
-  const pool = examProblems();
+  const pool = examMode ? examProblems() : problems;
+  const examTopicNow = examMode ? examTopic : topicFilter;
   return pool.filter((item) => {
+    const topicOk = examMode || examTopicNow === "все" || item.topic === examTopicNow;
+    const levelOk = examMode || levelFilter === "все" || item.level === levelFilter;
     const searchOk = !q
       || item.title.toLowerCase().includes(q)
       || item.id.toLowerCase().includes(q)
       || (item.topic || "").toLowerCase().includes(q);
     const solvedOk = !hideSolved || !solved.has(item.id);
     const errorsOk = !repeatErrorsMode || ((problemStats[item.id]?.fails || 0) > 0 && !solved.has(item.id));
-    return searchOk && solvedOk && errorsOk;
+    return topicOk && levelOk && searchOk && solvedOk && errorsOk;
   });
 }
 
 function renderChips() {
-  const items = pathProblems();
-  const solved = solvedSet();
-  const frontier = pathFrontier();
-  const currentTopic = examMode
-    ? examTopic
-    : (frontier ? frontier.topic : PATH_TOPICS[PATH_TOPICS.length - 1]);
-  const topics = examMode ? [examTopic] : PATH_TOPICS;
-  els.topics.innerHTML = topics.map((topic) => {
-    const group = items.filter((item) => item.topic === topic);
-    const done = !examMode && group.length > 0 && group.every((item) => solved.has(item.id));
-    const cls = done ? "done" : topic === currentTopic ? "current" : "ahead";
-    return `<li class="path-step ${cls}">${escapeHtml(topic)}</li>`;
-  }).join("");
-  if (els.levels) els.levels.innerHTML = "";
+  const topics = examMode
+    ? [examTopic]
+    : ["все", ...[...new Set(problems.map((item) => item.topic))]];
+  const activeTopic = examMode ? examTopic : topicFilter;
+  els.topics.innerHTML = topics.map((topic) => `
+    <button type="button" data-topic="${escapeAttr(topic)}" aria-pressed="${topic === activeTopic}" class="${topic === activeTopic ? "active" : ""}">${escapeHtml(topic)}</button>
+  `).join("");
+  if (els.levels) {
+    els.levels.innerHTML = LEVELS.map((level) => `
+      <button type="button" data-level="${escapeAttr(level)}" aria-pressed="${level === levelFilter}" class="${level === levelFilter ? "active" : ""}">${escapeHtml(level)}</button>
+    `).join("");
+  }
   if (els.startExam) {
     els.startExam.textContent = examMode ? "Идёт зачёт" : "Начать зачёт · 8 задач";
     els.startExam.disabled = examMode;
@@ -677,26 +679,17 @@ function renderChips() {
 function renderList() {
   const items = filteredProblems();
   const solved = solvedSet();
-  if (examMode) {
-    els.count.textContent = `${items.length} · сдано ${items.filter((item) => solved.has(item.id)).length}`;
-  } else {
-    const all = pathProblems();
-    const done = all.filter((item) => solved.has(item.id)).length;
-    els.count.textContent = `сдано ${done} из ${all.length}`;
-  }
+  els.count.textContent = `${items.length} · сдано ${items.filter((item) => solved.has(item.id)).length}`;
   renderProgress();
-  renderLearningProgress();
   els.list.innerHTML = "";
   for (const item of items) {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.id = item.id;
-    const closed = solved.has(item.id) && item.id !== currentId;
     button.setAttribute("aria-pressed", String(item.id === currentId));
     if (item.id === currentId) button.setAttribute("aria-current", "true");
     button.className = [
       item.id === currentId ? "active" : "",
-      closed ? "closed" : "",
       examSkip.has(item.id) ? "skipped" : "",
       !solved.has(item.id) && (problemStats[item.id]?.fails || 0) >= 3 ? "stuck" : "",
     ].filter(Boolean).join(" ");
@@ -704,10 +697,9 @@ function renderList() {
     const mark = solved.has(item.id) ? "<i>✓</i>" : examSkip.has(item.id) ? "<i>~</i>" : "";
     const authorMark = item.author_created ? " · тренировка" : "";
     const extra = `${authorMark}${fails && !solved.has(item.id) ? ` · ${fails} попыток` : ""}`;
-    const place = examMode ? `${item.topic} · ${item.level}` : item.level;
     button.innerHTML = `
       <span class="task-title">${mark}${escapeHtml(item.title)}</span>
-      <small>${escapeHtml(place)}${extra}</small>
+      <small>${escapeHtml(item.topic)} · ${escapeHtml(item.level)}${extra}</small>
     `;
     button.addEventListener("click", () => openProblem(item.id, true));
     els.list.appendChild(button);
@@ -757,10 +749,6 @@ async function boot() {
   if (!me || !me.ok) await syncProgress();
   const fromHash = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   let start = problems.some((item) => item.id === fromHash) ? fromHash : problems[0]?.id;
-  if (!examMode) {
-    const frontier = pathFrontier();
-    start = fromHash && pathAllows(fromHash) ? fromHash : (frontier ? frontier.id : pathProblems()[0]?.id);
-  }
   if (examMode) {
     const solved = solvedSet();
     const items = examProblems();
@@ -1208,11 +1196,6 @@ function setupEditor() {
 }
 
 async function openProblem(id, updateHash) {
-  if (!examMode && problems.length && id && !pathAllows(id)) {
-    const frontier = pathFrontier();
-    if (!frontier) return;
-    id = frontier.id;
-  }
   if (currentId && currentId !== id) {
     persistCode();
   }
@@ -1889,7 +1872,6 @@ els.code.addEventListener("keydown", (event) => {
 window.addEventListener("hashchange", () => {
   const id = decodeURIComponent((location.hash || "").replace(/^#/, ""));
   if (id && id !== currentId && problems.some((item) => item.id === id)) {
-    if (!examMode && !pathAllows(id)) return;
     openProblem(id, false);
   }
 });
@@ -1926,11 +1908,11 @@ function resetCode() {
 
 function openNextUnsolved() {
   const solved = solvedSet();
+  const items = filteredProblems();
+  if (!items.length) return;
+  const idx = items.findIndex((item) => item.id === currentId);
+  const wanted = (item) => !solved.has(item.id) && (!examMode || !examSkip.has(item.id));
   if (examMode) {
-    const items = filteredProblems();
-    if (!items.length) return;
-    const idx = items.findIndex((item) => item.id === currentId);
-    const wanted = (item) => !solved.has(item.id) && !examSkip.has(item.id);
     const later = items.slice(idx + 1);
     const next = later.find(wanted)
       || items.find((item) => wanted(item) && item.id !== currentId)
@@ -1938,11 +1920,25 @@ function openNextUnsolved() {
     if (next) openProblem(next.id, true);
     return;
   }
-  const items = pathProblems();
-  if (!items.length) return;
-  const idx = items.findIndex((item) => item.id === currentId);
-  const next = items.slice(Math.max(idx, 0) + 1).find((item) => !solved.has(item.id))
-    || items.find((item) => !solved.has(item.id) && item.id !== currentId);
+  const candidates = items.filter((item) => wanted(item) && item.id !== currentId);
+  if (!candidates.length) {
+    const fallback = items.slice(idx + 1)[0];
+    if (fallback) openProblem(fallback.id, true);
+    return;
+  }
+  const currentTopic = currentProblem?.topic || topicFilter;
+  const currentLevel = currentProblem?.level || levelFilter;
+  const score = (item) => {
+    const stats = problemStats[item.id] || {};
+    const fails = Number(stats.fails || 0);
+    let value = 0;
+    if (fails >= 3) value += 1000 + fails * 20;
+    if (item.topic === currentTopic) value += 300;
+    if (item.level === currentLevel) value += 100;
+    if (item.id === items[(idx + 1 + items.length) % items.length]?.id) value += 20;
+    return value;
+  };
+  const next = candidates.sort((a, b) => score(b) - score(a))[0];
   if (next) openProblem(next.id, true);
 }
 

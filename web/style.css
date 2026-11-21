@@ -96,7 +96,7 @@ html, body {
 .page {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 28px 20px 80vh;
+  padding: 28px 20px 64px;
 }
 
 .top {
@@ -1067,7 +1067,7 @@ body.exam-on .coach { background: var(--info-bg); }
   .layout { grid-template-columns: 1fr; }
   .editor-keys ul { columns: 1; }
   .CodeMirror { min-height: 360px; }
-  .page { padding: 16px 12px 80vh; }
+  .page { padding: 16px 12px 80px; }
   .editor-bar { flex-wrap: wrap; align-items: start; }
   #run {
     position: sticky;

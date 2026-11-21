@@ -7,7 +7,7 @@
   <meta name="description" content="Проверяльщик решений по информатике: Python, задачи ЕГЭ и разбор ошибок.">
   <title>Проверяльщик решений</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="/static/style.css?v=20261121h">
+  <link rel="stylesheet" href="/static/style.css?v=20261121fix">
   <link rel="stylesheet" href="/vendor/codemirror/lib/codemirror.min.css">
   <link rel="stylesheet" href="/vendor/codemirror/theme/material.min.css">
   <link rel="stylesheet" href="/vendor/codemirror/addon/hint/show-hint.min.css">
@@ -38,7 +38,7 @@
     <div id="onboard" class="onboard hidden">
       <div>
         <p class="eyebrow">Как работать на уроке</p>
-        <p>Напиши имя и нажми «Проверить». Читай заголовок и «Что сделать», поправь одну строку. Вперёд — только «Следующая нерешённая».</p>
+        <p>Напиши имя, выбери тему слева и нажми «Проверить». Если ошибка — читай заголовок и «Что сделать».</p>
       </div>
       <button id="onboard-ok" type="button" class="ghost-btn">Понятно</button>
     </div>
@@ -67,10 +67,10 @@
     </section>
     <div class="filters">
       <div>
-        <p class="filter-label" id="topic-label">Дорожка</p>
-        <ol id="topic-filters" class="path" aria-labelledby="topic-label"></ol>
+        <p class="filter-label" id="topic-label">Тема</p>
+        <div id="topic-filters" class="chips" role="group" aria-labelledby="topic-label"></div>
       </div>
-      <div class="practice-only hidden">
+      <div class="practice-only">
         <p class="filter-label" id="level-label">Уровень</p>
         <div id="level-filters" class="chips" role="group" aria-labelledby="level-label"></div>
       </div>
@@ -170,6 +170,6 @@
   <script src="/vendor/codemirror/addon/search/match-highlighter.min.js"></script>
   <script src="/vendor/codemirror/addon/scroll/scrollpastend.min.js"></script>
   <script src="/static/theme.js?v=20261121b"></script>
-  <script src="/static/app.js?v=20261121i"></script>
+  <script src="/static/app.js?v=20261121fix"></script>
 </body>
 </html>
