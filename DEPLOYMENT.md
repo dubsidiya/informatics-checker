@@ -44,21 +44,29 @@ systemctl reload nginx
 
 ## Обновление из GitHub
 
-Выполнять от root или пользователя с правами на каталог:
+Одна команда на сервере от root:
 
 ```bash
-cd /opt/informatics-checker
-git fetch origin
-git reset --hard origin/main
-chown -R checker:checker /opt/informatics-checker
-systemctl restart informatics-checker
+bash /opt/informatics-checker/deploy/update.sh
 ```
 
-Если изменились зависимости:
+Скрипт тянет `origin/main`, обновляет зависимости, компилирует код,
+перезапускает `informatics-checker` и проверяет `/health`. Если сервис не
+ответил, он сам покажет хвост журнала и завершится с ошибкой.
+
+Перед рискованным обновлением (миграции базы) сделай копию:
 
 ```bash
-/opt/informatics-checker/.venv/bin/python -m pip install -r requirements.txt
+bash /opt/informatics-checker/deploy/update.sh --backup
 ```
+
+Откат на предыдущий коммит:
+
+```bash
+bash /opt/informatics-checker/deploy/update.sh --rollback
+```
+
+Скрипт `deploy/update.py` не трогает базу в `/var/lib/informatics-checker`.
 
 ## Безопасность
 
