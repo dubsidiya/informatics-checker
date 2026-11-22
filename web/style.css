@@ -1005,6 +1005,18 @@ body.exam-on .coach { background: var(--info-bg); }
   padding: 9px 11px;
 }
 .explain-block.next-step span { color: var(--ok); }
+.explain-block.mentor {
+  background: var(--info-bg);
+  border-left: 3px solid var(--info);
+  border-radius: 8px;
+  padding: 9px 11px;
+}
+.explain-block.mentor span { color: var(--info); }
+.explain-block.mentor.dead-end {
+  background: var(--bad-bg);
+  border-left-color: var(--bad);
+}
+.explain-block.mentor.dead-end span { color: var(--bad); }
 
 .more-checks { margin-top: 8px; }
 .more-checks summary {

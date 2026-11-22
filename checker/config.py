@@ -77,6 +77,10 @@ class Config:
     exam_limit: int
     session_hours: int
     disk_free_mb: int
+    llm_url: str
+    llm_model: str
+    llm_token: str
+    llm_timeout: float
     extra: dict[str, str] = field(default_factory=dict)
 
     def require_teacher_secret(self) -> None:
@@ -164,6 +168,10 @@ def load_config() -> Config:
         exam_limit=_env_int("EXAM_LIMIT", 40),
         session_hours=_env_int("SESSION_HOURS", 12),
         disk_free_mb=_env_int("DISK_FREE_MB", 32),
+        llm_url=_env("LLM_URL").rstrip("/"),
+        llm_model=_env("LLM_MODEL", "mimo-v2.6"),
+        llm_token=_env("LLM_TOKEN"),
+        llm_timeout=_env_float("LLM_TIMEOUT_SECONDS", 25.0),
     )
 
 

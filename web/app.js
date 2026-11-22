@@ -1633,6 +1633,14 @@ function explainMore(exp, data) {
   return `<details class="explain-more"><summary>подробнее</summary>${inner}</details>`;
 }
 
+function mentorBlock(exp) {
+  const note = (exp && exp.mentor) || "";
+  if (!note.trim()) return "";
+  const dead = exp.mentor_path === "dead_end";
+  const label = dead ? "Этот путь не довести до ответа" : "Путь можно поправить";
+  return `<div class="explain-block mentor${dead ? " dead-end" : ""}"><span>${label}</span><p>${escapeHtml(note)}</p></div>`;
+}
+
 function explanationCard(data) {
   const exp = data.explanation;
   if (!exp) {
@@ -1651,6 +1659,7 @@ function explanationCard(data) {
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
       <h3>${escapeHtml(exp.headline)}</h3>
       ${retryLine(exp)}
+      ${mentorBlock(exp)}
       <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how || "")}</p></div>
       ${replacedLineBlock(data)}
       ${counterexampleBlock(failed)}

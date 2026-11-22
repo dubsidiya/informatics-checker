@@ -15,6 +15,7 @@ from checker.auth import cookie_flags, hash_token, pin_fingerprint, verify_pin
 from checker.backup import restore_sqlite, sqlite_backup
 from checker.config import get_config, reset_config
 from checker.explain import deepen_explanation
+from checker.mentor import add_mentor
 from checker.grade import grade_solution
 from checker.sandbox import run_playground
 from checker.safety import find_forbidden
@@ -787,6 +788,7 @@ class Handler(SimpleHTTPRequestHandler):
             finally:
                 _gate().release()
             deepen_explanation(problem, result, tries)
+            add_mentor(problem, result, code)
         except KeyError:
             self._send_json({"detail": "Задача не найдена"}, 404)
             return

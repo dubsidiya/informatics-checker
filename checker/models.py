@@ -96,6 +96,8 @@ class Explanation:
     question: str = ""
     self_check: str = ""
     next_step: str = ""
+    mentor: str = ""
+    mentor_path: str = ""
     line: int | None = None
     kind: str = "logic"
 
@@ -153,7 +155,18 @@ class GradeResult:
                 hint["title"] = self._scrub(hint.get("title", ""), secrets)
                 hint["detail"] = self._scrub(hint.get("detail", ""), secrets)
             if explain:
-                for key in ("headline", "what", "why", "how", "intent", "thought", "question", "self_check", "next_step"):
+                for key in (
+                    "headline",
+                    "what",
+                    "why",
+                    "how",
+                    "intent",
+                    "thought",
+                    "question",
+                    "self_check",
+                    "next_step",
+                    "mentor",
+                ):
                     explain[key] = self._scrub(explain.get(key, "") or "", secrets)
         return {
             "status": self.status,
