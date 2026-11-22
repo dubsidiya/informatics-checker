@@ -64,6 +64,10 @@ def explain_syntax(source: str) -> SyntaxIssue | None:
         raw = exc.msg or "Неверный синтаксис"
         explanation = _translate(raw)
         snippet = _snippet(source, exc.lineno, exc.offset)
+        if exc.text:
+            code = re.sub(r"\s*#.*$", "", exc.text).rstrip()
+            if (re.search("''*(?:join|split)\\(", code) or re.search("'(?:join|split)\\(", code)) and not re.search('\\.[A-Za-z_]\\w*\\(', code):
+                explanation = "\u041f\u0440\u043e\u043f\u0443\u0449\u0435\u043d\u0430 \u0442\u043e\u0447\u043a\u0430 \u043f\u0435\u0440\u0435\u0434 join: \u043d\u0443\u0436\u043d\u043e ''.join(x), \u0430 \u043d\u0435 ''join(x)."
         if exc.text and "=" in exc.text and re.search(r"\bif\b.*=[^=]", exc.text):
             explanation = "В условии if нужно сравнение ==, а не присваивание =."
         return SyntaxIssue(

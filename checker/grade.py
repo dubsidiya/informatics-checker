@@ -151,6 +151,7 @@ def grade_solution(
 
     hint_tests = _student_hint_tests(tests)
     hints = build_hints(source, problem, hint_tests)
+    hints = _calibrated_first(problem, tests, source, hints)
     trace = []
     if first_fail.verdict in {"WA", "RE"} and not first_fail.hidden:
         fail_case = problem.tests[first_fail.index]
@@ -189,6 +190,36 @@ def grade_solution(
         ),
         source,
     )
+
+
+def _calibrated_first(problem: Problem, tests: list[TestResult], source: str, hints: list[Hint]) -> list[Hint]:
+    """Give a statement-model finding the headline when it names the bug.
+
+    A generic wrong-answer hint only says that the answer differs; when the
+    task model already knows which property of the statement the program
+    ignores, that finding must be the one the learner reads first.
+    """
+    if not hints or "ege8" not in problem.tags:
+        return hints
+    from checker.diagnose import _ege8_findings
+    from checker.facts import extract_facts, extract_outcome
+
+    outcome = extract_outcome(tests)
+    if outcome is None:
+        return hints
+    from checker.logic import _FACT_HINTS_AHEAD
+
+    # A topic hint that already names the bug keeps the headline: the model
+    # line only replaces advice that says "the answer differs".
+    if hints[0].title in _FACT_HINTS_AHEAD:
+        return hints
+    prior = [(90, hints[0])]
+    findings = _ege8_findings(problem, extract_facts(source), outcome, prior)
+    if not findings or findings[0][0] < 90:
+        return hints
+    calibrated = {title for _weight, hint_item in findings for title in (hint_item.title,)}
+    rest = [item for item in hints if item.title not in calibrated]
+    return [item for _weight, item in findings] + rest
 
 
 def _student_hint_tests(tests: list[TestResult]) -> list[TestResult]:

@@ -82,6 +82,7 @@ class Hint:
     title: str
     detail: str
     line: int | None = None
+    advice: str = ""  # a concrete next step, when the checker knows one
 
 
 @dataclass

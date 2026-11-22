@@ -13,8 +13,14 @@ from checker.facts import (
     parse_div_filters,
 )
 from checker.ege_hints import diagnose_ege
+from checker.ege8_model import analyze as ege8_analyze
+from checker.ege8_model import compare as ege8_compare
+from checker.ege8_model import parse_spec
 from checker.flips import extra_findings
 from checker.models import Hint, Problem, TestResult
+
+
+_EGE8_GENERIC = frozenset({"Считался не тот набор объектов"})
 
 
 def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hint]:
@@ -34,6 +40,12 @@ def diagnose(source: str, problem: Problem, tests: list[TestResult]) -> list[Hin
 
     findings.extend(diagnose_ege(facts, problem, outcome))
     findings.extend(extra_findings(facts, problem, outcome))
+    # ЕГЭ 8 tasks share one wide topic, and their generated mistake maps all
+    # start with the same "считался не тот набор объектов" row. A program
+    # that the statement model cannot fault should drop that generic line
+    # instead of showing it as if it were the diagnosis.
+    if "ege8" in problem.tags and not _ege8_findings(problem, facts, outcome, findings):
+        findings = [(weight, item) for weight, item in findings if item.title not in _EGE8_GENERIC]
     findings.extend(_task_specific_findings(facts, problem, outcome, findings))
 
     if (
@@ -85,6 +97,9 @@ def _task_specific_findings(
     """
     if not problem.mistake_hints or outcome.empty:
         return []
+    calibrated = _ege8_findings(problem, facts, outcome, prior)
+    if calibrated:
+        return calibrated
     precise = any(weight >= 90 for weight, _item in (prior or []))
     fallback: dict[str, str] | None = None
     for raw in problem.mistake_hints:
@@ -111,6 +126,53 @@ def _task_specific_findings(
     if fallback and not (precise and fallback["signal"] in {"always", "algorithm", "logic"}):
         return [hint(fallback["title"], fallback["detail"], weight=88)]
     return []
+
+
+def _ege8_findings(
+    problem: Problem,
+    facts: CodeFacts,
+    outcome: Outcome,
+    prior: list[tuple[int, Hint]] | None,
+) -> list[tuple[int, Hint]]:
+    """Compare the program with the statement model instead of a recipe.
+
+    ЕГЭ 8 tasks share one wide topic, so a generic "считался не тот набор
+    объектов" is useless: the hint must name the property the code misses
+    (alphabet, length, forbidden pair, leading zero). The old fallback is
+    dropped here because the calibrated model now has a finding for each
+    property the statement states.
+    """
+    if "ege8" not in problem.tags:
+        return []
+    spec = parse_spec(problem.statement)
+    spec.length = spec.length or _ege8_statement_length(outcome)
+    program = ege8_analyze(facts.source)
+    counts = _ege8_counts(problem)
+    found = ege8_compare(spec, program, counts_size=counts)
+    if not found:
+        return []
+    precise = any(weight >= 90 for weight, _item in (prior or []))
+    ranked = [item for item in found if not (precise and item.weight < 92)]
+    result: list[tuple[int, Hint]] = []
+    for item in (ranked or found)[:2]:
+        weight = item.weight if not precise else max(80, item.weight - 6)
+        result.append((weight, Hint(kind="logic", title=item.title, detail=item.detail, advice=item.how)))
+    return result
+
+
+def _ege8_statement_length(outcome: Outcome) -> int | None:
+    """Fall back to the length the reference answer implies, never to its value."""
+    for text in (outcome.expected, outcome.got):
+        token = (text or "").strip()
+        if token.isalpha() and 2 <= len(token) <= 15:
+            return len(token)
+    return None
+
+
+def _ege8_counts(problem: Problem) -> bool:
+    """Does the statement ask "сколько" rather than a word?"""
+    text = (problem.statement + " " + problem.title).lower()
+    return re.search(r"сколько|количество|насчитывает", text) is not None
 
 
 def _mistake_claim_visible(title: str, facts: CodeFacts, problem: Problem) -> bool:
@@ -180,8 +242,15 @@ def _mistake_signal_matches(
     return False
 
 
-def hint(title: str, detail: str, kind: str = "logic", line: int | None = None, weight: int = 80) -> tuple[int, Hint]:
-    return weight, Hint(kind=kind, title=title, detail=detail, line=line)
+def hint(
+    title: str,
+    detail: str,
+    kind: str = "logic",
+    line: int | None = None,
+    weight: int = 80,
+    advice: str = "",
+) -> tuple[int, Hint]:
+    return weight, Hint(kind=kind, title=title, detail=detail, line=line, advice=advice)
 
 
 def _sorted(items: list[tuple[int, Hint]]) -> list[Hint]:
@@ -696,20 +765,15 @@ def _checks_up_to_root(source: str) -> bool:
 
 
 def _all_divisors(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:
-    compact = facts.source.replace(" ", "")
-    if not _checks_up_to_root(facts.source):
-        return [hint(
-            "Делители ищут от 2 до корня",
-            "Полный проход до x только показывает идею. В списке сразу лежат 1 и x, а цикл идёт до корня и кладёт пару i и x // i.",
-            weight=96,
-        )]
-    if "[1," not in compact and "[1]" not in compact:
-        return [hint(
-            "В список не попала единица",
-            "Единица — делитель. Её кладут в список вместе с самим числом до цикла.",
-            weight=96,
-        )]
-    return []
+    """A full pass to x is correct here; only the shorter method is missing."""
+    if _checks_up_to_root(facts.source):
+        return []
+    return [hint(
+        '\u0414\u0435\u043b\u0438\u0442\u0435\u043b\u0438 \u0438\u0449\u0443\u0442 \u043e\u0442 2 \u0434\u043e \u043a\u043e\u0440\u043d\u044f',
+        '\u041f\u043e\u043b\u043d\u044b\u0439 \u0446\u0438\u043a\u043b \u0434\u043e \u0441\u0430\u043c\u043e\u0433\u043e \u0447\u0438\u0441\u043b\u0430 \u0434\u0430\u0451\u0442 \u0432\u0435\u0440\u043d\u044b\u0439 \u043e\u0442\u0432\u0435\u0442, \u043d\u043e \u0441\u043b\u0438\u0448\u043a\u043e\u043c \u043c\u0435\u0434\u043b\u0435\u043d\u043d\u044b\u0439 \u0434\u043b\u044f \u0431\u043e\u043b\u044c\u0448\u0438\u0445 x.',
+        advice='\u041d\u0430\u0447\u043d\u0438 \u0441\u043f\u0438\u0441\u043e\u043a s \u0441 1 \u0438 x, \u043f\u043e\u0442\u043e\u043c \u0446\u0438\u043a\u043b `for i in range(2, int(x ** 0.5) + 1)` \u0438 \u043f\u0440\u0438 `x % i == 0` \u0434\u043e\u0431\u0430\u0432\u044c `i` \u0438 `x // i`.',
+        weight=70,
+    )]
 
 
 def _divisors_from_two(facts: CodeFacts, problem: Problem, outcome: Outcome) -> list[tuple[int, Hint]]:

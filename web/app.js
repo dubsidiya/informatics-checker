@@ -1552,6 +1552,12 @@ function sameErrorTries(data) {
   return tries;
 }
 
+function retryLine(exp) {
+  const text = (exp && exp.thought) || "";
+  if (!text.includes('\u0443\u0436\u0435 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u043b')) return "";
+  return `<p class="explain-kicker">${escapeHtml(text)}</p>`;
+}
+
 function shorterHint(exp) {
   const text = ((exp && exp.next_step) || "").trim();
   if (!/можно короче/i.test(text)) return "";
@@ -1644,6 +1650,7 @@ function explanationCard(data) {
   return `
     <article class="explain-card ${escapeAttr(exp.kind || "logic")}">
       <h3>${escapeHtml(exp.headline)}</h3>
+      ${retryLine(exp)}
       <div class="explain-block"><span>Что сделать</span><p>${escapeHtml(exp.how || "")}</p></div>
       ${replacedLineBlock(data)}
       ${counterexampleBlock(failed)}

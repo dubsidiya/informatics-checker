@@ -673,7 +673,7 @@ PRIMARY = [
     ),
     (
         "all-divisors",
-        "x = int(input())\nprint(*[i for i in range(1, x + 1) if x % i == 0])\n",
+        "x = int(input())\nprint(*[i for i in range(2, x) if x % i == 0])\n",
         "Делители ищут от 2 до корня",
         "** 0.5",
         ["пар", "сочетания", "кластер", "нечёт", "9"],

@@ -233,10 +233,13 @@ class ClassroomApiTests(unittest.TestCase):
         )
         self.assertEqual(status, 200)
         self.assertEqual(fail2["tries"], 2)
+        # The retry nudge sits beside the one step, not inside it: the card
+        # shows it above the instruction, and `how` keeps a single next step.
         self.assertIn(
             "\u0443\u0436\u0435 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u043b",
-            fail2["explanation"]["how"],
+            fail2["explanation"]["thought"],
         )
+        self.assertEqual(fail2["explanation"]["how"], fail["explanation"]["how"])
 
     def test_teacher_import_json(self):
         cookie, csrf = self._login()

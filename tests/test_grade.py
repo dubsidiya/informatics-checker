@@ -420,6 +420,16 @@ print(int(px * 10000), int(py * 10000))
         "        print(x, max(d))\n"
     ),
 }
+
+def _manifest_solutions():
+    """Every catalog task has a server-side reference in the manifest."""
+    path = Path(__file__).resolve().parent.parent / "data" / "solution_manifest.json"
+    if not path.exists():
+        return {}
+    return {item["id"]: item["source"] for item in json.loads(path.read_text(encoding="utf-8"))}
+
+
+SOLUTIONS.update(_manifest_solutions())
 SOLUTIONS.update(_harvest_solutions())
 SOLUTIONS.update(_author_solutions())
 SOLUTIONS.update(_archive_solutions())

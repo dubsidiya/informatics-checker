@@ -287,6 +287,9 @@ def _wrong_answer(problem: Problem, result: GradeResult, first: TestResult, hint
 
 
 def _how_from_detail(hint: Hint | None) -> str:
+    advice = getattr(hint, "advice", "") if hint else ""
+    if advice:
+        return "Сделай именно это: " + advice.rstrip(".") + "."
     if not hint or not (hint.detail or "").strip():
         return ""
     detail = hint.detail.strip()
@@ -363,6 +366,9 @@ def _how_from_hint(hint: Hint | None) -> str:
 
 
 def _syntax_how(explanation: str, line: int | None) -> str:
+    if "join" in explanation and "точка" in explanation:
+        where = f"Строка {line}: " if line else ""
+        return where + "Поставь точку перед join: `''.join(x)` вместо `''join(x)`."
     where = f"Строка {line}: " if line else ""
     if "двоеточ" in explanation:
         return f"{where}после if / for / while / def / else поставь `:` и со следующей строки сделай отступ 4 пробела."
@@ -506,7 +512,16 @@ HOW_BY_TITLE = [
 
 
 def deepen_explanation(problem: Problem, result: GradeResult, tries: int) -> GradeResult:
-    """Count the attempt. Later tries change the screen, not this paragraph."""
-    del problem
+    """Count the attempt and encourage one changed step on later tries.
+
+    ``how`` stays the single next step: retry advice is shown beside it, not
+    glued into it, so the child can tell the instruction from the praise.
+    """
+    from checker.topics import retry_how
+
     result.tries = max(1, int(tries or 1))
+    if result.explanation is not None:
+        retry = retry_how(problem, result.tries)
+        if retry:
+            result.explanation.thought = retry
     return result
