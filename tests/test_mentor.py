@@ -287,6 +287,88 @@ class MentorPromptTests(unittest.TestCase):
         split = "def f(x):\n    if x == 13:\n        return 1\n"
         self.assertIn("12 написано в условии", _goal_reason(problem, split, 2, "13", "12"))
 
+    def test_ege23_other_wrong_numbers_are_not_left_to_the_sign(self):
+        problem = get_problem("ege23-6")
+
+        def ask(source: str, fixed: str) -> str:
+            result = grade_solution(problem, source)
+            self.assertNotEqual(result.status, "ok")
+            self.assertEqual(grade_solution(problem, fixed).status, "ok")
+
+            def complete(_messages):
+                raise AssertionError("модель не нужна: число в коде не из условия")
+
+            add_mentor(problem, result, source, complete=complete)
+            self.assertNotIn("`<=`", result.explanation.mentor)
+            self.assertNotIn("одной точки", result.explanation.mentor_reason)
+            return result.explanation.mentor + "\n" + result.explanation.mentor_reason
+
+        start = (
+            "def f(x):\n"
+            "    if x < 12: return f(x+1)+f(x+2)+f(x*3)\n"
+            "    if x == 12: return 1\n"
+            "    return 0\n"
+            "print(f(3))\n"
+        )
+        text = ask(start, start.replace("f(3)", "f(1)", 1))
+        self.assertIn("`3`", text)
+        self.assertIn("`1`", text)
+        self.assertIn("от числа 1", text)
+
+        command = (
+            "def f(x):\n"
+            "    if x < 12: return f(x+6)+f(x+2)+f(x*3)\n"
+            "    if x == 12: return 1\n"
+            "    return 0\n"
+            "print(f(1))\n"
+        )
+        text = ask(command, command.replace("x+6", "x+1", 1))
+        self.assertIn("`6`", text)
+        self.assertIn("`1`", text)
+        self.assertIn("прибавляют 1", text)
+
+        bound = (
+            "def f(x):\n"
+            "    if x < 13: return f(x+1)+f(x+2)+f(x*3)\n"
+            "    if x == 12: return 1\n"
+            "    return 0\n"
+            "print(f(1))\n"
+        )
+        text = ask(bound, bound.replace("x < 13", "x < 12", 1))
+        self.assertIn("`13`", text)
+        self.assertIn("`12`", text)
+        self.assertIn("граница", text)
+
+    def test_canned_number_reason_names_the_statement(self):
+        problem = get_problem("ege23-6")
+        source = (
+            "def f(x):\n"
+            "    if x < 12: return f(x+1)+f(x+2)+f(x*3)\n"
+            "    if x == 12: return 1\n"
+            "    return 2\n"
+            "print(f(1))\n"
+        )
+        result = grade_solution(problem, source)
+        self.assertNotEqual(result.status, "ok")
+
+        def complete(_messages):
+            return json.dumps(
+                {
+                    "path": "fixable",
+                    "line": 4,
+                    "look": "2",
+                    "instead": "12",
+                    "why": "Связка условий возвращает из одной точки разные значения. В ответ попадают не те числа.",
+                },
+                ensure_ascii=False,
+            )
+
+        add_mentor(problem, result, source, complete=complete)
+        self.assertIn("Смотри на `2`", result.explanation.mentor)
+        self.assertIn("написано число 12", result.explanation.mentor_reason)
+        self.assertIn("в коде стоит 2", result.explanation.mentor_reason)
+        self.assertNotIn("одной точки", result.explanation.mentor_reason)
+
     def test_goal_reason_skips_a_check_that_returns_zero(self):
         problem = get_problem("ege23-6")
         source = "def f(x):\n    if x == 13:\n        return 0\n"

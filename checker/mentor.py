@@ -45,6 +45,24 @@ _SYSTEM = """Ты учитель информатики. Это единстве
 {"path":"fixable","line":2,"look":"23","instead":"1","why":"В условии прибавляют 1, а в коде 23. Шаг уходит не к тому числу, поэтому путей получается не столько, сколько просят."}"""
 
 
+def _use_fix(
+    result: GradeResult,
+    path: str,
+    line: int,
+    look: str,
+    instead: str,
+    reason: str,
+) -> GradeResult:
+    note = _hint(path, line, look, instead)
+    secrets = result._hidden_secrets()
+    result.explanation.mentor = GradeResult._scrub(note, secrets)
+    result.explanation.mentor_reason = GradeResult._scrub(reason, secrets)
+    result.explanation.mentor_path = path
+    result.explanation.line = line
+    bump("mentor_ok")
+    return result
+
+
 def add_mentor(
     problem: Problem,
     result: GradeResult,
@@ -70,19 +88,9 @@ def add_mentor(
         result.explanation.line = line
         bump("mentor_ok")
         return result
-    wrong_goal = _wrong_goal(problem, source)
-    if wrong_goal is not None:
-        path, line, look, instead = wrong_goal
-        note = _hint(path, line, look, instead)
-        result.explanation.mentor = GradeResult._scrub(note, result._hidden_secrets())
-        result.explanation.mentor_reason = GradeResult._scrub(
-            _goal_reason(problem, source, line, look, instead),
-            result._hidden_secrets(),
-        )
-        result.explanation.mentor_path = path
-        result.explanation.line = line
-        bump("mentor_ok")
-        return result
+    numbered = _number_fix(problem, source)
+    if numbered is not None:
+        return _use_fix(result, *numbered)
     if complete is None and not get_config().llm_url:
         return result
     if not _SLOT.acquire(timeout=25):
@@ -117,6 +125,8 @@ def add_mentor(
             return result
         result.explanation.mentor = note
         reason = _goal_reason(problem, source, line, look, instead) or mentor_reason(text or "")
+        if _canned_reason(reason):
+            reason = _plain_number_reason(problem, look, instead) or reason
         result.explanation.mentor_reason = GradeResult._scrub(reason, secrets)
         result.explanation.mentor_path = path
         if line is not None:
@@ -253,24 +263,35 @@ def _start_call(problem: Problem, source: str) -> tuple[str, int, str, str] | No
     return None
 
 
-def _command_mismatch(problem: Problem, source: str) -> tuple[str, int, str, str] | None:
-    adds = set(_ADD_COMMAND.findall(problem.statement))
-    muls = set(_MUL_COMMAND.findall(problem.statement))
-    if len(adds) != 1 and len(muls) != 1:
+def _command_mismatch(problem: Problem, source: str) -> tuple[str, int, str, str, str] | None:
+    """One command number is missing and one foreign number stands in its place."""
+    if "ege23" not in problem.tags:
         return None
-    expected_add = next(iter(adds)) if len(adds) == 1 else ""
-    expected_mul = next(iter(muls)) if len(muls) == 1 else ""
-    for index, row in enumerate(source.splitlines(), start=1):
-        if "f(" not in row:
+    pairs = (
+        (set(_ADD_COMMAND.findall(problem.statement)), _ADDED, "прибавляют"),
+        (set(_MUL_COMMAND.findall(problem.statement)), _MULTIPLIED, "умножают на"),
+    )
+    rows = source.splitlines()
+    for expected, pattern, verb in pairs:
+        if not expected:
             continue
-        if expected_add:
-            for match in _ADDED.finditer(row):
-                if match.group(1) != expected_add:
-                    return "fixable", index, match.group(1), expected_add
-        if expected_mul:
-            for match in _MULTIPLIED.finditer(row):
-                if match.group(1) != expected_mul:
-                    return "fixable", index, match.group(1), expected_mul
+        present = {match.group(1) for row in rows if "f(" in row for match in pattern.finditer(row)}
+        missing = expected - present
+        extra = present - expected
+        if len(missing) != 1 or len(extra) != 1:
+            continue
+        written = next(iter(extra))
+        wanted = next(iter(missing))
+        for index, row in enumerate(rows, start=1):
+            if "f(" not in row or not pattern.search(row):
+                continue
+            if not any(match.group(1) == written for match in pattern.finditer(row)):
+                continue
+            reason = (
+                f"В условии {verb} {wanted}, а в коде стоит {written}. "
+                f"Менять надо на {wanted}, потому что {wanted} написано в условии."
+            )
+            return "fixable", index, written, wanted, reason
     return None
 
 
@@ -310,6 +331,89 @@ def _wrong_goal(problem: Problem, source: str) -> tuple[str, int, str, str] | No
             continue
         return "fixable", index, found.group(1), finish
     return None
+
+
+_BOUND = re.compile(r"(?<![=!<>])(?:<=|>=|<|>)(?!=)\s*(\d+)")
+_CANNED = (
+    "связка условий",
+    "из одной точки",
+    "из этой точки",
+    "не те числа",
+    "не то число",
+    "ответ уезжает",
+    "ответ другой",
+    "не сходится",
+)
+
+
+def _mentioned_numbers(problem: Problem) -> set[str]:
+    return set(re.findall(r"\d+", f"{problem.title}\n{problem.statement}"))
+
+
+def _stray_bound(problem: Problem, source: str) -> tuple[str, int, str, str, str] | None:
+    """A comparison uses a number that the statement never mentions."""
+    if "ege23" not in problem.tags:
+        return None
+    finish = _finish(problem)
+    if not finish:
+        return None
+    known = _mentioned_numbers(problem)
+    for index, row in enumerate(source.splitlines(), start=1):
+        if "if " not in row:
+            continue
+        found = _BOUND.search(row)
+        if found is None:
+            continue
+        written = found.group(1)
+        if written in known or written in {"0", finish}:
+            continue
+        reason = (
+            f"В условии граница — число {finish}, а в коде стоит {written}. "
+            f"Менять надо на {finish}, потому что {finish} написано в условии."
+        )
+        return "fixable", index, written, finish, reason
+    return None
+
+
+def _number_fix(problem: Problem, source: str) -> tuple[str, int, str, str, str] | None:
+    """A number in the code is not the number written for that role in the statement."""
+    goal = _wrong_goal(problem, source)
+    if goal is not None:
+        path, line, look, instead = goal
+        reason = _goal_reason(problem, source, line, look, instead)
+        if reason:
+            return path, line, look, instead, reason
+    if "ege23" in problem.tags:
+        started = _start_call(problem, source)
+        if started is not None:
+            _path, line, look, instead = started
+            reason = (
+                f"В условии считают пути от числа {instead}, а в коде вызывают f({look}). "
+                f"Менять надо на {instead}, потому что {instead} написано в условии."
+            )
+            return "fixable", line, look, instead, reason
+    command = _command_mismatch(problem, source)
+    if command is not None:
+        return command
+    return _stray_bound(problem, source)
+
+
+def _canned_reason(text: str) -> bool:
+    lowered = (text or "").lower()
+    return any(phrase in lowered for phrase in _CANNED)
+
+
+def _plain_number_reason(problem: Problem, look: str, instead: str) -> str:
+    written = _lone_number(look)
+    wanted = _lone_number(instead)
+    if not written or not wanted or written == wanted:
+        return ""
+    if wanted not in _mentioned_numbers(problem):
+        return ""
+    return (
+        f"В условии написано число {wanted}, а в коде стоит {written}. "
+        f"Менять надо на {wanted}, потому что {wanted} написано в условии."
+    )
 
 
 def _returns_one(row: str, nxt: str) -> bool:
