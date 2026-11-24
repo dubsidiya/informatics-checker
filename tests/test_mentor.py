@@ -257,6 +257,7 @@ class MentorPromptTests(unittest.TestCase):
     def test_ege23_wrong_goal_says_the_number_is_in_the_statement(self):
         problem = get_problem("ege23-6")
         source = (
+            "# ЕГЭ 23.6 — 1→12\n"
             "from functools import lru_cache\n"
             "@lru_cache(None)\n"
             "def f(x):\n"
@@ -270,18 +271,13 @@ class MentorPromptTests(unittest.TestCase):
         self.assertEqual(grade_solution(problem, source.replace("== 13", "== 12", 1)).status, "ok")
 
         def complete(_messages):
-            return json.dumps(
-                {
-                    "path": "fixable",
-                    "line": 6,
-                    "look": "13",
-                    "instead": "12",
-                    "why": "Связка условий возвращает из одной точки разные значения. В ответ попадают не те числа.",
-                },
-                ensure_ascii=False,
-            )
+            raise AssertionError("модель не нужна: в условии цель 12, а в коде проверка на 13")
 
         add_mentor(problem, result, source, complete=complete)
+        self.assertIn("Строка 6", result.explanation.mentor)
+        self.assertIn("Смотри на `13`", result.explanation.mentor)
+        self.assertIn("Поменяй это на `12`", result.explanation.mentor)
+        self.assertNotIn("`<=`", result.explanation.mentor)
         reason = result.explanation.mentor_reason
         self.assertIn("получить число 12", reason)
         self.assertIn("проверка стоит на 13", reason)

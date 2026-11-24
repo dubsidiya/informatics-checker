@@ -70,6 +70,19 @@ def add_mentor(
         result.explanation.line = line
         bump("mentor_ok")
         return result
+    wrong_goal = _wrong_goal(problem, source)
+    if wrong_goal is not None:
+        path, line, look, instead = wrong_goal
+        note = _hint(path, line, look, instead)
+        result.explanation.mentor = GradeResult._scrub(note, result._hidden_secrets())
+        result.explanation.mentor_reason = GradeResult._scrub(
+            _goal_reason(problem, source, line, look, instead),
+            result._hidden_secrets(),
+        )
+        result.explanation.mentor_path = path
+        result.explanation.line = line
+        bump("mentor_ok")
+        return result
     if complete is None and not get_config().llm_url:
         return result
     if not _SLOT.acquire(timeout=25):
@@ -275,6 +288,28 @@ def _finish(problem: Problem) -> str:
     if found is None:
         return ""
     return found.group(2)
+
+
+_EQ_GOAL = re.compile(r"(?<![=!<>])==(?!=)\s*(\d+)")
+
+
+def _wrong_goal(problem: Problem, source: str) -> tuple[str, int, str, str] | None:
+    """The goal check names a number other than the finish in the statement."""
+    if "ege23" not in problem.tags:
+        return None
+    finish = _finish(problem)
+    if not finish:
+        return None
+    rows = source.splitlines()
+    for index, row in enumerate(rows, start=1):
+        nxt = rows[index] if index < len(rows) else ""
+        if not _returns_one(row, nxt):
+            continue
+        found = _EQ_GOAL.search(row)
+        if found is None or found.group(1) == finish:
+            continue
+        return "fixable", index, found.group(1), finish
+    return None
 
 
 def _returns_one(row: str, nxt: str) -> bool:
