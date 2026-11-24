@@ -5,8 +5,9 @@ import unittest
 
 from checker.config import reset_config
 from checker.grade import grade_solution
-from checker.mentor import _accepted, _goal_reason, add_mentor, build_messages, mentor_reason, parse_mentor
+from checker.mentor import _accepted, _goal_reason, _topic_fix, add_mentor, build_messages, mentor_reason, parse_mentor
 from checker.models import Explanation, GradeResult
+from checker.solutions import solution_source
 from checker.problems import get_problem
 
 
@@ -396,6 +397,50 @@ class MentorPromptTests(unittest.TestCase):
         self.assertIn("return f(x+1)+f(x+2)+f(x*3)", result.explanation.mentor)
         self.assertNotIn("не довести", result.explanation.mentor)
         self.assertIn("return", result.explanation.mentor_reason)
+
+    def test_topic_rules_use_the_statement_and_skip_correct_code(self):
+        cases = (
+            ("ege2-180", "<=", "=="),
+            ("ege5-logic-table", "!=", "=="),
+            ("ege8-10", "product", "permutations"),
+            ("ege9-101", "==", "<="),
+            ("ege13-15", "<=", "=="),
+            ("ege14-1", "==", "<="),
+            ("ege16-1", "return 1", "return 0"),
+            ("ege17-1", "9639", "9638"),
+            ("author-games-41", "return 0", "return 1"),
+            ("ege23-1", "return 1", "return 0"),
+            ("ege24-long-c", "==", "<="),
+        )
+        for pid, old, new in cases:
+            problem = get_problem(pid)
+            source = solution_source(pid).replace("\r\n", "\n")
+            self.assertIsNone(_topic_fix(problem, source), pid)
+            mutated = source.replace(old, new, 1)
+            fix = _topic_fix(problem, mutated)
+            self.assertIsNotNone(fix, pid)
+            _path, line, look, instead, reason = fix
+            self.assertNotIn("одной точки", reason, pid)
+            row = mutated.splitlines()[line - 1]
+            self.assertIn(look, row, pid)
+            row = row.replace(look, instead, 1)
+            lines = mutated.splitlines()
+            lines[line - 1] = row
+            self.assertEqual("\n".join(lines).strip(), source.strip(), pid)
+            result = GradeResult(
+                status="fail",
+                message="fail",
+                passed=0,
+                total=1,
+                explanation=Explanation(headline="h", what="w", why="y", how="h"),
+            )
+
+            def complete(_messages, _pid=pid):
+                raise AssertionError("модель не нужна: " + _pid)
+
+            add_mentor(problem, result, mutated, complete=complete)
+            self.assertIn(look, result.explanation.mentor, pid)
+            self.assertNotIn("одной точки", result.explanation.mentor_reason, pid)
 
     def test_disabled_model_keeps_the_rule_based_hint(self):
         reset_config()

@@ -88,7 +88,7 @@ def add_mentor(
         result.explanation.line = line
         bump("mentor_ok")
         return result
-    numbered = _number_fix(problem, source)
+    numbered = _number_fix(problem, source) or _topic_fix(problem, source)
     if numbered is not None:
         return _use_fix(result, *numbered)
     if complete is None and not get_config().llm_url:
@@ -123,10 +123,17 @@ def add_mentor(
         if len(note.strip()) < 20:
             bump("mentor_fail")
             return result
-        result.explanation.mentor = note
         reason = _goal_reason(problem, source, line, look, instead) or mentor_reason(text or "")
+        if look.strip() == "==" and instead.strip() == "<=" and _canned_reason(reason):
+            bump("mentor_fail")
+            return result
         if _canned_reason(reason):
-            reason = _plain_number_reason(problem, look, instead) or reason
+            reason = (
+                _plain_number_reason(problem, look, instead)
+                or _sign_reason(look, instead)
+                or f"В коде стоит {look}, а для этой строки нужно {instead}."
+            )
+        result.explanation.mentor = note
         result.explanation.mentor_reason = GradeResult._scrub(reason, secrets)
         result.explanation.mentor_path = path
         if line is not None:
@@ -396,6 +403,287 @@ def _number_fix(problem: Problem, source: str) -> tuple[str, int, str, str, str]
     if command is not None:
         return command
     return _stray_bound(problem, source)
+
+
+def _hit(source: str, pattern: re.Pattern[str]) -> tuple[int, re.Match[str]] | None:
+    for index, row in enumerate(source.splitlines(), start=1):
+        found = pattern.search(row)
+        if found is not None:
+            return index, found
+    return None
+
+
+def _branch_return(source: str, line_pattern: re.Pattern[str], bad: str) -> int | None:
+    rows = source.splitlines()
+    for index, row in enumerate(rows):
+        if line_pattern.search(row) is None:
+            continue
+        if bad in row:
+            return index + 1
+        nxt = rows[index + 1] if index + 1 < len(rows) else ""
+        if row.rstrip().endswith(":") and nxt.strip() == bad:
+            return index + 2
+    return None
+
+
+def _sign_reason(look: str, instead: str) -> str:
+    pair = (look.strip(), instead.strip())
+    reasons = {
+        ("<=", "=="): "В условии здесь точное равенство, его пишут ==, а в коде стоит <=.",
+        ("!=", "=="): "В условии нужно совпадение, это ==, а в коде стоит !=.",
+        ("==", "!="): "В условии здесь «не равно», это !=, а в коде стоит ==.",
+        ("and", "or"): "В условии достаточно одного условия, это or, а в коде стоит and.",
+        ("or", "and"): "В условии нужны оба условия сразу, это and, а в коде стоит or.",
+        (">=", ">"): "В условии порог включительный, его пишут >=, а в коде стоит >.",
+        (">", ">="): "В условии порог строгий, его пишут >, а в коде стоит >=.",
+    }
+    return reasons.get(pair, "")
+
+
+def _topic_fix(problem: Problem, source: str) -> tuple[str, int, str, str, str] | None:
+    """A visible mismatch with the statement. Correct code must not match."""
+    tags = set(problem.tags)
+    statement = problem.statement or ""
+    low = statement.lower()
+
+    formula = statement.split("Импликация")[0]
+    arrows = formula.count("→")
+    if arrows:
+        for index, row in enumerate(source.splitlines(), start=1):
+            if "return" not in row or row.count("<=") >= arrows:
+                continue
+            if re.search(r"\b[wxyz]\s*==\s*(?!\[)", row) is None:
+                continue
+            return (
+                "fixable",
+                index,
+                "==",
+                "<=",
+                "В условии стрелка →, её пишут <=, а в коде стоит ==.",
+            )
+
+    if "равнобедрен" in low:
+        found = _hit(source, re.compile(r"\b[abc]\s*<=\s*[abc]\b"))
+        if found is not None:
+            return (
+                "fixable",
+                found[0],
+                "<=",
+                "==",
+                "Равнобедренный — это равные стороны, пишут ==, а в коде стоит <=.",
+            )
+        found = _hit(source, re.compile(r">\s*[a-z]\s+or\b"))
+        if found is not None:
+            return (
+                "fixable",
+                found[0],
+                "or",
+                "and",
+                "Нужны и неравенство треугольника, и равные стороны. Это and, а в коде стоит or.",
+            )
+
+    forbidden = []
+    plain = statement
+    for match in re.finditer(r"не дел\w*(?:(?!не дел).){0,50}", statement, re.IGNORECASE):
+        chunk = re.split(r"и делится|но делится", match.group(0), maxsplit=1)[0]
+        forbidden.extend(re.findall(r"\d+", chunk))
+        plain = plain.replace(match.group(0), " ")
+    positive = set()
+    for match in re.finditer(r"делится на\s+([^.]{0,40})", plain, re.IGNORECASE):
+        positive.update(re.findall(r"\d+", match.group(1)))
+    for number in forbidden:
+        if number in positive:
+            continue
+        found = _hit(source, re.compile(rf"%\s*{number}\s*==\s*0"))
+        if found is None:
+            continue
+        look = found[1].group(0)
+        return (
+            "fixable",
+            found[0],
+            look,
+            look.replace("==", "!=", 1),
+            f"В условии «не делится на {number}», это остаток != 0, а в коде стоит == 0.",
+        )
+    if forbidden and _hit(source, re.compile(r"all\([^)\n]*%\s*\w+\s*==\s*0")):
+        found = _hit(source, re.compile(r"all\([^)\n]*%\s*\w+\s*==\s*0"))
+        if found is not None:
+            look = found[1].group(0)
+            return (
+                "fixable",
+                found[0],
+                look,
+                look.replace("==", "!=", 1),
+                "В условии на эти числа делиться нельзя, это != 0, а в коде стоит == 0.",
+            )
+
+    if "ege8" in tags and "permutations" in source:
+        repeats_forbidden = any(
+            phrase in low for phrase in ("без повтор", "ровно один", "ровно 1", "каждую букву", "перестанов")
+        )
+        if not repeats_forbidden and re.search(r"(?<![\wа-яё])все(?![\wа-яё])", low) and "букв" in low:
+            line = next(index for index, row in enumerate(source.splitlines(), start=1) if "permutations" in row)
+            return (
+                "fixable",
+                line,
+                "permutations",
+                "product",
+                "В условии буквы можно повторять, для этого product, а в коде permutations.",
+            )
+
+    if "ege13" in tags:
+        found = _hit(source, re.compile(r"0\s*==\s*int\s*\("))
+        if found is not None:
+            return (
+                "fixable",
+                found[0],
+                "0 ==",
+                "0 <=",
+                "Октет от 0 до 255 включительно, это <=, а в коде стоит ==.",
+            )
+        found = _hit(source, re.compile(r"\bor\s+0\s*<=|\bor\s+0\s*=="))
+        if found is not None:
+            return (
+                "fixable",
+                found[0],
+                "or",
+                "and",
+                "Проверки октета выполняются вместе, это and, а в коде стоит or.",
+            )
+
+    ending = re.search(r"оканчивается на\s+(\d+)", low)
+    if ending is not None:
+        digit = ending.group(1)
+        found = _hit(source, re.compile(rf"%\s*\w+\s*(?:<=|<)\s*{digit}\b"))
+        if found is not None:
+            look = found[1].group(0)
+            sign = "<=" if "<=" in look else "<"
+            return (
+                "fixable",
+                found[0],
+                sign,
+                "==",
+                f"В условии число оканчивается на {digit}, это остаток == {digit}, а в коде стоит {sign}.",
+            )
+
+    bounds = re.search(r"\[(\d+)\s*;\s*(\d+)\]", statement)
+    if bounds is not None and tags & {"ege17", "ege14", "ege25", "closed_range"}:
+        left, right = bounds.group(1), bounds.group(2)
+        found = _hit(source, re.compile(rf"range\(\s*{left}\s*,\s*{right}\s*\)"))
+        if found is not None:
+            look = found[1].group(0)
+            instead = look.replace(right, str(int(right) + 1), 1)
+            return (
+                "fixable",
+                found[0],
+                right,
+                str(int(right) + 1),
+                f"Отрезок до {right} включительно. range на {right} останавливается раньше, нужно {int(right) + 1}.",
+            )
+
+    if "ege16" in tags and re.search(r"=\s*1\s+при\s+n\s*=\s*1", low):
+        line = _branch_return(source, re.compile(r"n\s*==\s*1"), "return 0")
+        if line is not None:
+            return (
+                "fixable",
+                line,
+                "return 0",
+                "return 1",
+                "В условии при n = 1 функция равна 1, а в коде return 0.",
+            )
+
+    if tags & {"ege19", "ege20", "ege21"}:
+        line = _branch_return(source, re.compile(r">="), "return 1")
+        if line is not None:
+            return (
+                "fixable",
+                line,
+                "return 1",
+                "return 0",
+                "Порог уже достигнут, ходить нельзя, это return 0. В коде стоит return 1.",
+            )
+        if re.search(r"×\s*2|\*\s*2|умнож\w*\s+на\s+2", statement, re.IGNORECASE) and "* 2" not in source and "*2" not in source:
+            found = _hit(source, re.compile(r"\*\s*1\b"))
+            if found is not None:
+                look = found[1].group(0)
+                return (
+                    "fixable",
+                    found[0],
+                    look,
+                    re.sub(r"1\b", "2", look, count=1),
+                    "В условии ход умножить на 2, а в коде стоит * 1.",
+                )
+
+    if "ege23" in tags:
+        line = _branch_return(source, re.compile(r">\s*[A-Za-z]"), "return 1")
+        if line is not None:
+            return (
+                "fixable",
+                line,
+                "return 1",
+                "return 0",
+                "Дальше цели путей нет, это return 0. В коде стоит return 1.",
+            )
+        line = _branch_return(source, re.compile(r"==\s*[A-Za-z]"), "return 0")
+        if line is not None:
+            return (
+                "fixable",
+                line,
+                "return 0",
+                "return 1",
+                "Ровно цель — return 1. В коде стоит return 0.",
+            )
+
+    if "ege15" in tags and "длин" in low:
+        found = _hit(source, re.compile(r"\b\w+\s*-\s*\w+\s*\+\s*1\b"))
+        if found is not None:
+            look = found[1].group(0)
+            instead = re.sub(r"\s*\+\s*1$", "", look)
+            return (
+                "fixable",
+                found[0],
+                look,
+                instead,
+                "Длина отрезка — разность концов, без + 1. В коде к разности прибавлена 1.",
+            )
+
+    if "ege24" in tags and ("цепоч" in low or "подряд" in low):
+        for letter in re.findall(r"\b([A-Z])\b", statement):
+            found = _hit(source, re.compile(rf"<=\s*['\"]{letter}['\"]"))
+            if found is not None:
+                return (
+                    "fixable",
+                    found[0],
+                    "<=",
+                    "==",
+                    f"В условии цепочка буквы {letter}, это == '{letter}', а в коде стоит <=.",
+                )
+
+    if "ege25" in tags and ("?" in statement or "*" in statement) and "10**9" in source.replace(" ", ""):
+        found = _hit(source, re.compile(r"10\s*\*\*\s*9"))
+        if found is not None:
+            return (
+                "fixable",
+                found[0],
+                found[1].group(0),
+                "10",
+                "Маску не перебирают до миллиарда. На каждую неизвестную цифру хватает range(10).",
+            )
+
+    if "ege9" in tags and ";" in (_file_sample(problem)[1] or ""):
+        found = _hit(source, re.compile(r"split\(\s*,\s*\)|split\(\s*','\s*\)|split\(\s*\",\"\s*\)"))
+        if found is None:
+            found = _hit(source, re.compile(r"\.split\(\s*\)"))
+        if found is not None and ";" not in source.splitlines()[found[0] - 1]:
+            look = found[1].group(0)
+            return (
+                "fixable",
+                found[0],
+                look,
+                "split(';')",
+                "В файле числа через точку с запятой, а в коде другой split.",
+            )
+    return None
 
 
 def _canned_reason(text: str) -> bool:
