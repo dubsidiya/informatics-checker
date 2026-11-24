@@ -97,6 +97,7 @@ class Explanation:
     self_check: str = ""
     next_step: str = ""
     mentor: str = ""
+    mentor_reason: str = ""
     mentor_path: str = ""
     line: int | None = None
     kind: str = "logic"
@@ -166,6 +167,7 @@ class GradeResult:
                     "self_check",
                     "next_step",
                     "mentor",
+                    "mentor_reason",
                 ):
                     explain[key] = self._scrub(explain.get(key, "") or "", secrets)
         return {
